@@ -7,7 +7,6 @@ import java.lang.IllegalStateException
 import java.util.*
 import kotlin.properties.Delegates
 
-@ExperimentalCoroutinesApi
 class Timeline {
     private val queue = TimelineQueue()
     private val job = SupervisorJob()
@@ -47,39 +46,35 @@ class Timeline {
         if (action.startTime >= time) time = action.startTime else throw IllegalStateException()
         active++
         launch(action.job) {
-            action.run()
+            action()
             active--
         }
     }
 
-    suspend fun schedule(delay: Double = 0.0, action: suspend Event.() -> Unit) = Event(time + delay, action).also {
+    suspend fun wait(time: Double) {
+        suspendCancellableCoroutine<Unit> { cont ->
+            runBlocking {
+                schedule(time) {
+                    active++
+                    cont.resume(Unit) { active-- }
+                }
+            }
+            active--
+        }
+    }
+
+    suspend fun schedule(delay: Double = 0.0, action: suspend Timeline.() -> Unit) = Event(time + delay, action).also {
         queue += it
     }
 
     suspend fun unschedule(action: Event) = queue.remove(action)
 
-    @ExperimentalCoroutinesApi
-    inner class Event(val startTime: Double, private val action: suspend Event.() -> Unit) {
+    inner class Event(val startTime: Double, private val action: suspend Timeline.() -> Unit) {
         var job = Job(this@Timeline.job)
 
-        suspend fun run() {
+        suspend operator fun invoke() {
             action()
         }
-
-        suspend fun wait(time: Double) {
-            suspendCancellableCoroutine<Unit> { cont ->
-                runBlocking {
-                    schedule(time) {
-                        active++
-                        cont.resume(Unit) { active-- }
-                    }
-                }
-                active--
-            }
-        }
-
-        fun pauseTimeline() = pause()
-        fun endTimeline() = end()
 
         suspend fun cancel() {
             unschedule(this)

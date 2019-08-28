@@ -4,8 +4,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-@ExperimentalCoroutinesApi
-class Timer(val timeline: Timeline, val action: () -> Unit) {
+class Timer(private val timeline: Timeline, val action: () -> Unit) {
     private val lock = Mutex()
     var event: Timeline.Event? = null
     var running = false
