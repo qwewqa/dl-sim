@@ -46,3 +46,7 @@ class Timer(private val timeline: Timeline, val action: () -> Unit) {
 }
 
 fun Timeline.getTimer(action: () -> Unit) = Timer(this, action)
+suspend fun Timeline.getTimer(time: Double, action: () -> Unit) = getTimer(action).apply {
+    set(time)
+    start()
+}
