@@ -8,30 +8,88 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Timeout
 
 internal class TimelineTest {
-
     @Test
     @Timeout(1)
-    fun singleEvent() = runBlocking {
+    fun `Single event`() = runBlocking {
         val timeline = Timeline()
+        var ran = false
         timeline.schedule(10.0) {
-            assert(time == 10.0)
+            assertEquals(10.0, time)
+            ran = true
             end()
         }
         timeline.startAndJoin()
+        assertTrue(ran)
     }
 
     @Test
-    fun multipleEvents() = runBlocking {
-        var counter = 0
+    @Timeout(1)
+    fun `Multiple events`() = runBlocking {
+        var runs = 0
         Timeline().apply {
-            (10 downTo 0).forEach {
-                schedule(it.toDouble()) {
-                    assert(it.toDouble() == time)
-                    assert(counter == it)
-                    counter++
+            listOf(10.0, 20.0, 30.0).forEach {
+                schedule(it) {
+                    assertEquals(it, time)
+                    runs++
                 }
             }
-            schedule(11.0) { end() }
+            schedule(40.0) {
+                end()
+            }
         }.startAndJoin()
+        assertEquals(runs, 3)
+    }
+
+    @Test
+    @Timeout(1)
+    fun `Unordered events`() = runBlocking {
+        val times = listOf(40.0, 10.1, 10.0, 15.0, 20.0, 1234.0, 0.0)
+        val expected = times.sorted()
+        val results = mutableListOf<Double>()
+        Timeline().apply {
+            times.forEach {
+                schedule(it) {
+                    results.add(time)
+                }
+            }
+        }.startAndJoin()
+        assertEquals(expected, results) {
+            "Actions not ran in order"
+        }
+    }
+
+    @Test
+    fun `Wait`() = runBlocking {
+        var runs = 0
+        Timeline().apply {
+            schedule {
+                assertEquals(time, 0.0)
+                runs++
+                wait(10.0)
+                assertEquals(time, 10.0)
+                runs++
+            }
+        }.startAndJoin()
+        assertEquals(2, runs)
+    }
+
+    @Test
+    fun `Wait concurrency`() = runBlocking {
+        var runs = 0
+        Timeline().apply {
+            schedule {
+                assertEquals(time, 0.0)
+                runs++
+                wait(10.0)
+                assertEquals(time, 10.0)
+                runs++
+            }
+            schedule(5.0) {
+                assertEquals(runs, 1) { "First action did not start" }
+                assertEquals(time, 5.0)
+                runs++
+            }
+        }.startAndJoin()
+        assertEquals(3, runs)
     }
 }

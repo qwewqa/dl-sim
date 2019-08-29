@@ -27,11 +27,8 @@ class Timeline {
         active = active
     }
 
-    fun pause() {
-        running = false
-    }
-
     fun end() {
+        running = false
         job.cancel()
     }
 
@@ -42,7 +39,11 @@ class Timeline {
     }
 
     private fun run() = runBlocking {
-        val action = queue.next() ?: return@runBlocking
+        val action = queue.next()
+        if (action == null) {
+            end()
+            return@runBlocking
+        }
         if (action.startTime >= time) time = action.startTime else throw IllegalStateException()
         active++
         launch(action.job) {
