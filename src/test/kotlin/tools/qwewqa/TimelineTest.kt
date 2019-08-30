@@ -1,15 +1,12 @@
 package tools.qwewqa
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Timeout
 
 internal class TimelineTest {
     @Test
-    @Timeout(1)
     fun `Single event`() = runBlocking {
         val timeline = Timeline()
         var ran = false
@@ -23,7 +20,6 @@ internal class TimelineTest {
     }
 
     @Test
-    @Timeout(1)
     fun `Multiple events`() = runBlocking {
         var runs = 0
         Timeline().apply {
@@ -41,7 +37,6 @@ internal class TimelineTest {
     }
 
     @Test
-    @Timeout(1)
     fun `Unordered events`() = runBlocking {
         val times = listOf(40.0, 10.1, 10.0, 15.0, 20.0, 1234.0, 0.0)
         val expected = times.sorted()
@@ -59,7 +54,7 @@ internal class TimelineTest {
     }
 
     @Test
-    fun `Wait`() = runBlocking {
+    fun Wait() = runBlocking {
         var runs = 0
         Timeline().apply {
             schedule {

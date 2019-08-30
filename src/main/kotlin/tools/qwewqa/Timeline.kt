@@ -32,7 +32,6 @@ class Timeline {
         job.cancel()
     }
 
-    suspend fun join() = job.join()
     suspend fun startAndJoin() {
         start()
         job.join()
