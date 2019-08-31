@@ -50,12 +50,15 @@ class Adventurer(val stage: Stage) {
 }
 
 typealias Condition = Adventurer.() -> Boolean
-typealias Action = Adventurer.() -> Unit
+fun Adventurer.condition(condition: Condition) = condition
+
+typealias Action = suspend Adventurer.() -> Unit
+fun Adventurer.action(action: Action) = action
+
+infix fun Condition.and(condition: Condition): Condition = { this@and() && condition() }
 
 class Move(
     val name: String = "unnamed",
     val condition: Condition = { true },
     val action: Action
 )
-
-infix fun Condition.and(condition: Condition): Condition = { this@and() && condition() }

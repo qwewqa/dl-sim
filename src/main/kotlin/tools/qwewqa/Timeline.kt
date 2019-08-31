@@ -37,15 +37,15 @@ class Timeline {
         job.join()
     }
 
-    private fun run() = runBlocking {
+    private fun run() {
         val action = queue.next()
         if (action == null) {
             end()
-            return@runBlocking
+            return
         }
         if (action.startTime >= time) time = action.startTime else throw IllegalStateException()
         active++
-        launch(action.job) {
+        GlobalScope.launch(action.job) {
             action()
             active--
         }
@@ -63,11 +63,13 @@ class Timeline {
         }
     }
 
-    suspend fun schedule(delay: Double = 0.0, action: suspend Timeline.() -> Unit) = Event(time + delay, action).also {
+    fun schedule(delay: Double = 0.0, action: suspend Timeline.() -> Unit) = Event(time + delay, action).also {
         queue += it
     }
 
-    suspend fun unschedule(action: Event) = queue.remove(action)
+    fun unschedule(action: Event) {
+        queue.remove(action)
+    }
 
     inner class Event(val startTime: Double, private val action: suspend Timeline.() -> Unit) {
         var job = Job(this@Timeline.job)
@@ -76,7 +78,7 @@ class Timeline {
             action()
         }
 
-        suspend fun cancel() {
+        fun cancel() {
             unschedule(this)
             if (job.isActive) {
                 job.cancel()
@@ -85,21 +87,20 @@ class Timeline {
     }
 
     inner class TimelineQueue {
-        private val lock = Mutex()
         var size: Int = 0
             private set
 
         private var first: Node? = null
 
-        suspend operator fun plusAssign(item: Event) {
+        operator fun plusAssign(item: Event) {
             add(item)
         }
 
-        suspend operator fun minusAssign(item: Event) {
+        operator fun minusAssign(item: Event) {
             remove(item)
         }
 
-        suspend fun add(item: Event): Boolean = lock.withLock {
+        fun add(item: Event): Boolean {
             val node = Node(item)
             if (size == 0) {
                 first = node
@@ -131,7 +132,7 @@ class Timeline {
             }
         }
 
-        suspend fun remove(item: Event): Boolean = lock.withLock {
+        fun remove(item: Event): Boolean {
             if (size == 0) return false
 
             if (first!!.item === item) {
@@ -155,7 +156,7 @@ class Timeline {
             return false
         }
 
-        suspend fun next(): Event? = lock.withLock {
+        fun next(): Event? {
             return first?.also {
                 first = it.next
                 size--
@@ -186,16 +187,6 @@ class Timeline {
             fun remove() {
                 next?.last = last
                 last?.next = next
-            }
-        }
-
-        suspend fun toList() = lock.withLock {
-            LinkedList<Event>().apply {
-                var current = this@TimelineQueue.first
-                while (current != null) {
-                    this += current.item
-                    current = current.next
-                }
             }
         }
     }

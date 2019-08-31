@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.RepeatedTest
 
 internal class TimelineTest {
     @Test
@@ -86,5 +87,24 @@ internal class TimelineTest {
             }
         }.startAndJoin()
         assertEquals(3, runs)
+    }
+
+    @Test
+    fun `Scheduling within a scheduled action`() = runBlocking {
+        var runs = 0
+
+        Timeline().apply {
+            schedule {
+                runs++
+                schedule {
+                    assertEquals(0.0, time)
+                    assertEquals(1, runs)
+                    runs++
+                    end()
+                }
+            }
+        }.startAndJoin()
+
+        assertEquals(2, runs)
     }
 }
