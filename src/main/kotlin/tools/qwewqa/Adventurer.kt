@@ -5,7 +5,9 @@ import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.coroutineContext
 
 class Adventurer(val stage: Stage) {
-    val timeline = stage.timeline
+    suspend fun wait(time: Double) = stage.timeline.wait(time)
+    val time: Double get() { return stage.timeline.time }
+
     var current: Timeline.Event? = null
 
     /**
@@ -17,7 +19,7 @@ class Adventurer(val stage: Stage) {
      * Decides what moves to make
      * null is a noop
      */
-    var logic: Adventurer.() -> Move? = { null }
+    var logic: Adventurer.() -> Action? = { null }
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -25,12 +27,9 @@ class Adventurer(val stage: Stage) {
      * Otherwise is called at the end of an uncancelled move and at stage start
      */
     suspend fun think() {
-        logic()?.let { move ->
-            val condition = move.condition
-            val action = move.action
-            check(condition()) { "Trying to do ${move.name} while condition not satisfied" }
+        logic()?.let { action ->
             current?.cancel()
-            current = timeline.schedule {
+            current = stage.timeline.schedule {
                 action()
                 if (coroutineContext.isActive) {
                     think()
@@ -41,7 +40,7 @@ class Adventurer(val stage: Stage) {
 
     init {
         runBlocking {
-            current = timeline.schedule {
+            current = stage.timeline.schedule {
                 prerun()
                 think()
             }
@@ -56,9 +55,3 @@ typealias Action = suspend Adventurer.() -> Unit
 fun Adventurer.action(action: Action) = action
 
 infix fun Condition.and(condition: Condition): Condition = { this@and() && condition() }
-
-class Move(
-    val name: String = "unnamed",
-    val condition: Condition = { true },
-    val action: Action
-)

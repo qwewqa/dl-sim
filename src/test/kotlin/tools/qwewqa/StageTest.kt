@@ -10,11 +10,13 @@ internal class StageTest {
         stage {
             adventurer {
                 logic = {
-                    Move {
-                        assertEquals(0.0, timeline.time)
-                        run = true
-                        stage.end()
-                    }
+                    move {
+                        action = {
+                            assertEquals(0.0, timeline.time)
+                            run = true
+                            stage.end()
+                        }
+                    }()
                 }
             }
         }.run()
@@ -26,11 +28,15 @@ internal class StageTest {
         var runs = 0
         stage {
             adventurer {
-                logic = {
-                    Move {
+                val skill = move {
+                    condition = { time < 10.0 }
+                    action = {
                         runs++
-                        timeline.wait(1.0)
+                        wait(1.0)
                     }
+                }
+                logic = {
+                    skill()
                 }
             }
 
@@ -47,17 +53,19 @@ internal class StageTest {
         stage {
             adventurer {
                 prerun = {
-                    assertEquals(0.0, timeline.time)
+                    assertEquals(0.0, time)
                     assertEquals(0, runs)
                     runs++
                 }
                 logic = {
-                    Move {
-                        assertEquals(0.0, timeline.time)
-                        assertEquals(1, runs)
-                        runs++
-                        stage.end()
-                    }
+                    move {
+                        action = {
+                            assertEquals(0.0, time)
+                            assertEquals(1, runs)
+                            runs++
+                            stage.end()
+                        }
+                    }()
                 }
             }
         }.run()
