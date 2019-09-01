@@ -65,7 +65,7 @@ class Adventurer(val name: String, val stage: Stage) {
     }
 
     fun trueDamage(amount: Int, name: String) {
-        println("$time: $name damage $amount")
+        println("${"%.3f".format(time)}: $name damage $amount")
     }
 
     // TODO: Real formula
