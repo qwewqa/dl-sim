@@ -2,10 +2,12 @@ package tools.qwewqa.core
 
 import kotlinx.coroutines.*
 import java.lang.IllegalStateException
+import java.util.*
+import java.util.concurrent.PriorityBlockingQueue
 import kotlin.properties.Delegates
 
 class Timeline {
-    private val queue = TimelineQueue()
+    private val queue = PriorityBlockingQueue<Event>()
     private val job = SupervisorJob()
 
     private var active: Int by Delegates.observable(0) { _, _, newValue ->
@@ -35,7 +37,7 @@ class Timeline {
     }
 
     private fun run() {
-        val action = queue.next()
+        val action = queue.poll()
         if (action == null) {
             end()
             return
@@ -50,11 +52,9 @@ class Timeline {
 
     suspend fun wait(time: Double) {
         suspendCancellableCoroutine<Unit> { cont ->
-            runBlocking {
-                schedule(time) {
-                    active++
-                    cont.resume(Unit) { active-- }
-                }
+            schedule(time) {
+                active++
+                cont.resume(Unit) { active-- }
             }
             active--
         }
@@ -68,7 +68,7 @@ class Timeline {
         queue.remove(action)
     }
 
-    inner class Event(val startTime: Double, private val action: suspend Timeline.() -> Unit) {
+    inner class Event(val startTime: Double, private val action: suspend Timeline.() -> Unit) : Comparable<Event> {
         var job = Job(this@Timeline.job)
 
         suspend operator fun invoke() {
@@ -81,110 +81,7 @@ class Timeline {
                 job.cancel()
             }
         }
-    }
 
-    inner class TimelineQueue {
-        var size: Int = 0
-            private set
-
-        private var first: Node? = null
-
-        operator fun plusAssign(item: Event) {
-            add(item)
-        }
-
-        operator fun minusAssign(item: Event) {
-            remove(item)
-        }
-
-        fun add(item: Event): Boolean {
-            val node = Node(item)
-            if (size == 0) {
-                first = node
-                size++
-                return true
-            } else {
-                if (item.startTime < first!!.item.startTime) {
-                    first!!.addBefore(node)
-                    first = node
-                    size++
-                    return true
-                }
-
-                var current = first
-
-                while (current != null) {
-                    if (item.startTime >= current.item.startTime &&
-                        item.startTime < (current.next?.item?.startTime ?: Double.POSITIVE_INFINITY)
-                    ) {
-                        current += node
-                        size++
-                        return true
-                    }
-
-                    current = current.next
-                }
-
-                return false
-            }
-        }
-
-        fun remove(item: Event): Boolean {
-            if (size == 0) return false
-
-            if (first!!.item === item) {
-                size--
-                first!!.remove()
-                first = first!!.next
-                return true
-            }
-
-            var current = first
-
-            while (current != null) {
-                if (current.item === item) {
-                    current.remove()
-                    size--
-                    return true
-                }
-                current = current.next
-            }
-
-            return false
-        }
-
-        fun next(): Event? {
-            return first?.also {
-                first = it.next
-                size--
-            }?.item
-        }
-
-        private inner class Node(
-            var item: Event,
-            var next: Node? = null,
-            var last: Node? = null
-        ) {
-            operator fun plusAssign(node: Node) = addAfter(node)
-
-            fun addAfter(node: Node) {
-                node.next = next
-                node.last = this
-                next?.last = node
-                next = node
-            }
-
-            fun addBefore(node: Node) {
-                node.next = this
-                node.last = last
-                last?.next = node
-                last = node
-            }
-
-            fun remove() {
-                next?.last = last
-                last?.next = next
-            }
-        }
+        override fun compareTo(other: Event): Int = startTime.compareTo(other.startTime)
     }
 }

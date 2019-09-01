@@ -1,12 +1,13 @@
 package tools.qwewqa
 
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import tools.qwewqa.scripting.*
 
 internal class StageTest {
     @Test
-    fun `Simple Move`() {
+    fun `Simple Move`() = runBlocking {
         var run = false
         stage {
             adventurer {
@@ -25,7 +26,7 @@ internal class StageTest {
     }
 
     @Test
-    fun `Repeating move until time`() {
+    fun `Repeating move until time`() = runBlocking {
         var runs = 0
         stage {
             adventurer {
@@ -47,7 +48,7 @@ internal class StageTest {
     }
 
     @Test
-    fun Prerun() {
+    fun Prerun() = runBlocking {
         var runs = 0
         stage {
             adventurer {
@@ -72,7 +73,7 @@ internal class StageTest {
     }
 
     @Test
-    fun Triggers() {
+    fun Triggers() = runBlocking {
         var didFoo = false
         var didBar = false
         stage {
