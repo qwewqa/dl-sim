@@ -11,7 +11,7 @@ internal class StageTest {
             adventurer {
                 logic = {
                     move {
-                        action = {
+                        action {
                             assertEquals(0.0, timeline.time)
                             run = true
                             stage.end()
@@ -29,8 +29,8 @@ internal class StageTest {
         stage {
             adventurer {
                 val skill = move {
-                    condition = { time < 10.0 }
-                    action = {
+                    condition { time < 10.0 }
+                    action {
                         runs++
                         wait(1.0)
                     }
@@ -52,23 +52,57 @@ internal class StageTest {
         var runs = 0
         stage {
             adventurer {
-                prerun = {
+                prerun {
                     assertEquals(0.0, time)
                     assertEquals(0, runs)
                     runs++
                 }
-                logic = {
-                    move {
-                        action = {
-                            assertEquals(0.0, time)
-                            assertEquals(1, runs)
-                            runs++
-                            stage.end()
-                        }
-                    }()
+                logic {
+                    action {
+                        assertEquals(0.0, time)
+                        assertEquals(1, runs)
+                        runs++
+                        stage.end()
+                    }
                 }
             }
         }.run()
         assertEquals(2, runs)
+    }
+
+    @Test
+    fun Triggers() {
+        var didFoo = false
+        var didBar = false
+        stage {
+            adventurer {
+                val foo = move {
+                    condition {
+                        trigger == "idle"
+                    }
+                    action {
+                        assertEquals(false, didFoo)
+                        assertEquals(false, didBar)
+                        didFoo = true
+                        think("foo")
+                    }
+                }
+                val bar = move {
+                    condition {
+                        trigger == "foo"
+                    }
+                    action {
+                        assertEquals(true, didFoo)
+                        assertEquals(false, didBar)
+                        didBar = true
+                        end()
+                    }
+                }
+
+                logic { foo() ?: bar() }
+            }
+        }.run()
+        assertEquals(true, didFoo)
+        assertEquals(true, didBar)
     }
 }
