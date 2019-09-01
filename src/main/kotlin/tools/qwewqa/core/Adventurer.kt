@@ -1,8 +1,8 @@
 package tools.qwewqa.core
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.equips.Weapon
-import tools.qwewqa.equips.noWeapon
+import tools.qwewqa.weapontypes.WeaponType
+import tools.qwewqa.weapontypes.unknownWeapon
 import kotlin.coroutines.coroutineContext
 import kotlin.math.round
 
@@ -14,10 +14,9 @@ class Adventurer(val name: String, val stage: Stage) {
     var doing: String = "idle"
     var current: Timeline.Event? = null
 
-     var weapon: Weapon = noWeapon()
+     var weaponType: WeaponType = unknownWeapon()
         set(value) {
             field = value
-            s3 = value.skill
             combo = value.combo
             fs = value.fs
         }
