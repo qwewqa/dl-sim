@@ -1,4 +1,5 @@
-package tools.qwewqa
+package tools.qwewqa.core
+
 
 class Move(
     var name: String = "unnamed",

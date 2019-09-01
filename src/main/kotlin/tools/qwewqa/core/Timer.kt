@@ -1,6 +1,5 @@
-package tools.qwewqa
+package tools.qwewqa.core
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 

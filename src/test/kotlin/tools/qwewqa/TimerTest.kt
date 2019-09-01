@@ -3,6 +3,8 @@ package tools.qwewqa
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import tools.qwewqa.core.Timeline
+import tools.qwewqa.core.getTimer
 
 internal class TimerTest {
     @Test

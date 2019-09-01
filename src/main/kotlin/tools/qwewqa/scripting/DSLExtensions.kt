@@ -1,30 +1,21 @@
-package tools.qwewqa
+package tools.qwewqa.scripting
 
-@DslMarker
-annotation class StageDSLMarker
+import tools.qwewqa.core.*
 
-@StageDSLMarker
 fun stage(init: Stage.() -> Unit) = Stage().apply(init)
 
-@StageDSLMarker
 fun Stage.adventurer(name: String = "unnamed", init: Adventurer.() -> Unit) {
     val adventurer = Adventurer(name, this)
     adventurer.init()
     adventurers += adventurer
 }
 
-@StageDSLMarker
 fun move(init: Move.() -> Unit) = Move().apply { init() }
-@StageDSLMarker
 fun Move.action(action: Action) { this.action = action }
-@StageDSLMarker
 fun Move.condition(condition: Condition) { this.condition = condition }
 
-@StageDSLMarker
 fun Adventurer.logic(logic: Adventurer.(String) -> Action?) { this.logic = logic }
-@StageDSLMarker
 fun Adventurer.prerun(prerun: Action) { this.prerun = prerun }
-@StageDSLMarker
 fun Adventurer.action(action: Action) = action
 
 infix fun Condition.and(condition: Condition): Condition = { this@and() && condition() }

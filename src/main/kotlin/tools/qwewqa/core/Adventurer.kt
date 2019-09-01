@@ -1,7 +1,6 @@
-package tools.qwewqa
+package tools.qwewqa.core
 
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.coroutineContext
 import kotlin.math.round
 
@@ -10,7 +9,7 @@ class Adventurer(val name: String, val stage: Stage) {
     val time: Double get() { return stage.timeline.time }
     var trigger: String = "idle"
         private set
-
+    var doing: String = "idle"
     var current: Timeline.Event? = null
 
     /**
@@ -37,6 +36,7 @@ class Adventurer(val name: String, val stage: Stage) {
             current = stage.timeline.schedule {
                 action()
                 if (coroutineContext.isActive) {
+                    doing = "idle"
                     think()
                 }
             }
@@ -44,7 +44,7 @@ class Adventurer(val name: String, val stage: Stage) {
         }
     }
 
-    fun damage(mod: Double, skill: Boolean, fs: Boolean) {
+    fun damage(mod: Double, skill: Boolean = false, fs: Boolean = false) {
         trueDamage(damageFormula(mod, skill, fs))
     }
 
@@ -53,13 +53,14 @@ class Adventurer(val name: String, val stage: Stage) {
     }
 
     // TODO: Real formula
-    fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false): Int {
+    fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int {
         return round(mod * 100).toInt()
     }
 
     fun sp(amount: Int) {}
 
     operator fun Move.invoke() = if (this.condition(this@Adventurer)) this.action else null
+    suspend operator fun Action.invoke() = this(emptyMap())
 
     init {
         current = stage.timeline.schedule {
@@ -70,4 +71,4 @@ class Adventurer(val name: String, val stage: Stage) {
 }
 
 typealias Condition = Adventurer.() -> Boolean
-typealias Action = suspend Adventurer.() -> Unit
+typealias Action = suspend Adventurer.(Map<String, Any>) -> Unit

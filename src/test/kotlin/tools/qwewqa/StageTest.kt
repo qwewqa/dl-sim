@@ -2,6 +2,7 @@ package tools.qwewqa
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import tools.qwewqa.scripting.*
 
 internal class StageTest {
     @Test
@@ -9,14 +10,12 @@ internal class StageTest {
         var run = false
         stage {
             adventurer {
-                logic = {
-                    move {
-                        action {
-                            assertEquals(0.0, timeline.time)
-                            run = true
-                            stage.end()
-                        }
-                    }()
+                logic {
+                    action {
+                        assertEquals(0.0, timeline.time)
+                        run = true
+                        stage.end()
+                    }
                 }
             }
         }.run()
@@ -35,9 +34,7 @@ internal class StageTest {
                         wait(1.0)
                     }
                 }
-                logic = {
-                    skill()
-                }
+                logic = { skill() }
             }
 
             timeline.schedule(9.9) {
@@ -77,9 +74,7 @@ internal class StageTest {
         stage {
             adventurer {
                 val foo = move {
-                    condition {
-                        trigger == "idle"
-                    }
+                    condition { trigger == "idle" }
                     action {
                         assertEquals(false, didFoo)
                         assertEquals(false, didBar)
@@ -88,9 +83,7 @@ internal class StageTest {
                     }
                 }
                 val bar = move {
-                    condition {
-                        trigger == "foo"
-                    }
+                    condition { trigger == "foo" }
                     action {
                         assertEquals(true, didFoo)
                         assertEquals(false, didBar)
