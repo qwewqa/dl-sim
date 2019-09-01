@@ -11,10 +11,12 @@ internal class StageTest {
         stage {
             adventurer {
                 logic {
-                    action {
-                        assertEquals(0.0, timeline.time)
-                        run = true
-                        stage.end()
+                    move {
+                        action {
+                            assertEquals(0.0, timeline.time)
+                            run = true
+                            stage.end()
+                        }
                     }
                 }
             }
@@ -55,12 +57,14 @@ internal class StageTest {
                     runs++
                 }
                 logic {
-                    action {
-                        assertEquals(0.0, time)
-                        assertEquals(1, runs)
-                        runs++
-                        stage.end()
-                    }
+                    move {
+                        action {
+                            assertEquals(0.0, time)
+                            assertEquals(1, runs)
+                            runs++
+                            stage.end()
+                        }
+                    }()
                 }
             }
         }.run()

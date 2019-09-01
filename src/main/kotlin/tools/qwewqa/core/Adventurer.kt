@@ -1,6 +1,8 @@
 package tools.qwewqa.core
 
 import kotlinx.coroutines.isActive
+import tools.qwewqa.equips.Weapon
+import tools.qwewqa.equips.noWeapon
 import kotlin.coroutines.coroutineContext
 import kotlin.math.round
 
@@ -12,6 +14,20 @@ class Adventurer(val name: String, val stage: Stage) {
     var doing: String = "idle"
     var current: Timeline.Event? = null
 
+     var weapon: Weapon = noWeapon()
+        set(value) {
+            field = value
+            s3 = value.skill
+            combo = value.combo
+            fs = value.fs
+        }
+
+    var s1 = noMove()
+    var s2 = noMove()
+    var s3 = noMove()
+    var combo = noMove()
+    var fs = noMove()
+
     /**
      * Ran before everything else at the start of the stage run
      */
@@ -21,7 +37,7 @@ class Adventurer(val name: String, val stage: Stage) {
      * Decides what moves to make
      * null is a noop
      */
-    var logic: Adventurer.(String) -> Action? = { null }
+    var logic: Adventurer.(String) -> Move? = { null }
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -31,10 +47,10 @@ class Adventurer(val name: String, val stage: Stage) {
     suspend fun think(vararg triggers: String = arrayOf("idle")) {
         triggers.forEach { trigger ->
             this.trigger = trigger
-            val action = logic(trigger) ?: return@forEach
+            val move = logic(trigger) ?: return@forEach
             current?.cancel()
             current = stage.timeline.schedule {
-                action()
+                move.action()
                 if (coroutineContext.isActive) {
                     doing = "idle"
                     think()
@@ -44,12 +60,12 @@ class Adventurer(val name: String, val stage: Stage) {
         }
     }
 
-    fun damage(mod: Double, skill: Boolean = false, fs: Boolean = false) {
-        trueDamage(damageFormula(mod, skill, fs))
+    fun damage(mod: Double, name: String = doing, skill: Boolean = false, fs: Boolean = false) {
+        trueDamage(damageFormula(mod, skill, fs), name)
     }
 
-    fun trueDamage(amount: Int) {
-        println("$time: damage $amount")
+    fun trueDamage(amount: Int, name: String) {
+        println("$time: $name damage $amount")
     }
 
     // TODO: Real formula
@@ -59,15 +75,19 @@ class Adventurer(val name: String, val stage: Stage) {
 
     fun sp(amount: Int) {}
 
-    operator fun Move.invoke() = if (this.condition(this@Adventurer)) this.action else null
-    suspend operator fun Action.invoke() = this(emptyMap())
-
     init {
         current = stage.timeline.schedule {
             prerun()
             think()
         }
     }
+
+    // could be moved if syntax for multiple receivers is ever added
+    operator fun Move.invoke() = if (this.condition(this@Adventurer)) this else null
+    suspend operator fun Action.invoke() = this(emptyMap())
+    suspend operator fun Action.invoke(vararg params: Pair<String, Any>) = this(params.toMap())
+    operator fun Move?.rem(condition: Condition) = if (condition()) this?.invoke() else null
+    operator fun Move?.rem(condition: Boolean) = if (condition) this?.invoke() else null
 }
 
 typealias Condition = Adventurer.() -> Boolean

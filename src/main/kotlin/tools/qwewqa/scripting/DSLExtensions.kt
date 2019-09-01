@@ -14,7 +14,7 @@ fun move(init: Move.() -> Unit) = Move().apply { init() }
 fun Move.action(action: Action) { this.action = action }
 fun Move.condition(condition: Condition) { this.condition = condition }
 
-fun Adventurer.logic(logic: Adventurer.(String) -> Action?) { this.logic = logic }
+fun Adventurer.logic(logic: Adventurer.(String) -> Move?) { this.logic = logic }
 fun Adventurer.prerun(prerun: Action) { this.prerun = prerun }
 fun Adventurer.action(action: Action) = action
 
