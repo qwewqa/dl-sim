@@ -4,10 +4,8 @@ interface Selectable {
     val available: Boolean
 }
 
-class Selector<T : Selectable> {
+open class Selector<T : Selectable> {
     var value: T? = null
-
-    operator fun T?.invoke(condition: () -> Boolean) = if (condition()) this else null
 
     operator fun T?.unaryPlus() {
         if (value == null) {

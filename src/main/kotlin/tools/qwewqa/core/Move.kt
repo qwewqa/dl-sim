@@ -1,6 +1,7 @@
 package tools.qwewqa.core
 
 import tools.qwewqa.scripting.Selectable
+import tools.qwewqa.scripting.action
 import tools.qwewqa.scripting.condition
 import tools.qwewqa.scripting.move
 
@@ -18,14 +19,18 @@ class UnboundMove(
     override var action: Action = {}
 ) : Move
 
-class BoundMove(
+data class BoundMove(
     val adventurer: Adventurer,
-    override var name: String = "unnamed",
-    override var condition: Condition = { true },
-    override var action: Action = {}
+    override val name: String = "unnamed",
+    override val condition: Condition = { true },
+    override val action: Action = {},
+    val params: Map<String, Any> = emptyMap()
 ) : Move, Selectable {
     constructor(adventurer: Adventurer, move: Move) : this(adventurer, move.name, move.condition, move.action)
     override val available get() = adventurer.condition()
+    suspend fun execute() {
+        adventurer.action(params)
+    }
 }
 
 /**

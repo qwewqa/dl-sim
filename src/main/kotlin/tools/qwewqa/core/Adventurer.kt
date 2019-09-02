@@ -1,7 +1,6 @@
 package tools.qwewqa.core
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.scripting.move
 import tools.qwewqa.weapontypes.WeaponType
 import tools.qwewqa.weapontypes.genericDodge
 import kotlin.coroutines.coroutineContext
@@ -45,7 +44,7 @@ class Adventurer(val name: String, val stage: Stage) {
      * Decides what moves to make
      * null is a noop
      */
-    var logic: Adventurer.(String) -> Move? = { null }
+    var logic: Adventurer.(String) -> BoundMove? = { null }
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -59,7 +58,7 @@ class Adventurer(val name: String, val stage: Stage) {
             val move = logic(trigger) ?: return@forEach
             current?.cancel()
             current = stage.timeline.schedule {
-                move.action()
+                move.execute()
                 if (coroutineContext.isActive) {
                     doing = "idle"
                     think()
@@ -105,11 +104,8 @@ class Adventurer(val name: String, val stage: Stage) {
         }
     }
 
-    // could be moved if syntax for multiple receivers is ever added
     fun Move.bound() = BoundMove(this@Adventurer, this)
-
     suspend operator fun Action.invoke() = this(emptyMap())
-    suspend operator fun Action.invoke(vararg params: Pair<String, Any>) = this(params.toMap())
 }
 
 typealias Condition = Adventurer.() -> Boolean
