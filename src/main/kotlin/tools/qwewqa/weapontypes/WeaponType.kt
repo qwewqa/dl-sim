@@ -6,11 +6,12 @@ import tools.qwewqa.core.noMove
 import tools.qwewqa.scripting.*
 
 class WeaponType(
+    val name: String,
     val combo: Move,
     val fs: Move
 )
 
-fun unknownWeapon() = WeaponType(noMove(), noMove())
+fun unknownWeapon() = WeaponType("unknown", noMove(), noMove())
 
 fun forcestrike(action: Action) = move {
     name = "fs"

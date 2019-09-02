@@ -2,7 +2,6 @@ package tools.qwewqa.core
 
 import kotlinx.coroutines.*
 import java.lang.IllegalStateException
-import java.util.*
 import java.util.concurrent.PriorityBlockingQueue
 import kotlin.properties.Delegates
 
@@ -23,9 +22,12 @@ class Timeline {
 
     fun start() {
         running = true
-        active = active
+        if (active == 0) run()
     }
 
+    /**
+     * Stops running events and ends execution irreversibly
+     */
     fun end() {
         running = false
         job.cancel()
@@ -50,6 +52,11 @@ class Timeline {
         }
     }
 
+    /**
+     * Should only be called from within a timeline event
+     * Suspends the running coroutine and allows the next event to run
+     * Resumes after the given delay on this timeline
+     */
     suspend fun wait(time: Double) {
         suspendCancellableCoroutine<Unit> { cont ->
             schedule(time) {
@@ -60,6 +67,10 @@ class Timeline {
         }
     }
 
+    /**
+     * Schedules an action to be ran on the timeline.
+     * Returns an Event that can be canceled
+     */
     fun schedule(delay: Double = 0.0, action: suspend Timeline.() -> Unit) = Event(time + delay, action).also {
         queue += it
     }

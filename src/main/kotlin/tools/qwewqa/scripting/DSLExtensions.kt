@@ -10,15 +10,30 @@ fun Stage.adventurer(name: String = "unnamed", init: Adventurer.() -> Unit) {
     adventurers += adventurer
 }
 
-fun move(init: MutableMove.() -> Unit): Move = MutableMove().apply { init() }
-fun MutableMove.action(action: Action) { this.action = action }
-fun MutableMove.condition(condition: Condition) { this.condition = condition }
+fun Stage.endIn(time: Double) = timeline.schedule(time) { end() }
 
-fun Adventurer.logic(logic: Adventurer.(String) -> Move?) { this.logic = logic }
-fun Adventurer.prerun(prerun: Action) { this.prerun = prerun }
+fun move(init: UnboundMove.() -> Unit): Move = UnboundMove().apply { init() }
+fun UnboundMove.action(action: Action) {
+    this.action = action
+}
+
+fun UnboundMove.condition(condition: Condition) {
+    this.condition = condition
+}
+
+fun Adventurer.logic(logic: Adventurer.(String) -> Move?) {
+    this.logic = logic
+}
+
+fun Adventurer.prerun(prerun: Action) {
+    this.prerun = prerun
+}
+
 fun Adventurer.action(action: Action) = action
 
-infix fun Condition.and(condition: Condition): Condition = { this@and() && condition() }
+fun acl(init: Selector<BoundMove>.() -> Unit): BoundMove? = Selector<BoundMove>().apply(init).value
+
+operator fun Condition.plus(condition: Condition): Condition = { this@plus() && condition() }
 
 val Int.frames get() = this.toDouble() / 60.0
 val Int.percent get() = this.toDouble() / 100.0

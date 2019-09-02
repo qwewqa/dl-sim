@@ -1,7 +1,5 @@
 package tools.qwewqa.weapontypes
 
-import tools.qwewqa.core.Move
-import tools.qwewqa.core.noMove
 import tools.qwewqa.scripting.frames
 import tools.qwewqa.scripting.percent
 
@@ -10,7 +8,7 @@ private val fs = forcestrike {
     wait(30.frames)
     think("pre-fs")
     damage(92.percent, fs = true)
-    sp(200)
+    sp(200, true)
     think("fs", "fsc")
     wait(41.frames)
 }
@@ -60,6 +58,7 @@ private val combo = combo { params ->
 }
 
 val blade = WeaponType(
+    name = "blade",
     combo = combo,
     fs = fs
 )
