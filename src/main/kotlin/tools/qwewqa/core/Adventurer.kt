@@ -1,7 +1,9 @@
 package tools.qwewqa.core
 
 import kotlinx.coroutines.isActive
+import tools.qwewqa.scripting.move
 import tools.qwewqa.weapontypes.WeaponType
+import tools.qwewqa.weapontypes.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.round
 
@@ -32,6 +34,7 @@ class Adventurer(val name: String, val stage: Stage) {
     var s3: BoundMove? = null
     var combo: BoundMove? = null
     var fs: BoundMove? = null
+    var dodge: BoundMove? = genericDodge.bound()
 
     /**
      * Ran before everything else at the start of the stage run

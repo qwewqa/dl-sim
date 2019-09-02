@@ -13,6 +13,12 @@ class WeaponType(
 
 fun unknownWeapon() = WeaponType("unknown", noMove(), noMove())
 
+val genericDodge = move {
+    name = "dodge"
+    condition { doing in listOf("idle", "x1", "x2", "x3", "x4", "x5", "fs") }
+    action { wait(43.frames) }
+}
+
 fun forcestrike(action: Action) = move {
     name = "fs"
     condition { doing in listOf("idle", "x1", "x2", "x3", "x4", "x5") }

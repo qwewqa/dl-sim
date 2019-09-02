@@ -21,17 +21,15 @@ fun UnboundMove.condition(condition: Condition) {
     this.condition = condition
 }
 
-fun Adventurer.logic(logic: Adventurer.(String) -> Move?) {
-    this.logic = logic
-}
-
 fun Adventurer.prerun(prerun: Action) {
     this.prerun = prerun
 }
 
 fun Adventurer.action(action: Action) = action
 
-fun acl(init: Selector<BoundMove>.() -> Unit): BoundMove? = Selector<BoundMove>().apply(init).value
+fun Adventurer.acl(init: Selector<BoundMove>.() -> Unit) {
+    logic = { Selector<BoundMove>().apply(init).value }
+}
 
 operator fun Condition.plus(condition: Condition): Condition = { this@plus() && condition() }
 
