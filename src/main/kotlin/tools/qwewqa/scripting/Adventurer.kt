@@ -14,6 +14,9 @@ fun Adventurer.action(action: Action) = action
 class AclSelector : Selector<BoundMove>() {
     operator fun BoundMove?.invoke(condition: () -> Boolean) = if (condition()) this else null
     operator fun BoundMove?.invoke(vararg params: Pair<String, Any>) = this?.copy(params = params.toMap())
+
+    // you can't actually chain the above like `move(params) { conditions }` so this is used
+    operator fun BoundMove?.invoke(vararg params: Pair<String, Any>, condition: () -> Boolean) = this?.copy(params = params.toMap())?.invoke(condition)
     operator fun String.rem(other: Any) = Pair(this, other)
 }
 
