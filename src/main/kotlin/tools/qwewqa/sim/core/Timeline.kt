@@ -1,4 +1,4 @@
-package tools.qwewqa.core
+package tools.qwewqa.sim.core
 
 import kotlinx.coroutines.*
 import java.lang.IllegalStateException

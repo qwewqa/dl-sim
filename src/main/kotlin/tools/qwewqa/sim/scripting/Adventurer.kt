@@ -1,6 +1,6 @@
-package tools.qwewqa.scripting
+package tools.qwewqa.sim.scripting
 
-import tools.qwewqa.core.*
+import tools.qwewqa.sim.core.*
 
 fun Adventurer.prerun(prerun: Action) {
     this.prerun = prerun

@@ -1,8 +1,8 @@
-package tools.qwewqa.core
+package tools.qwewqa.sim.core
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.weapontypes.WeaponType
-import tools.qwewqa.weapontypes.genericDodge
+import tools.qwewqa.sim.weapontypes.WeaponType
+import tools.qwewqa.sim.weapontypes.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.round
 

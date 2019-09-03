@@ -1,4 +1,4 @@
-package tools.qwewqa.core
+package tools.qwewqa.sim.core
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

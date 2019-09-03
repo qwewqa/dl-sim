@@ -1,6 +1,4 @@
-package tools.qwewqa.core
-
-import kotlinx.coroutines.runBlocking
+package tools.qwewqa.sim.core
 
 class Stage {
     val timeline = Timeline()

@@ -1,9 +1,8 @@
-package tools.qwewqa.core
+package tools.qwewqa.sim.core
 
-import tools.qwewqa.scripting.Selectable
-import tools.qwewqa.scripting.action
-import tools.qwewqa.scripting.condition
-import tools.qwewqa.scripting.move
+import tools.qwewqa.sim.scripting.Selectable
+import tools.qwewqa.sim.scripting.condition
+import tools.qwewqa.sim.scripting.move
 
 // Using this to prevent accidental modification of a move
 // There probably is a better way to do this

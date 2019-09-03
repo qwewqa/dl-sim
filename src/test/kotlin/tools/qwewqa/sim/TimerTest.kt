@@ -1,10 +1,10 @@
-package tools.qwewqa
+package tools.qwewqa.sim
 
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import tools.qwewqa.core.Timeline
-import tools.qwewqa.core.getTimer
+import tools.qwewqa.sim.core.Timeline
+import tools.qwewqa.sim.core.getTimer
 
 internal class TimerTest {
     @Test

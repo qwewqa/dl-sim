@@ -1,9 +1,11 @@
-package tools.qwewqa
+package tools.qwewqa.sim
 
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import tools.qwewqa.scripting.*
+import tools.qwewqa.sim.scripting.*
+import tools.qwewqa.sim.weapontypes.blade
+import tools.qwewqa.sim.weapontypes.noWeapon
 
 internal class StageTest {
     @Test
@@ -11,8 +13,10 @@ internal class StageTest {
         var run = false
         stage {
             adventurer {
-                logic {
-                    move {
+                weaponType = noWeapon()
+
+                acl {
+                    +move {
                         action {
                             assertEquals(0.0, timeline.time)
                             run = true
@@ -30,6 +34,8 @@ internal class StageTest {
         var runs = 0
         stage {
             adventurer {
+                weaponType = noWeapon()
+
                 val skill = move {
                     condition { time < 10.0 }
                     action {
@@ -37,7 +43,7 @@ internal class StageTest {
                         wait(1.0)
                     }
                 }
-                logic = { skill() }
+                logic = { skill }
             }
 
             timeline.schedule(9.9) {
@@ -52,20 +58,22 @@ internal class StageTest {
         var runs = 0
         stage {
             adventurer {
+                weaponType = noWeapon()
+
                 prerun {
                     assertEquals(0.0, time)
                     assertEquals(0, runs)
                     runs++
                 }
-                logic {
-                    move {
+                acl {
+                    +move {
                         action {
                             assertEquals(0.0, time)
                             assertEquals(1, runs)
                             runs++
                             stage.end()
                         }
-                    }()
+                    }
                 }
             }
         }.run()
@@ -78,6 +86,8 @@ internal class StageTest {
         var didBar = false
         stage {
             adventurer {
+                weaponType = noWeapon()
+
                 val foo = move {
                     condition { trigger == "idle" }
                     action {
@@ -97,7 +107,10 @@ internal class StageTest {
                     }
                 }
 
-                logic { foo() ?: bar() }
+                acl {
+                    +foo
+                    +bar
+                }
             }
         }.run()
         assertEquals(true, didFoo)

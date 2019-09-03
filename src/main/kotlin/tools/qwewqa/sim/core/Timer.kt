@@ -1,4 +1,4 @@
-package tools.qwewqa.core
+package tools.qwewqa.sim.core
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

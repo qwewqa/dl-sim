@@ -1,11 +1,10 @@
-package tools.qwewqa
+package tools.qwewqa.sim
 
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.RepeatedTest
-import tools.qwewqa.core.Timeline
+import tools.qwewqa.sim.core.Timeline
 
 internal class TimelineTest {
     @Test

@@ -1,9 +1,9 @@
-package tools.qwewqa.weapontypes
+package tools.qwewqa.sim.weapontypes
 
-import tools.qwewqa.core.Action
-import tools.qwewqa.core.Move
-import tools.qwewqa.core.noMove
-import tools.qwewqa.scripting.*
+import tools.qwewqa.sim.core.Action
+import tools.qwewqa.sim.core.Move
+import tools.qwewqa.sim.core.noMove
+import tools.qwewqa.sim.scripting.*
 
 class WeaponType(
     val name: String,
@@ -11,7 +11,7 @@ class WeaponType(
     val fs: Move
 )
 
-fun unknownWeapon() = WeaponType("unknown", noMove(), noMove())
+fun noWeapon() = WeaponType("unknown", noMove(), noMove())
 
 val genericDodge = move {
     name = "dodge"
