@@ -1,9 +1,6 @@
 package tools.qwewqa.scripting
 
-import tools.qwewqa.core.Action
-import tools.qwewqa.core.Adventurer
-import tools.qwewqa.core.BoundMove
-import tools.qwewqa.core.Condition
+import tools.qwewqa.core.*
 
 fun Adventurer.prerun(prerun: Action) {
     this.prerun = prerun
@@ -36,6 +33,14 @@ class AclSelector(val adventurer: Adventurer) : Selector<BoundMove>() {
 
 fun Adventurer.acl(init: AclSelector.() -> Unit) {
     logic = { AclSelector(this).apply(init).value }
+}
+
+fun Adventurer.listener(vararg events: String, listener: Listener) {
+    events.forEach { listeners[it].add(listener) }
+}
+
+fun Adventurer.listenAll(listener: Listener) {
+    listeners.globalListeners += listener
 }
 
 operator fun Condition.plus(condition: Condition): Condition = { this@plus() && condition() }

@@ -12,10 +12,16 @@ class Adventurer(val name: String, val stage: Stage) {
 
     suspend fun schedule(time: Double, action: () -> Unit) = stage.timeline.schedule(time) { action() }
 
+    /**
+     * Listeners are called with the trigger before [logic]
+     */
+    val listeners = ListenerMap()
+
     val time: Double
         get() {
             return stage.timeline.time
         }
+
     var trigger: String = "idle"
         private set
     var doing: String = "idle"
@@ -55,6 +61,7 @@ class Adventurer(val name: String, val stage: Stage) {
     suspend fun think(vararg triggers: String = arrayOf("idle")) {
         triggers.forEach { trigger ->
             this.trigger = trigger
+            listeners.raise(trigger)
             val move = logic(trigger) ?: return@forEach
             current?.cancel()
             current = stage.timeline.schedule {
