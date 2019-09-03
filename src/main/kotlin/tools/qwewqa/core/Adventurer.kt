@@ -12,10 +12,13 @@ class Adventurer(val name: String, val stage: Stage) {
 
     suspend fun schedule(time: Double, action: () -> Unit) = stage.timeline.schedule(time) { action() }
 
+
     /**
-     * Listeners are called with the trigger before [logic]
+     * Listeners are called with the trigger before [logic] and by observable properties
      */
     val listeners = ListenerMap()
+
+    var combo: Int by listeners.observable(0, "combo")
 
     val time: Double
         get() {
@@ -30,14 +33,14 @@ class Adventurer(val name: String, val stage: Stage) {
     var weaponType: WeaponType? = null
         set(value) {
             field = value
-            combo = value?.combo?.bound()
+            auto = value?.combo?.bound()
             fs = value?.fs?.bound()
         }
 
     var s1: BoundMove? = null
     var s2: BoundMove? = null
     var s3: BoundMove? = null
-    var combo: BoundMove? = null
+    var auto: BoundMove? = null
     var fs: BoundMove? = null
     var dodge: BoundMove? = genericDodge.bound()
 
@@ -59,9 +62,9 @@ class Adventurer(val name: String, val stage: Stage) {
      * Otherwise is called at the end of an uncancelled move and at stage start
      */
     suspend fun think(vararg triggers: String = arrayOf("idle")) {
+        triggers.forEach { listeners.raise(it) }
         triggers.forEach { trigger ->
             this.trigger = trigger
-            listeners.raise(trigger)
             val move = logic(trigger) ?: return@forEach
             current?.cancel()
             current = stage.timeline.schedule {
@@ -87,6 +90,7 @@ class Adventurer(val name: String, val stage: Stage) {
      */
     fun trueDamage(amount: Int, name: String) {
         println("${"%.3f".format(time)}: [${this@Adventurer.name}] $name damage $amount")
+        combo++
     }
 
     // TODO: Real formula

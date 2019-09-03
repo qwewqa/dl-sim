@@ -35,7 +35,7 @@ fun Adventurer.acl(init: AclSelector.() -> Unit) {
     logic = { AclSelector(this).apply(init).value }
 }
 
-fun Adventurer.listener(vararg events: String, listener: Listener) {
+fun Adventurer.listen(vararg events: String, listener: Listener) {
     events.forEach { listeners[it].add(listener) }
 }
 
