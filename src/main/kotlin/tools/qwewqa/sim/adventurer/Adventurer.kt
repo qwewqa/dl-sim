@@ -1,17 +1,21 @@
-package tools.qwewqa.sim.core
+package tools.qwewqa.sim.adventurer
 
 import kotlinx.coroutines.isActive
+import tools.qwewqa.sim.core.ListenerMap
+import tools.qwewqa.sim.core.Timeline
+import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.weapontypes.WeaponType
 import tools.qwewqa.sim.weapontypes.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.round
 
 class Adventurer(val name: String, val stage: Stage) {
+    val timeline = stage.timeline
+
     // this will eventually have atk speed applied to it
-    suspend fun wait(time: Double) = stage.timeline.wait(time)
+    suspend fun wait(time: Double) = timeline.wait(time)
 
-    suspend fun schedule(time: Double, action: () -> Unit) = stage.timeline.schedule(time) { action() }
-
+    fun schedule(time: Double, action: () -> Unit) = timeline.schedule(time) { action() }
 
     /**
      * Listeners are called with the trigger before [logic] and by observable properties
@@ -19,6 +23,7 @@ class Adventurer(val name: String, val stage: Stage) {
     val listeners = ListenerMap()
 
     var combo: Int by listeners.observable(0, "combo")
+    val hud = timeline.getCooldown(1.9) { think("ui") }
 
     val time: Double
         get() {

@@ -1,4 +1,4 @@
-package tools.qwewqa.sim.core
+package tools.qwewqa.sim.adventurer
 
 interface Stat
 
