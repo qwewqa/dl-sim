@@ -1,6 +1,10 @@
 package tools.qwewqa.sim.scripting
 
 import tools.qwewqa.sim.core.*
+import tools.qwewqa.sim.adventurer.Action
+import tools.qwewqa.sim.adventurer.Adventurer
+import tools.qwewqa.sim.adventurer.BoundMove
+import tools.qwewqa.sim.adventurer.Condition
 
 fun Adventurer.prerun(prerun: Action) {
     this.prerun = prerun
