@@ -1,6 +1,7 @@
 package tools.qwewqa.sim.weapontypes
 
 import tools.qwewqa.sim.adventurer.Action
+import tools.qwewqa.sim.adventurer.Adventurer
 import tools.qwewqa.sim.adventurer.UnboundMove
 import tools.qwewqa.sim.adventurer.noMove
 import tools.qwewqa.sim.scripting.*
@@ -29,4 +30,9 @@ fun combo(action: Action) = move {
     name = "combo"
     condition { doing == "idle" }
     this.action = action
+}
+
+suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0) = hit(name) {
+    damage(mod)
+    sp(sp)
 }

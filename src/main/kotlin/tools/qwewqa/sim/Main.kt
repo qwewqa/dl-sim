@@ -28,9 +28,9 @@ fun main() = runBlocking {
             }.bound()
 
             acl {
-                +s1 { seq == 5 }
-                +s2 { seq == 5 }
-                +s3 { seq == 5 }
+                +s1 { +"x5" }
+                +s2 { +"x5" }
+                +s3 { +"x5" }
             }
         }
 

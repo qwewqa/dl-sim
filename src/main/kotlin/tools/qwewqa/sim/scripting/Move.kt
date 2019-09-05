@@ -17,6 +17,12 @@ fun UnboundMove.onBound(action: Adventurer.() -> Unit) {
     this.onBound = action
 }
 
+suspend fun Adventurer.hit(name: String, action: Action) {
+    think("pre-$name")
+    action(emptyMap()) // kinda inelegant though where relevant you can get params from the outer receiver
+    think(name)
+}
+
 fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Action) = move {
     this@move.name = name
     condition { sp.ready(name) && ui.available }
