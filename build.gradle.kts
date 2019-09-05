@@ -1,10 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("com.github.johnrengelman.shadow") version "5.1.0"
     kotlin("jvm") version "1.3.50"
+    application
 }
 
-group = "tools.qwewqa"
+application {
+    mainClassName = "tools.qwewqa.sim.MainKt"
+}
+
+group = "tools.qwewqa.sim"
 version = "1.0-SNAPSHOT"
 
 repositories {
