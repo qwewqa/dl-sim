@@ -6,7 +6,7 @@ import tools.qwewqa.sim.adventurer.Adventurer
 import tools.qwewqa.sim.adventurer.BoundMove
 import tools.qwewqa.sim.adventurer.Condition
 
-fun Adventurer.prerun(prerun: Action) {
+fun Adventurer.prerun(prerun: Adventurer.() -> Unit) {
     this.prerun = prerun
 }
 
@@ -21,7 +21,7 @@ class AclSelector(val adventurer: Adventurer) : Selector<BoundMove>() {
 
     operator fun String.rem(other: Any) = Pair(this, other)
 
-    val seq = when (adventurer.doing) {
+    val seq = when (adventurer.trigger) {
         "idle" -> 0
         "x1" -> 1
         "x2" -> 2
@@ -35,8 +35,11 @@ class AclSelector(val adventurer: Adventurer) : Selector<BoundMove>() {
     operator fun String.unaryMinus() = !+this
 }
 
-fun Adventurer.acl(init: AclSelector.() -> Unit) {
-    logic = { AclSelector(this).apply(init).value }
+fun Adventurer.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
+    logic = { AclSelector(this).apply {
+            init()
+        if (implicitX) +x
+        }.value }
 }
 
 fun Adventurer.listen(vararg events: String, listener: Listener) {

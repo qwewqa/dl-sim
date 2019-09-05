@@ -6,6 +6,7 @@ import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.weapontypes.WeaponType
 import tools.qwewqa.sim.weapontypes.genericDodge
+import java.lang.IllegalArgumentException
 import kotlin.coroutines.coroutineContext
 import kotlin.math.round
 
@@ -23,7 +24,8 @@ class Adventurer(val name: String, val stage: Stage) {
     val listeners = ListenerMap()
 
     var combo: Int by listeners.observable(0, "combo")
-    val hud = timeline.getCooldown(1.9) { think("ui") }
+    val ui = timeline.getCooldown(1.9) { think("ui") }
+    val sp = SP()
 
     val time: Double
         get() {
@@ -38,21 +40,21 @@ class Adventurer(val name: String, val stage: Stage) {
     var weaponType: WeaponType? = null
         set(value) {
             field = value
-            auto = value?.combo?.bound()
+            x = value?.combo?.bound()
             fs = value?.fs?.bound()
         }
 
     var s1: BoundMove? = null
     var s2: BoundMove? = null
     var s3: BoundMove? = null
-    var auto: BoundMove? = null
+    var x: BoundMove? = null
     var fs: BoundMove? = null
     var dodge: BoundMove? = genericDodge.bound()
 
     /**
      * Ran before everything else at the start of the stage run
      */
-    var prerun: Action = {}
+    var prerun: Adventurer.() -> Unit = {}
 
     /**
      * Decides what moves to make
@@ -103,10 +105,6 @@ class Adventurer(val name: String, val stage: Stage) {
         return round(mod * 100).toInt()
     }
 
-    /**
-     * Increases the sp accounting for haste on all skills
-     */
-    fun sp(amount: Int, fs: Boolean = false) {}
 
     private fun prerunChecks() {
         check(weaponType != null) { "no weapon type specified" }
@@ -120,8 +118,49 @@ class Adventurer(val name: String, val stage: Stage) {
         }
     }
 
-    fun Move.bound() = BoundMove(this@Adventurer, this)
-    suspend operator fun Action.invoke() = this(emptyMap())
+    fun UnboundMove.bound(): BoundMove = this.bound(this@Adventurer)
+
+    inner class SP {
+        private val charges = mutableMapOf<String, Int>()
+        private val maximums = mutableMapOf<String, Int>()
+
+        /**
+         * Increases the sp accounting for haste on all skills
+         * TODO: Actually include haste
+         */
+        operator fun invoke(amount: Int, fs: Boolean = false) {
+            charge(amount)
+        }
+
+        operator fun get(name: String) = charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")
+
+        fun ready(name: String) = (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= maximums[name]!!
+
+        fun charge(amount: Int) {
+            charges.keys.forEach {
+                charge(amount, it)
+            }
+        }
+
+        fun charge(amount: Int, name: String) {
+            require(charges[name] != null) { "Unknown skill [$name]" }
+            if (charges[name] == maximums[name]) return
+            charges[name] = charges[name]!! + amount
+            if (charges[name]!! >= maximums[name]!!) {
+                charges[name] = maximums[name]!!
+                listeners.raise("$name-charged")
+            }
+        }
+
+        fun use(name: String) {
+            charges[name] = 0
+        }
+
+        fun register(name: String, max: Int) {
+            charges[name] = 0
+            maximums[name] = max
+        }
+    }
 }
 
 typealias Condition = Adventurer.() -> Boolean

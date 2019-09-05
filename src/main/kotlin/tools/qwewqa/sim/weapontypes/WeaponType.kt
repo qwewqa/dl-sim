@@ -1,14 +1,14 @@
 package tools.qwewqa.sim.weapontypes
 
 import tools.qwewqa.sim.adventurer.Action
-import tools.qwewqa.sim.adventurer.Move
+import tools.qwewqa.sim.adventurer.UnboundMove
 import tools.qwewqa.sim.adventurer.noMove
 import tools.qwewqa.sim.scripting.*
 
 class WeaponType(
     val name: String,
-    val combo: Move,
-    val fs: Move
+    val combo: UnboundMove,
+    val fs: UnboundMove
 )
 
 fun noWeapon() = WeaponType("unknown", noMove(), noMove())

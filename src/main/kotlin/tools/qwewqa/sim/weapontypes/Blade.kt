@@ -35,6 +35,7 @@ private val combo = combo { params ->
     think("pre-x3")
     think("pre-x3a")
     damage(63.percent, "x3a")
+    sp(220)
     think("x3a")
     wait(6.frames)
     think("pre-x3b")

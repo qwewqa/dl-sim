@@ -2,13 +2,18 @@ package tools.qwewqa.sim.core
 
 import kotlinx.coroutines.*
 import java.lang.IllegalStateException
+import java.util.*
 import java.util.concurrent.PriorityBlockingQueue
 import kotlin.properties.Delegates
 
 class Timeline {
-    private val queue = PriorityBlockingQueue<Event>()
+    private val queue = PriorityQueue<Event>()
     private val job = SupervisorJob()
 
+    /*
+    The reason this isn't a boolean and equivalent to running is so wait can work.
+    Nothing should actually be running in parallel apart from that.
+     */
     private var active: Int by Delegates.observable(0) { _, _, newValue ->
         check(newValue >= 0) { "Active count negative" }
         if (newValue == 0 && running) run()
