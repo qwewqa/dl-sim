@@ -1,4 +1,4 @@
-package tools.qwewqa.sim.adventurer
+package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.scripting.Selectable
 import tools.qwewqa.sim.scripting.condition

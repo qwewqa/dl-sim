@@ -1,7 +1,7 @@
 package tools.qwewqa.sim.scripting
 
-import tools.qwewqa.sim.adventurer.Adventurer
-import tools.qwewqa.sim.adventurer.Stage
+import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.Stage
 
 fun stage(init: Stage.() -> Unit) = Stage().apply(init)
 

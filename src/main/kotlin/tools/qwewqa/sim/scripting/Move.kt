@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.scripting
 
-import tools.qwewqa.sim.adventurer.*
+import tools.qwewqa.sim.stage.*
 
 fun move(init: UnboundMove.() -> Unit): UnboundMove = UnboundMove().apply { init() }
 fun Adventurer.move(init: UnboundMove.() -> Unit): BoundMove = UnboundMove().apply { init() }.bound(this)

@@ -1,9 +1,9 @@
 package tools.qwewqa.sim.weapontypes
 
-import tools.qwewqa.sim.adventurer.Action
-import tools.qwewqa.sim.adventurer.Adventurer
-import tools.qwewqa.sim.adventurer.UnboundMove
-import tools.qwewqa.sim.adventurer.noMove
+import tools.qwewqa.sim.stage.Action
+import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.UnboundMove
+import tools.qwewqa.sim.stage.noMove
 import tools.qwewqa.sim.scripting.*
 
 class WeaponType(

@@ -1,6 +1,5 @@
-package tools.qwewqa.sim.adventurer
+package tools.qwewqa.sim.stage
 
-interface Stat
 
 interface Statbuff {
     val stat: String

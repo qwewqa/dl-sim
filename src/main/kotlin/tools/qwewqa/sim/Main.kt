@@ -3,11 +3,16 @@ package tools.qwewqa.sim
 import kotlinx.coroutines.runBlocking
 import tools.qwewqa.sim.scripting.*
 import tools.qwewqa.sim.weapontypes.blade
-import kotlin.system.measureTimeMillis
+import kotlin.math.floor
 
 fun main() = runBlocking {
     stage {
         adventurer("Aoi") {
+            str = 1881
+            stats["crit-rate"].base = 2.percent
+            stats["crit-dmg"].base = 70.percent
+            stats["str"].passive += 73.percent
+            stats["str"].coability += 10.percent
             weaponType = blade
 
             s1(2630) {
@@ -16,7 +21,7 @@ fun main() = runBlocking {
             }
 
             s2(5280) {
-                damage(711.percent)
+                damage(790.percent)
                 wait(1.85)
             }
 

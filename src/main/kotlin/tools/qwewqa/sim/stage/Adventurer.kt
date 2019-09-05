@@ -1,17 +1,20 @@
-package tools.qwewqa.sim.adventurer
+package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
+import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.weapontypes.WeaponType
 import tools.qwewqa.sim.weapontypes.genericDodge
 import java.lang.IllegalArgumentException
 import kotlin.coroutines.coroutineContext
+import kotlin.math.floor
 import kotlin.math.round
 
 class Adventurer(val name: String, val stage: Stage) {
     val timeline = stage.timeline
+    val enemy = stage.enemy
 
     // this will eventually have atk speed applied to it
     suspend fun wait(time: Double) = timeline.wait(time)
@@ -23,9 +26,18 @@ class Adventurer(val name: String, val stage: Stage) {
      */
     val listeners = ListenerMap()
 
+    var str: Int = 0
+        set(value) {
+            stats["str"].base -= field
+            stats["str"].base += value
+            field = value
+
+        }
     var combo: Int by listeners.observable(0, "combo")
+    var hp: Double by listeners.observable(1.0, "hp")
     val ui = timeline.getCooldown(1.9) { think("ui") }
     val sp = SP()
+    val stats = StatMap()
 
     val time: Double
         get() {
@@ -88,7 +100,12 @@ class Adventurer(val name: String, val stage: Stage) {
     /**
      * Applies damage based on damage formula accounting for all passives, buffs, etc.
      */
-    fun damage(mod: Double, name: String = doing, skill: Boolean = false, fs: Boolean = false) {
+    fun damage(
+        mod: Double,
+        name: String = doing,
+        skill: Boolean = doing in listOf("s1", "s2", "s3", "ds"),
+        fs: Boolean = doing in listOf("fs")
+    ) {
         trueDamage(damageFormula(mod, skill, fs), name)
     }
 
@@ -100,11 +117,13 @@ class Adventurer(val name: String, val stage: Stage) {
         combo++
     }
 
-    // TODO: Real formula
-    fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int {
-        return round(mod * 100).toInt()
-    }
-
+    // TODO: Rest of formula; move element out?
+    fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
+        floor(
+            1.5 * 5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
+                    (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
+                    if(skill) stats[SKILL].value else 1.0
+        ).toInt()
 
     private fun prerunChecks() {
         check(weaponType != null) { "no weapon type specified" }
@@ -134,7 +153,8 @@ class Adventurer(val name: String, val stage: Stage) {
 
         operator fun get(name: String) = charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")
 
-        fun ready(name: String) = (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= maximums[name]!!
+        fun ready(name: String) =
+            (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= maximums[name]!!
 
         fun charge(amount: Int) {
             charges.keys.forEach {
