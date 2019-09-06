@@ -5,7 +5,7 @@ import tools.qwewqa.sim.core.Timeline
 class Stage {
     val timeline = Timeline()
     val adventurers = mutableListOf<Adventurer>()
-    var enemy = defaultEnemy()
+    var target = defaultEnemy()
 
     suspend fun run() = timeline.startAndJoin()
     fun end() = timeline.end()

@@ -1,6 +1,7 @@
 package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
+import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
@@ -10,11 +11,10 @@ import tools.qwewqa.sim.weapontypes.genericDodge
 import java.lang.IllegalArgumentException
 import kotlin.coroutines.coroutineContext
 import kotlin.math.floor
-import kotlin.math.round
 
-class Adventurer(val name: String, val stage: Stage) {
-    val timeline = stage.timeline
-    val enemy = stage.enemy
+class Adventurer(val name: String, val stage: Stage) : Listenable {
+    val timeline get() = stage.timeline
+    val target get() = stage.target
 
     // this will eventually have atk speed applied to it
     suspend fun wait(time: Double) = timeline.wait(time)
@@ -24,7 +24,7 @@ class Adventurer(val name: String, val stage: Stage) {
     /**
      * Listeners are called with the trigger before [logic] and by observable properties
      */
-    val listeners = ListenerMap()
+    override val listeners = ListenerMap()
 
     var str: Int = 0
         set(value) {
@@ -114,13 +114,14 @@ class Adventurer(val name: String, val stage: Stage) {
      */
     fun trueDamage(amount: Int, name: String) {
         println("${"%.3f".format(time)}: [${this@Adventurer.name}] $name damage $amount")
+        target.damage(amount)
         combo++
     }
 
     // TODO: Rest of formula; move element out?
     fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
         floor(
-            1.5 * 5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
+            1.5 * 5.0 / 3.0 * mod * stats[STR].value / (target.stats[DEF].value) *
                     (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
                     if(skill) stats[SKILL].value else 1.0
         ).toInt()

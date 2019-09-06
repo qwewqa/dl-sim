@@ -42,12 +42,4 @@ fun Adventurer.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
         }.value }
 }
 
-fun Adventurer.listen(vararg events: String, listener: Listener) {
-    events.forEach { listeners[it].add(listener) }
-}
-
-fun Adventurer.listenAll(listener: Listener) {
-    listeners.globalListeners += listener
-}
-
 operator fun Condition.plus(condition: Condition): Condition = { this@plus() && condition() }

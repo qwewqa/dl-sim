@@ -26,3 +26,17 @@ class ListenerMap(val map: MutableMap<String, MutableList<Listener>> = mutableMa
         }
     }
 }
+
+interface Listenable {
+    val listeners: ListenerMap
+}
+
+
+
+fun Listenable.listen(vararg events: String, listener: Listener) {
+    events.forEach { listeners[it].add(listener) }
+}
+
+fun Listenable.listenAll(listener: Listener) {
+    listeners.globalListeners += listener
+}

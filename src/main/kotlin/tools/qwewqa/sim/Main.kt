@@ -1,6 +1,7 @@
 package tools.qwewqa.sim
 
 import kotlinx.coroutines.runBlocking
+import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.scripting.*
 import tools.qwewqa.sim.weapontypes.blade
 import kotlin.math.floor
@@ -39,6 +40,15 @@ fun main() = runBlocking {
             }
         }
 
-        endIn(120.0)
+        enemy {
+            def = 10.0
+
+            listen("dmg") {
+                if (totalDamage >= 500_000) {
+                    println("${"%.3f".format(totalDamage / timeline.time)} dps")
+                    end()
+                }
+            }
+        }
     }.run()
 }
