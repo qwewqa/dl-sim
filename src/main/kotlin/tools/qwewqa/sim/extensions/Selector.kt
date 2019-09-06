@@ -1,4 +1,4 @@
-package tools.qwewqa.sim.scripting
+package tools.qwewqa.sim.extensions
 
 interface Selectable {
     val available: Boolean

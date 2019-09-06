@@ -1,8 +1,8 @@
 package tools.qwewqa.sim.weapontypes
 
-import tools.qwewqa.sim.scripting.frames
-import tools.qwewqa.sim.scripting.hit
-import tools.qwewqa.sim.scripting.percent
+import tools.qwewqa.sim.extensions.frames
+import tools.qwewqa.sim.extensions.hit
+import tools.qwewqa.sim.extensions.percent
 
 private val fs = forcestrike {
     doing = "fs"

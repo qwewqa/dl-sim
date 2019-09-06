@@ -1,8 +1,8 @@
 package tools.qwewqa.sim.stage
 
-import tools.qwewqa.sim.scripting.Selectable
-import tools.qwewqa.sim.scripting.condition
-import tools.qwewqa.sim.scripting.move
+import tools.qwewqa.sim.extensions.Selectable
+import tools.qwewqa.sim.extensions.condition
+import tools.qwewqa.sim.extensions.move
 
 class UnboundMove(
     var name: String = "unnamed",

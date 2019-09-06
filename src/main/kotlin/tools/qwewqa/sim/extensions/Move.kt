@@ -1,4 +1,4 @@
-package tools.qwewqa.sim.scripting
+package tools.qwewqa.sim.extensions
 
 import tools.qwewqa.sim.stage.*
 

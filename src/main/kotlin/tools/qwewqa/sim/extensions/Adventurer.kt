@@ -1,6 +1,5 @@
-package tools.qwewqa.sim.scripting
+package tools.qwewqa.sim.extensions
 
-import tools.qwewqa.sim.core.*
 import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.BoundMove

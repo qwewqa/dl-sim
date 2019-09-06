@@ -4,7 +4,7 @@ import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.UnboundMove
 import tools.qwewqa.sim.stage.noMove
-import tools.qwewqa.sim.scripting.*
+import tools.qwewqa.sim.extensions.*
 
 class WeaponType(
     val name: String,

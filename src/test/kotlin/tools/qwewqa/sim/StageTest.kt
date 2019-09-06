@@ -3,8 +3,7 @@ package tools.qwewqa.sim
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import tools.qwewqa.sim.scripting.*
-import tools.qwewqa.sim.weapontypes.blade
+import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.weapontypes.noWeapon
 
 internal class StageTest {
@@ -25,7 +24,7 @@ internal class StageTest {
                     }
                 }
             }
-        }.run()
+        }
         assert(run)
     }
 
@@ -49,7 +48,7 @@ internal class StageTest {
             timeline.schedule(9.9) {
                 end()
             }
-        }.run()
+        }
         assertEquals(10, runs)
     }
 
@@ -76,7 +75,7 @@ internal class StageTest {
                     }
                 }
             }
-        }.run()
+        }
         assertEquals(2, runs)
     }
 
@@ -112,7 +111,7 @@ internal class StageTest {
                     +bar
                 }
             }
-        }.run()
+        }
         assertEquals(true, didFoo)
         assertEquals(true, didBar)
     }
