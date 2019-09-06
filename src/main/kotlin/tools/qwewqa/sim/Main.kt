@@ -45,6 +45,7 @@ fun main() = runBlocking {
 
             listen("dmg") {
                 if (totalDamage >= 500_000) {
+                    println("$totalDamage dmg in ${"%.3f".format(timeline.time)}")
                     println("${"%.3f".format(totalDamage / timeline.time)} dps")
                     end()
                 }

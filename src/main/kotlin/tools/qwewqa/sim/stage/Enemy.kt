@@ -19,8 +19,8 @@ class Enemy : Listenable {
         private set
 
     fun damage(amount: Int) {
-        listeners.raise("dmg")
         totalDamage += amount
+        listeners.raise("dmg")
     }
 }
 
