@@ -19,7 +19,7 @@ class Adventurer(val stage: Stage) : Listenable {
     // this will eventually have atk speed applied to it
     suspend fun wait(time: Double) = timeline.wait(time)
 
-    fun schedule(time: Double, action: () -> Unit) = timeline.schedule(time) { action() }
+    fun schedule(time: Double, action: suspend () -> Unit) = timeline.schedule(time) { action() }
 
     /**
      * Listeners are called with the trigger before [logic] and by observable properties
@@ -38,6 +38,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var combo: Int by listeners.observable(0, "combo")
     var hp: Double by listeners.observable(1.0, "hp")
     val ui = timeline.getCooldown(1.9) { think("ui") }
+    var skillLock = false
     val sp = SP()
     val stats = StatMap()
 
@@ -155,6 +156,8 @@ class Adventurer(val stage: Stage) : Listenable {
         }
 
         operator fun get(name: String) = charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")
+
+        fun remaining(name: String) = -this[name] + maximums[name]!!
 
         fun ready(name: String) =
             (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= maximums[name]!!

@@ -19,21 +19,33 @@ fun UnboundMove.onBound(action: Adventurer.() -> Unit) {
     this.onBound = action
 }
 
-suspend fun Adventurer.hit(name: String, action: Action) {
-    think("pre-$name")
+suspend fun Adventurer.hit(vararg name: String, action: Action) {
+    think(*(name.map { "pre-$it" }.toTypedArray()))
     action(emptyMap()) // kinda inelegant though where relevant you can get params from the outer receiver
-    think(name)
+    think(*(name.map { "connect-$it" }.toTypedArray()))
+    think(*name)
+}
+
+suspend fun Adventurer.hit(delay: Double, vararg name: String, action: Action) {
+    think(*(name.map { "pre-$it" }.toTypedArray()))
+    schedule(delay) {
+        action(emptyMap()) // kinda inelegant though where relevant you can get params from the outer receiver
+        think(*(name.map { "connect-$it" }.toTypedArray()))
+    }
+    think(*name)
 }
 
 fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Action) = move {
     this@move.name = name
-    condition { sp.ready(name) && ui.available }
+    condition { !skillLock && sp.ready(name) && ui.available }
     action {
+        skillLock = true
         doing = name
         sp.use(name)
         ui.use()
         if (includeUILatency) wait(6.frames)
         action(it)
+        skillLock = false
     }
     onBound { sp.register(name, cost) }
 }

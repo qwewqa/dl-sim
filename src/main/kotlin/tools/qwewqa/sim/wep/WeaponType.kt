@@ -9,20 +9,19 @@ import tools.qwewqa.sim.extensions.*
 class WeaponType(
     val name: String,
     val combo: UnboundMove,
-    val fs: UnboundMove
+    val fs: UnboundMove,
+    val fsf: UnboundMove
 )
-
-fun noWeapon() = WeaponType("unknown", noMove(), noMove())
 
 val genericDodge = move {
     name = "dodge"
-    condition { doing in listOf("idle", "x1", "x2", "x3", "x4", "x5", "fs") }
+    condition { !skillLock }
     action { wait(43.frames) }
 }
 
 fun forcestrike(action: Action) = move {
     name = "fs"
-    condition { doing in listOf("idle", "x1", "x2", "x3", "x4", "x5") }
+    condition { !skillLock }
     this.action = action
 }
 
@@ -32,7 +31,19 @@ fun combo(action: Action) = move {
     this.action = action
 }
 
+fun fsf(duration: Double) = move {
+    name = "fsf"
+    condition { !skillLock }
+}
+
 suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0) = hit(name) {
     damage(mod)
     sp(sp)
+}
+
+suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0, delay: Double) = hit(delay, name) {
+    schedule(delay) {
+        damage(mod)
+        sp(sp)
+    }
 }
