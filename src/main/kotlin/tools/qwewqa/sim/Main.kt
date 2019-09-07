@@ -1,12 +1,7 @@
 package tools.qwewqa.sim
 
-import kotlinx.coroutines.runBlocking
 import javax.script.ScriptEngineManager
-import kotlinx.coroutines.runBlocking
-import tools.qwewqa.sim.core.listen
-import tools.qwewqa.sim.weapontypes.blade
 import java.io.File
-import kotlin.math.floor
 
 fun main(vararg args: String) {
     val fileName = args.getOrElse(0) {
@@ -18,7 +13,7 @@ fun main(vararg args: String) {
     import kotlinx.coroutines.runBlocking
     import tools.qwewqa.sim.core.*
     import tools.qwewqa.sim.extensions.*
-    import tools.qwewqa.sim.weapontypes.*
+    import tools.qwewqa.sim.wep.*
     """)
     engine.eval(File(fileName).bufferedReader())
 }

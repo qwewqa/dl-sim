@@ -1,6 +1,5 @@
 package tools.qwewqa.sim.stage
 
-import tools.qwewqa.sim.extensions.Selectable
 import tools.qwewqa.sim.extensions.condition
 import tools.qwewqa.sim.extensions.move
 
@@ -19,8 +18,8 @@ data class BoundMove(
     val condition: Condition = { true },
     val action: Action = {},
     val params: Map<String, Any> = emptyMap()
-) : Selectable {
-    override val available get() = adventurer.condition()
+) {
+    val available get() = adventurer.condition()
     suspend fun execute() {
         adventurer.action(params)
     }

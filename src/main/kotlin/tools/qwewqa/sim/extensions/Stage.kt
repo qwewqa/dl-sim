@@ -13,10 +13,4 @@ fun stage(init: Stage.() -> Unit) {
     runBlocking { stage.run() }
 }
 
-fun Stage.adventurer(name: String = "unnamed", init: Adventurer.() -> Unit) {
-    val adventurer = Adventurer(name, this)
-    adventurer.init()
-    adventurers += adventurer
-}
-
 fun Stage.endIn(time: Double) = timeline.schedule(time) { end() }

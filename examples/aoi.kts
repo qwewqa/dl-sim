@@ -1,5 +1,6 @@
 stage {
-    adventurer("Aoi") {
+    adventurer {
+        name = "Aoi"
         str = 1881
         stats["crit-rate"].base = 2.percent
         stats["crit-dmg"].base = 70.percent

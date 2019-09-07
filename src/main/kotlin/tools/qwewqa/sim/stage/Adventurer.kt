@@ -6,13 +6,13 @@ import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.stage.Stat.*
-import tools.qwewqa.sim.weapontypes.WeaponType
-import tools.qwewqa.sim.weapontypes.genericDodge
+import tools.qwewqa.sim.wep.WeaponType
+import tools.qwewqa.sim.wep.genericDodge
 import java.lang.IllegalArgumentException
 import kotlin.coroutines.coroutineContext
 import kotlin.math.floor
 
-class Adventurer(val name: String, val stage: Stage) : Listenable {
+class Adventurer(val stage: Stage) : Listenable {
     val timeline get() = stage.timeline
     val target get() = stage.target
 
@@ -33,6 +33,8 @@ class Adventurer(val name: String, val stage: Stage) : Listenable {
             field = value
 
         }
+
+    var name: String = "unnamed"
     var combo: Int by listeners.observable(0, "combo")
     var hp: Double by listeners.observable(1.0, "hp")
     val ui = timeline.getCooldown(1.9) { think("ui") }

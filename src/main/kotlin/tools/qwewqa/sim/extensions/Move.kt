@@ -5,6 +5,8 @@ import tools.qwewqa.sim.stage.*
 fun move(init: UnboundMove.() -> Unit): UnboundMove = UnboundMove().apply { init() }
 fun Adventurer.move(init: UnboundMove.() -> Unit): BoundMove = UnboundMove().apply { init() }.bound(this)
 
+fun action(action: Action) = action
+
 fun UnboundMove.action(action: Action) {
     this.action = action
 }

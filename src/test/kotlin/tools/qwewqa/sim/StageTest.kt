@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import tools.qwewqa.sim.extensions.*
-import tools.qwewqa.sim.weapontypes.noWeapon
+import tools.qwewqa.sim.wep.noWeapon
 
 internal class StageTest {
     @Test

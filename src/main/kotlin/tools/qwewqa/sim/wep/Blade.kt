@@ -1,4 +1,4 @@
-package tools.qwewqa.sim.weapontypes
+package tools.qwewqa.sim.wep
 
 import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.hit
@@ -9,7 +9,7 @@ private val fs = forcestrike {
     wait(30.frames)
     think("pre-fs")
     damage(92.percent, fs = true)
-    sp(200, true)
+    sp(200,  fs = true)
     think("fs", "fsc")
     wait(41.frames)
 }

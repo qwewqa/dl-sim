@@ -1,17 +1,31 @@
 package tools.qwewqa.sim.extensions
 
-import tools.qwewqa.sim.stage.Action
-import tools.qwewqa.sim.stage.Adventurer
-import tools.qwewqa.sim.stage.BoundMove
-import tools.qwewqa.sim.stage.Condition
+import tools.qwewqa.sim.stage.*
 
 fun Adventurer.prerun(prerun: Adventurer.() -> Unit) {
     this.prerun = prerun
 }
 
+fun Stage.adventurer(init: Adventurer.() -> Unit) {
+    val adventurer = Adventurer(this)
+    adventurer.init()
+    adventurers += adventurer
+}
+
 fun Adventurer.action(action: Action) = action
 
-class AclSelector(val adventurer: Adventurer) : Selector<BoundMove>() {
+class AclSelector(val adventurer: Adventurer) {
+    var value: BoundMove? = null
+        private set
+
+    operator fun BoundMove?.unaryPlus() {
+        add(this)
+    }
+
+    fun add(move: BoundMove?) {
+        if (value == null && move?.available == true) value = move
+    }
+
     operator fun BoundMove?.invoke(condition: () -> Boolean) = if (condition()) this else null
     operator fun BoundMove?.invoke(vararg params: Pair<String, Any>) = this?.copy(params = params.toMap())
 
@@ -37,7 +51,7 @@ class AclSelector(val adventurer: Adventurer) : Selector<BoundMove>() {
 fun Adventurer.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
     logic = { AclSelector(this).apply {
             init()
-        if (implicitX) +x
+        if (implicitX) add(x)
         }.value }
 }
 

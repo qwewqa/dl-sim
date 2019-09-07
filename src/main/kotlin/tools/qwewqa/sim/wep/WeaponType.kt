@@ -1,4 +1,4 @@
-package tools.qwewqa.sim.weapontypes
+package tools.qwewqa.sim.wep
 
 import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
