@@ -7,7 +7,7 @@ import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.equips.weapons.Weapon
-import tools.qwewqa.sim.stage.ModifierType.*
+import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
@@ -22,7 +22,7 @@ class Adventurer(val stage: Stage) : Listenable {
 
     suspend fun yield() = timeline.yield()
 
-    fun schedule(time: Double, action: suspend () -> Unit) = timeline.schedule(time) { action() }
+    fun schedule(time: Double = 0.0, action: suspend () -> Unit) = timeline.schedule(time) { action() }
     fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
 
     /**
@@ -30,8 +30,8 @@ class Adventurer(val stage: Stage) : Listenable {
      */
     override val listeners = ListenerMap()
 
-    val stats = ModifierList()
-    var str: Double by stats.modifier(STR)
+    val stats = StatMap()
+    var str: Int = 0
 
     var name: String = "unnamed"
     var combo: Int by listeners.observable(0, "combo")
@@ -129,9 +129,9 @@ class Adventurer(val stage: Stage) : Listenable {
     // TODO: Rest of formula; move element out?
     fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
         floor(
-            1.5 * 5.0 / 3.0 * mod * stats[STR] / (target.stats[DEF]) *
-                    (1.0 + stats[CRIT_RATE] * stats[CRIT_DAMAGE]) *
-                    if (skill) stats[SKILL] else 1.0
+            1.5 * 5.0 / 3.0 * mod * stats[STR].value / (target.stats[DEF].value) *
+                    (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
+                    if (skill) stats[SKILL].value else 1.0
         ).toInt()
 
     private fun prerunChecks() {
@@ -139,7 +139,8 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     init {
-        current = stage.timeline.schedule {
+        stage.timeline.schedule {
+            stats["str"].base = str.toDouble()
             weapon?.initialize(this@Adventurer)
             a1?.initialize(this@Adventurer)
             a2?.initialize(this@Adventurer)

@@ -16,7 +16,7 @@ fun main(vararg args: String) {
     import tools.qwewqa.sim.wep.*
     import tools.qwewqa.sim.stage.*
     import tools.qwewqa.sim.abilities.*
-    import tools.qwewqa.sim.abilities.conditions*
+    import tools.qwewqa.sim.abilities.conditions.*
     import tools.qwewqa.sim.equips.*
     import tools.qwewqa.sim.equips.weapons.*
     """)

@@ -1,12 +1,8 @@
 stage {
     adventurer {
         name = "Aoi"
-        coability("str", 10.percent)
         str = 1881
-        stats["crit-rate"].base = 2.percent
-        stats["crit-dmg"].base = 70.percent
-        stats["str"].passive += 73.percent
-        weaponType = blade
+        weapon = HeavensAcuity
 
         s1(2630) {
             damage(878.percent)

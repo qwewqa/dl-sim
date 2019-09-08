@@ -1,15 +1,15 @@
 package tools.qwewqa.sim.equips.weapons
 
 import tools.qwewqa.sim.abilities.Ability
-import tools.qwewqa.sim.abilities.StatAbility
+import tools.qwewqa.sim.abilities.ability
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.skill
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.ModifierType
 import tools.qwewqa.sim.stage.MoveData
 
 fun blade(name: String, element: Element, str: Int, skill: MoveData, abilities: List<Ability> = listOf(
-
+    ability("crit-rate", 2.percent),
+    ability("crit-damage", 70.percent)
 )) =
     Weapon(name, element, str, skill, tools.qwewqa.sim.wep.blade, abilities)
 

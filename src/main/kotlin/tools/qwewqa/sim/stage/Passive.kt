@@ -18,11 +18,11 @@ class Passive(
             if (active && !condition()) {
                 onDeactivated()
                 active = false
-                adventurer.log(Logger.Level.VERBOSER, "passive", "$name deactivated")
+                adventurer.log(Logger.Level.VERBOSER, "passive", "${this@Passive.name} deactivated")
             } else if (!active && condition()) {
                 onActivated()
                 active = true
-                adventurer.log(Logger.Level.VERBOSER, "passive", "$name activated")
+                adventurer.log(Logger.Level.VERBOSER, "passive", "${this@Passive.name} activated")
             }
         }
     }
