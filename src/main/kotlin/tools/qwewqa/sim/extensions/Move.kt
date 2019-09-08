@@ -50,5 +50,7 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
     onBound { sp.register(name, cost) }
 }
 
+fun noMove() = move { condition { false } }
+
 fun Adventurer.s1(cost: Int, includeUILatency: Boolean = true, action: Action) { s1 = skill("s1", cost, includeUILatency, action).bound() }
 fun Adventurer.s2(cost: Int, includeUILatency: Boolean = true, action: Action) { s2 = skill("s2", cost, includeUILatency, action).bound() }

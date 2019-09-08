@@ -1,9 +1,7 @@
 package tools.qwewqa.sim.core
 
 import kotlinx.coroutines.*
-import java.lang.IllegalStateException
 import java.util.*
-import java.util.concurrent.PriorityBlockingQueue
 import kotlin.properties.Delegates
 
 class Timeline {

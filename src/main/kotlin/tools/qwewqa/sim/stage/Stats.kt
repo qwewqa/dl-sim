@@ -1,7 +1,6 @@
 package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.stage.StatType.*
-import java.lang.IllegalArgumentException
 
 class StatMap(private val map: MutableMap<Stat, StatInstance> = mutableMapOf()) : Map<Stat, StatInstance> by map {
     operator fun get(key: String) = this[nameMap[key] ?: throw IllegalArgumentException("Unknown stat $key")]

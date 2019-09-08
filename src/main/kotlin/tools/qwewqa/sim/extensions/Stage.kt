@@ -1,7 +1,6 @@
 package tools.qwewqa.sim.extensions
 
 import kotlinx.coroutines.runBlocking
-import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Stage
 
 /**

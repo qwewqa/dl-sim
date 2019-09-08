@@ -1,7 +1,7 @@
 package tools.qwewqa.sim
 
-import javax.script.ScriptEngineManager
 import java.io.File
+import javax.script.ScriptEngineManager
 
 fun main(vararg args: String) {
     val fileName = args.getOrElse(0) {
@@ -9,8 +9,8 @@ fun main(vararg args: String) {
         return
     }
     val engine = ScriptEngineManager().getEngineByExtension("kts")!!
+    println("Compiling...")
     engine.eval("""
-    import kotlinx.coroutines.runBlocking
     import tools.qwewqa.sim.core.*
     import tools.qwewqa.sim.extensions.*
     import tools.qwewqa.sim.wep.*

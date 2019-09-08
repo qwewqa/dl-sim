@@ -1,10 +1,9 @@
 package tools.qwewqa.sim.wep
 
+import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.UnboundMove
-import tools.qwewqa.sim.stage.noMove
-import tools.qwewqa.sim.extensions.*
 
 class WeaponType(
     val name: String,
@@ -38,12 +37,12 @@ fun fsf(duration: Double) = move {
 
 suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0) = hit(name) {
     damage(mod)
-    sp(sp)
+    if (sp > 0) sp(sp)
 }
 
 suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0, delay: Double) = hit(delay, name) {
     schedule(delay) {
         damage(mod)
-        sp(sp)
+        if (sp > 0) sp(sp)
     }
 }

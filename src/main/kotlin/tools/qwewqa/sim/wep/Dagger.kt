@@ -2,8 +2,8 @@ package tools.qwewqa.sim.wep
 
 import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.hit
+import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
-import tools.qwewqa.sim.stage.noMove
 
 private val fs = forcestrike {
     doing = "fs"

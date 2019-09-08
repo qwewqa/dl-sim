@@ -8,7 +8,6 @@ import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
-import java.lang.IllegalArgumentException
 import kotlin.coroutines.coroutineContext
 import kotlin.math.floor
 
@@ -20,6 +19,7 @@ class Adventurer(val stage: Stage) : Listenable {
     suspend fun wait(time: Double) = timeline.wait(time)
 
     fun schedule(time: Double, action: suspend () -> Unit) = timeline.schedule(time) { action() }
+    fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
 
     /**
      * Listeners are called with the trigger before [logic] and by observable properties
@@ -116,8 +116,9 @@ class Adventurer(val stage: Stage) : Listenable {
      * Directly applies given damage
      */
     fun trueDamage(amount: Int, name: String) {
-        println("${"%.3f".format(time)}: [${this@Adventurer.name}] $name damage $amount")
+        log(Logger.Level.VERBOSE, "damage", "$amount damage by $name")
         target.damage(amount)
+        listeners.raise("dmg")
         combo++
     }
 
@@ -152,6 +153,7 @@ class Adventurer(val stage: Stage) : Listenable {
          * TODO: Actually include haste
          */
         operator fun invoke(amount: Int, fs: Boolean = false) {
+            log(Logger.Level.VERBOSE, "sp", "$amount sp by $doing")
             charge(amount)
         }
 
@@ -185,6 +187,36 @@ class Adventurer(val stage: Stage) : Listenable {
         fun register(name: String, max: Int) {
             charges[name] = 0
             maximums[name] = max
+        }
+    }
+}
+
+enum class Element {
+    NEUTRAL,
+    FLAME,
+    WATER,
+    WIND,
+    LIGHT,
+    SHADOW;
+
+    fun multiplier(other: Element) = when(this) {
+        NEUTRAL -> 1.0
+        LIGHT -> if (other == SHADOW) 1.5 else 1.0
+        SHADOW -> if (other == LIGHT) 1.5 else 1.0
+        FLAME -> when(other) {
+            WATER -> 0.5
+            WIND -> 1.5
+            else -> 1.0
+        }
+        WATER -> when(other) {
+            WIND -> 0.5
+            FLAME -> 1.5
+            else -> 1.0
+        }
+        WIND -> when(other) {
+            FLAME -> 0.5
+            WATER -> 1.5
+            else -> 1.0
         }
     }
 }
