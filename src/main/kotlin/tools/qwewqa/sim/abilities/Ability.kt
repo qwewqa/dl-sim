@@ -43,6 +43,12 @@ class Coability(
     }
 }
 
+fun coability(name: String, value: Double) = Coability(
+    name = "$name $value coability",
+    value = value,
+    type = statNames[name] ?: error("Unknown stat $name")
+)
+
 fun ability(type: Stat, amount: Double, condition: AbilityCondition = noCondition) = StatAbility(
     name = "${type.names[0]} $amount",
     value = amount,

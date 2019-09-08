@@ -2,6 +2,7 @@ stage {
     adventurer {
         name = "Aoi"
         str = 1881
+        ex = coability("str", 10.percent)
         weapon = HeavensAcuity
 
         s1(2630) {
@@ -33,9 +34,12 @@ stage {
 
         listen("dmg") {
             if (totalDamage >= 500_000) {
-                println("${"%.3f".format(totalDamage / timeline.time)} dps")
                 end()
             }
         }
+    }
+
+    onEnd {
+        println("${"%.3f".format(enemy.totalDamage / timeline.time)} dps")
     }
 }

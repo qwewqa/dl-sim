@@ -2,6 +2,7 @@ package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
 import tools.qwewqa.sim.abilities.Ability
+import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -15,7 +16,7 @@ import kotlin.math.floor
 
 class Adventurer(val stage: Stage) : Listenable {
     val timeline get() = stage.timeline
-    val target get() = stage.target
+    val target get() = stage.enemy
 
     // this will eventually have atk speed applied to it
     suspend fun wait(time: Double) = timeline.wait(time)
@@ -63,6 +64,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var s1: Move? = null
     var s2: Move? = null
     var s3: Move? = null
+    var ex: Coability? = null
     var a1: Ability? = null
     var a2: Ability? = null
     var a3: Ability? = null
@@ -145,6 +147,7 @@ class Adventurer(val stage: Stage) : Listenable {
             a1?.initialize(this@Adventurer)
             a2?.initialize(this@Adventurer)
             a3?.initialize(this@Adventurer)
+            ex?.initialize(this@Adventurer)
             prerunChecks()
             prerun()
             think()

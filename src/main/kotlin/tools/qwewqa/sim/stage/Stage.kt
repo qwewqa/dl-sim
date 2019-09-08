@@ -7,7 +7,7 @@ class Stage {
     val timeline = Timeline()
     val logger = Logger(this)
     val adventurers = mutableListOf<Adventurer>()
-    var target = defaultEnemy()
+    var enemy = defaultEnemy()
     var onEnd: Stage.() -> Unit = {}
 
     val log = logger::log
