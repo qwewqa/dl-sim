@@ -14,6 +14,8 @@ fun main(vararg args: String) {
     import tools.qwewqa.sim.core.*
     import tools.qwewqa.sim.extensions.*
     import tools.qwewqa.sim.wep.*
+    import tools.qwewqa.sim.stage.*
+    import tools.qwewqa.sim.abilities.*
     """)
     engine.eval(File(fileName).bufferedReader())
 }
