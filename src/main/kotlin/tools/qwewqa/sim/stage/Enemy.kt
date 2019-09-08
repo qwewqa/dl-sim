@@ -2,18 +2,14 @@ package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
-import tools.qwewqa.sim.stage.Stat.DEF
+import tools.qwewqa.sim.stage.ModifierType.DEF
 
 class Enemy : Listenable {
     override val listeners = ListenerMap()
-    val stats = StatMap()
+    val stats = ModifierList()
+    var element = Element.NEUTRAL
 
-    var def = 0.0
-        set(value) {
-            stats[DEF].base -= field
-            stats[DEF].base += value
-            field = value
-        }
+    var def: Double by stats.modifier(DEF)
 
     var totalDamage = 0
         private set
@@ -25,5 +21,5 @@ class Enemy : Listenable {
 }
 
 fun defaultEnemy() = Enemy().apply {
-    stats["def"].base = 10.0
+    def = 10.0
 }

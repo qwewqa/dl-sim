@@ -1,23 +1,28 @@
 package tools.qwewqa.sim.stage
 
-class UnboundMove(
+class MoveData(
     var name: String = "unnamed",
     var condition: Condition = { true },
     var action: Action = {},
-    var onBound: Adventurer.() -> Unit = {}
+    var initialize: Adventurer.() -> Unit = {}
 ) {
-    fun bound(adventurer: Adventurer) = BoundMove(adventurer, name, condition, action).also { adventurer.onBound() }
+    fun bound(adventurer: Adventurer) = Move(adventurer, name, condition, action, initialize)
 }
 
-data class BoundMove(
+data class Move(
     val adventurer: Adventurer,
     val name: String = "unnamed",
     val condition: Condition = { true },
     val action: Action = {},
+    val initialize: Adventurer.() -> Unit,
     val params: Map<String, Any> = emptyMap()
 ) {
     val available get() = adventurer.condition()
     suspend fun execute() {
         adventurer.action(params)
+    }
+
+    init {
+        adventurer.initialize()
     }
 }

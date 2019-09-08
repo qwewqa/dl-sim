@@ -70,6 +70,8 @@ class Timeline {
         }
     }
 
+    suspend fun yield() = wait(0.0)
+
     /**
      * Schedules an action to be ran on the timeline.
      * Returns an Event that can be canceled

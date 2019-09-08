@@ -2,21 +2,21 @@ package tools.qwewqa.sim.extensions
 
 import tools.qwewqa.sim.stage.*
 
-fun move(init: UnboundMove.() -> Unit): UnboundMove = UnboundMove().apply { init() }
-fun Adventurer.move(init: UnboundMove.() -> Unit): BoundMove = UnboundMove().apply { init() }.bound(this)
+fun move(init: MoveData.() -> Unit): MoveData = MoveData().apply { init() }
+fun Adventurer.move(init: MoveData.() -> Unit): Move = MoveData().apply { init() }.bound(this)
 
 fun action(action: Action) = action
 
-fun UnboundMove.action(action: Action) {
+fun MoveData.action(action: Action) {
     this.action = action
 }
 
-fun UnboundMove.condition(condition: Condition) {
+fun MoveData.condition(condition: Condition) {
     this.condition = condition
 }
 
-fun UnboundMove.onBound(action: Adventurer.() -> Unit) {
-    this.onBound = action
+fun MoveData.initialize(initialize: Adventurer.() -> Unit) {
+    this.initialize = initialize
 }
 
 suspend fun Adventurer.hit(vararg name: String, action: Action) {
@@ -47,7 +47,7 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
         action(it)
         skillLock = false
     }
-    onBound { sp.register(name, cost) }
+    initialize { sp.register(name, cost) }
 }
 
 fun noMove() = move { condition { false } }

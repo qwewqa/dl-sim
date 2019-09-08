@@ -13,3 +13,4 @@ fun stage(init: Stage.() -> Unit) {
 }
 
 fun Stage.endIn(time: Double) = timeline.schedule(time) { end() }
+fun Stage.onEnd(action: Stage.() -> Unit) { this.onEnd = action }

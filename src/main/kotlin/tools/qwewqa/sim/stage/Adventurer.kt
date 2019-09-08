@@ -1,11 +1,13 @@
 package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
+import tools.qwewqa.sim.abilities.Ability
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
-import tools.qwewqa.sim.stage.Stat.*
+import tools.qwewqa.sim.equips.weapons.Weapon
+import tools.qwewqa.sim.stage.ModifierType.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
@@ -18,6 +20,8 @@ class Adventurer(val stage: Stage) : Listenable {
     // this will eventually have atk speed applied to it
     suspend fun wait(time: Double) = timeline.wait(time)
 
+    suspend fun yield() = timeline.yield()
+
     fun schedule(time: Double, action: suspend () -> Unit) = timeline.schedule(time) { action() }
     fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
 
@@ -26,13 +30,8 @@ class Adventurer(val stage: Stage) : Listenable {
      */
     override val listeners = ListenerMap()
 
-    var str: Int = 0
-        set(value) {
-            stats["str"].base -= field
-            stats["str"].base += value
-            field = value
-
-        }
+    val stats = ModifierList()
+    var str: Double by stats.modifier(STR)
 
     var name: String = "unnamed"
     var combo: Int by listeners.observable(0, "combo")
@@ -40,7 +39,7 @@ class Adventurer(val stage: Stage) : Listenable {
     val ui = timeline.getCooldown(1.9) { think("ui") }
     var skillLock = false
     val sp = SP()
-    val stats = StatMap()
+    var element = Element.NEUTRAL
 
     val time: Double
         get() {
@@ -59,12 +58,17 @@ class Adventurer(val stage: Stage) : Listenable {
             fs = value?.fs?.bound()
         }
 
-    var s1: BoundMove? = null
-    var s2: BoundMove? = null
-    var s3: BoundMove? = null
-    var x: BoundMove? = null
-    var fs: BoundMove? = null
-    var dodge: BoundMove? = genericDodge.bound()
+    var weapon: Weapon? = null
+
+    var s1: Move? = null
+    var s2: Move? = null
+    var s3: Move? = null
+    var a1: Ability? = null
+    var a2: Ability? = null
+    var a3: Ability? = null
+    var x: Move? = null
+    var fs: Move? = null
+    var dodge: Move? = genericDodge.bound()
 
     /**
      * Ran before everything else at the start of the stage run
@@ -75,7 +79,7 @@ class Adventurer(val stage: Stage) : Listenable {
      * Decides what moves to make
      * null is a noop
      */
-    var logic: Adventurer.(String) -> BoundMove? = { null }
+    var logic: Adventurer.(String) -> Move? = { null }
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -125,9 +129,9 @@ class Adventurer(val stage: Stage) : Listenable {
     // TODO: Rest of formula; move element out?
     fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
         floor(
-            1.5 * 5.0 / 3.0 * mod * stats[STR].value / (target.stats[DEF].value) *
-                    (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
-                    if(skill) stats[SKILL].value else 1.0
+            1.5 * 5.0 / 3.0 * mod * stats[STR] / (target.stats[DEF]) *
+                    (1.0 + stats[CRIT_RATE] * stats[CRIT_DAMAGE]) *
+                    if (skill) stats[SKILL] else 1.0
         ).toInt()
 
     private fun prerunChecks() {
@@ -136,13 +140,17 @@ class Adventurer(val stage: Stage) : Listenable {
 
     init {
         current = stage.timeline.schedule {
+            weapon?.initialize(this@Adventurer)
+            a1?.initialize(this@Adventurer)
+            a2?.initialize(this@Adventurer)
+            a3?.initialize(this@Adventurer)
             prerunChecks()
             prerun()
             think()
         }
     }
 
-    fun UnboundMove.bound(): BoundMove = this.bound(this@Adventurer)
+    fun MoveData.bound(): Move = this.bound(this@Adventurer)
 
     inner class SP {
         private val charges = mutableMapOf<String, Int>()
@@ -199,21 +207,21 @@ enum class Element {
     LIGHT,
     SHADOW;
 
-    fun multiplier(other: Element) = when(this) {
+    fun multiplier(other: Element) = when (this) {
         NEUTRAL -> 1.0
         LIGHT -> if (other == SHADOW) 1.5 else 1.0
         SHADOW -> if (other == LIGHT) 1.5 else 1.0
-        FLAME -> when(other) {
+        FLAME -> when (other) {
             WATER -> 0.5
             WIND -> 1.5
             else -> 1.0
         }
-        WATER -> when(other) {
+        WATER -> when (other) {
             WIND -> 0.5
             FLAME -> 1.5
             else -> 1.0
         }
-        WIND -> when(other) {
+        WIND -> when (other) {
             FLAME -> 0.5
             WATER -> 1.5
             else -> 1.0

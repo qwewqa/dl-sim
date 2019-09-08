@@ -2,18 +2,7 @@ package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.core.listen
 
-class UnboundPassive(
-    val name: String = "unamed",
-    val condition: Condition = { true },
-    val onActivated: Adventurer.() -> Unit = {},
-    val onDeactivated: Adventurer.() -> Unit = {},
-    val onBound: Adventurer.() -> Unit = {},
-    vararg val listeners: String
-) {
-    fun bound(adventurer: Adventurer) = BoundPassive(name, adventurer, condition, onActivated, onDeactivated, *listeners).also { adventurer.onBound() }
-}
-
-class BoundPassive(
+class Passive(
     val name: String = "unamed",
     val adventurer: Adventurer,
     val condition: Condition = { true },
@@ -29,9 +18,11 @@ class BoundPassive(
             if (active && !condition()) {
                 onDeactivated()
                 active = false
+                adventurer.log(Logger.Level.VERBOSER, "passive", "$name deactivated")
             } else if (!active && condition()) {
                 onActivated()
                 active = true
+                adventurer.log(Logger.Level.VERBOSER, "passive", "$name activated")
             }
         }
     }

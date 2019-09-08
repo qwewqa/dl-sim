@@ -37,6 +37,10 @@ fun Listenable.listen(vararg events: String, listener: Listener) {
     events.forEach { listeners[it].add(listener) }
 }
 
+fun Listenable.listen(events: Collection<String>, listener: Listener) {
+    events.forEach { listeners[it].add(listener) }
+}
+
 fun Listenable.listenAll(listener: Listener) {
     listeners.globalListeners += listener
 }

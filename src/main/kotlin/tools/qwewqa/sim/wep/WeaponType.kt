@@ -3,13 +3,13 @@ package tools.qwewqa.sim.wep
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
-import tools.qwewqa.sim.stage.UnboundMove
+import tools.qwewqa.sim.stage.MoveData
 
 class WeaponType(
     val name: String,
-    val combo: UnboundMove,
-    val fs: UnboundMove,
-    val fsf: UnboundMove
+    val combo: MoveData,
+    val fs: MoveData,
+    val fsf: MoveData
 )
 
 val genericDodge = move {

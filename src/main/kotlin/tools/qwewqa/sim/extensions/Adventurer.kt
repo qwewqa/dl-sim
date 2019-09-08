@@ -15,22 +15,22 @@ fun Stage.adventurer(init: Adventurer.() -> Unit) {
 fun Adventurer.action(action: Action) = action
 
 class AclSelector(val adventurer: Adventurer) {
-    var value: BoundMove? = null
+    var value: Move? = null
         private set
 
-    operator fun BoundMove?.unaryPlus() {
+    operator fun Move?.unaryPlus() {
         add(this)
     }
 
-    fun add(move: BoundMove?) {
+    fun add(move: Move?) {
         if (value == null && move?.available == true) value = move
     }
 
-    operator fun BoundMove?.invoke(condition: () -> Boolean) = if (condition()) this else null
-    operator fun BoundMove?.invoke(vararg params: Pair<String, Any>) = this?.copy(params = params.toMap())
+    operator fun Move?.invoke(condition: () -> Boolean) = if (condition()) this else null
+    operator fun Move?.invoke(vararg params: Pair<String, Any>) = this?.copy(params = params.toMap())
 
     // you can't actually chain the above like `move(params) { conditions }` so this is used
-    operator fun BoundMove?.invoke(vararg params: Pair<String, Any>, condition: () -> Boolean) = this?.copy(params = params.toMap())?.invoke(condition)
+    operator fun Move?.invoke(vararg params: Pair<String, Any>, condition: () -> Boolean) = this?.copy(params = params.toMap())?.invoke(condition)
 
     operator fun String.rem(other: Any) = Pair(this, other)
 
