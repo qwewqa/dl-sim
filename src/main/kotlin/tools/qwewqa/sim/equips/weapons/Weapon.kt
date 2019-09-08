@@ -20,5 +20,6 @@ class Weapon(
         super.initialize(adventurer)
         check(adventurer.weaponType == null || adventurer.weaponType == type)
         adventurer.weaponType = type
+        adventurer.s3 = skill.bound(adventurer)
     }
 }

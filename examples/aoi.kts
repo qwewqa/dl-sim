@@ -15,13 +15,6 @@ stage {
             wait(1.85)
         }
 
-        s3 = skill("s3", 8030) {
-            damage(354.percent)
-            damage(354.percent)
-            damage(354.percent)
-            wait(2.65)
-        }.bound()
-
         acl {
             +s1 { +"x5" }
             +s2 { +"x5" }
