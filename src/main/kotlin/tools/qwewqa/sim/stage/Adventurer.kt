@@ -16,7 +16,7 @@ import kotlin.math.floor
 
 class Adventurer(val stage: Stage) : Listenable {
     val timeline get() = stage.timeline
-    val target get() = stage.enemy
+    val enemy get() = stage.enemy
 
     // this will eventually have atk speed applied to it
     suspend fun wait(time: Double) = timeline.wait(time)
@@ -123,7 +123,7 @@ class Adventurer(val stage: Stage) : Listenable {
      */
     fun trueDamage(amount: Int, name: String) {
         log(Logger.Level.VERBOSE, "damage", "$amount damage by $name")
-        target.damage(amount)
+        enemy.damage(amount)
         listeners.raise("dmg")
         combo++
     }
@@ -131,9 +131,9 @@ class Adventurer(val stage: Stage) : Listenable {
     // TODO: Rest of formula; move element out?
     fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
         floor(
-            1.5 * 5.0 / 3.0 * mod * stats[STR].value / (target.stats[DEF].value) *
+            5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
                     (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
-                    if (skill) stats[SKILL].value else 1.0
+                    if (skill) stats[SKILL].value else 1.0 * element.multiplier(enemy.element)
         ).toInt()
 
     private fun prerunChecks() {
