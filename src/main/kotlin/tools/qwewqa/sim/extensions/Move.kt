@@ -1,27 +1,29 @@
 package tools.qwewqa.sim.extensions
 
-import tools.qwewqa.sim.stage.*
+import tools.qwewqa.sim.stage.Action
+import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.Condition
+import tools.qwewqa.sim.stage.MoveBuilder
 
-fun move(init: MoveData.() -> Unit): MoveData = MoveData().apply { init() }
-fun Adventurer.move(init: MoveData.() -> Unit): Move = MoveData().apply { init() }.bound(this)
+fun move(init: MoveBuilder.() -> Unit) = MoveBuilder().apply { init() }.build()
 
 fun action(action: Action) = action
 
-fun MoveData.action(action: Action) {
+fun MoveBuilder.action(action: Action) {
     this.action = action
 }
 
-fun MoveData.condition(condition: Condition) {
+fun MoveBuilder.condition(condition: Condition) {
     this.condition = condition
 }
 
-fun MoveData.initialize(initialize: Adventurer.() -> Unit) {
-    this.initialize = initialize
+fun MoveBuilder.initialize(initialize: Adventurer.() -> Unit) {
+    this.setup = initialize
 }
 
 suspend fun Adventurer.hit(vararg name: String, action: Action) {
     think(*(name.map { "pre-$it" }.toTypedArray()))
-    action(emptyMap()) // kinda inelegant though where relevant you can get params from the outer receiver
+    action()
     think(*(name.map { "connect-$it" }.toTypedArray()))
     think(*name)
 }
@@ -29,7 +31,7 @@ suspend fun Adventurer.hit(vararg name: String, action: Action) {
 suspend fun Adventurer.hit(delay: Double, vararg name: String, action: Action) {
     think(*(name.map { "pre-$it" }.toTypedArray()))
     schedule(delay) {
-        action(emptyMap()) // kinda inelegant though where relevant you can get params from the outer receiver
+        action()
         think(*(name.map { "connect-$it" }.toTypedArray()))
     }
     think(*name)
@@ -44,7 +46,7 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
         sp.use(name)
         ui.use()
         if (includeUILatency) wait(6.frames)
-        action(it)
+        action()
         skillLock = false
     }
     initialize { sp.register(name, cost) }
@@ -52,5 +54,5 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
 
 fun noMove() = move { condition { false } }
 
-fun Adventurer.s1(cost: Int, includeUILatency: Boolean = true, action: Action) { s1 = skill("s1", cost, includeUILatency, action).bound() }
-fun Adventurer.s2(cost: Int, includeUILatency: Boolean = true, action: Action) { s2 = skill("s2", cost, includeUILatency, action).bound() }
+fun Adventurer.s1(cost: Int, includeUILatency: Boolean = true, action: Action) { s1 = skill("s1", cost, includeUILatency, action) }
+fun Adventurer.s2(cost: Int, includeUILatency: Boolean = true, action: Action) { s2 = skill("s2", cost, includeUILatency, action) }

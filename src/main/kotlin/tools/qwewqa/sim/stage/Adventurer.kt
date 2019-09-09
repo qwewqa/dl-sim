@@ -55,8 +55,9 @@ class Adventurer(val stage: Stage) : Listenable {
     var weaponType: WeaponType? = null
         set(value) {
             field = value
-            x = value?.combo?.bound()
-            fs = value?.fs?.bound()
+            x = value?.combo
+            fs = value?.fs
+            fsf = value?.fsf
         }
 
     var weapon: Weapon? = null
@@ -70,7 +71,8 @@ class Adventurer(val stage: Stage) : Listenable {
     var a3: Ability? = null
     var x: Move? = null
     var fs: Move? = null
-    var dodge: Move? = genericDodge.bound()
+    var fsf: Move? = null
+    var dodge: Move? = genericDodge
 
     /**
      * Ran before everything else at the start of the stage run
@@ -89,14 +91,14 @@ class Adventurer(val stage: Stage) : Listenable {
      * This should be called before [wait] so that it will cancel during the wait
      * Otherwise is called at the end of an uncancelled move and at stage start
      */
-    suspend fun think(vararg triggers: String = arrayOf("idle")) {
+    fun think(vararg triggers: String = arrayOf("idle")) {
         triggers.forEach { listeners.raise(it) }
         triggers.forEach { trigger ->
             this.trigger = trigger
             val move = logic(trigger) ?: return@forEach
             current?.cancel()
             current = stage.timeline.schedule {
-                move.execute()
+                move.action(this@Adventurer)
                 if (coroutineContext.isActive) {
                     doing = "idle"
                     think()
@@ -142,19 +144,28 @@ class Adventurer(val stage: Stage) : Listenable {
 
     init {
         stage.timeline.schedule {
-            stats["str"].base = str.toDouble()
-            weapon?.initialize(this@Adventurer)
-            a1?.initialize(this@Adventurer)
-            a2?.initialize(this@Adventurer)
-            a3?.initialize(this@Adventurer)
-            ex?.initialize(this@Adventurer)
-            prerunChecks()
-            prerun()
-            think()
+            initialize()
         }
     }
 
-    fun MoveData.bound(): Move = this.bound(this@Adventurer)
+    private fun initialize() {
+        stats["str"].base = str.toDouble()
+        weapon?.initialize(this)
+        x?.initialize(this)
+        fsf?.initialize(this)
+        fs?.initialize(this)
+        dodge?.initialize(this)
+        s1?.initialize(this)
+        s2?.initialize(this)
+        s3?.initialize(this)
+        a1?.initialize(this)
+        a2?.initialize(this)
+        a3?.initialize(this)
+        ex?.initialize(this)
+        prerunChecks()
+        prerun()
+        think()
+    }
 
     inner class SP {
         private val charges = mutableMapOf<String, Int>()
@@ -234,4 +245,4 @@ enum class Element {
 }
 
 typealias Condition = Adventurer.() -> Boolean
-typealias Action = suspend Adventurer.(Map<String, Any>) -> Unit
+typealias Action = suspend Adventurer.() -> Unit

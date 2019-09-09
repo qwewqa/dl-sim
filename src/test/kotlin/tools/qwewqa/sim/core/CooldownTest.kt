@@ -1,7 +1,8 @@
 package tools.qwewqa.sim.core
 
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
 internal class CooldownTest {
@@ -9,7 +10,7 @@ internal class CooldownTest {
     fun Cooldown() = runBlocking {
         var runs = 0
         var counter = 0
-        val timeline = Timeline().apply {
+        Timeline().apply {
             val cooldown = getCooldown(10.0) { counter++ }
 
             schedule {

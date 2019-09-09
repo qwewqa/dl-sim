@@ -1,28 +1,20 @@
 package tools.qwewqa.sim.stage
 
-class MoveData(
-    var name: String = "unnamed",
-    var condition: Condition = { true },
-    var action: Action = {},
-    var initialize: Adventurer.() -> Unit = {}
-) {
-    fun bound(adventurer: Adventurer) = Move(adventurer, name, condition, action, initialize)
-}
-
 data class Move(
-    val adventurer: Adventurer,
     val name: String = "unnamed",
     val condition: Condition = { true },
     val action: Action = {},
-    val initialize: Adventurer.() -> Unit,
-    val params: Map<String, Any> = emptyMap()
+    val setup: Adventurer.() -> Unit = {}
 ) {
-    val available get() = adventurer.condition()
-    suspend fun execute() {
-        adventurer.action(params)
+    fun initialize(adventurer: Adventurer) {
+        setup(adventurer)
     }
+}
 
-    init {
-        adventurer.initialize()
-    }
+class MoveBuilder {
+    var name = "unnamed"
+    var condition: Condition = { true }
+    var action: Action = {}
+    var setup: (Adventurer) -> Unit = {}
+    fun build() = Move(name, condition, action, setup)
 }

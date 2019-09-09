@@ -8,6 +8,7 @@ abstract class Ability {
     abstract fun initialize(adventurer: Adventurer)
 }
 
+@Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE") // IDEA doesn't like the delegate for some reason
 class StatAbility(
     override val name: String,
     override val value: Double = 0.0,
@@ -50,14 +51,14 @@ fun coability(name: String, value: Double) = Coability(
 )
 
 fun ability(type: Stat, amount: Double, condition: AbilityCondition = noCondition) = StatAbility(
-    name = "${type.names[0]} ${condition.names}",
+    name = "${type.names[0]} (${condition.name})",
     value = amount,
     type = type,
     condition = condition
 )
 
 fun ability(name: String, amount: Double, condition: AbilityCondition = noCondition) = StatAbility(
-    name = "$name $amount ${condition.names}",
+    name = "$name $amount (${condition.name})",
     value = amount,
     type = statNames[name] ?: error("Unknown stat $name"),
     condition = condition

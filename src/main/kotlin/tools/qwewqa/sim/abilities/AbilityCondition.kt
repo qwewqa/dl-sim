@@ -7,14 +7,14 @@ import tools.qwewqa.sim.stage.Element
 
 
 class AbilityCondition(
-    val names: List<String>,
+    val name: String,
     val listeners: Set<String>,
     val condition: Condition
 ) {
-    constructor(name: String, vararg listeners: String, condition: Condition) : this(listOf(name), listeners.toSet(), condition)
+    constructor(name: String, vararg listeners: String, condition: Condition) : this(name, listeners.toSet(), condition)
 
     operator fun plus(other: AbilityCondition) =
-        AbilityCondition(names + other.names, listeners + other.listeners, condition + other.condition)
+        AbilityCondition("$name ${other.name}", listeners + other.listeners, condition + other.condition)
 }
 
 object Conditions {
@@ -32,4 +32,4 @@ object Conditions {
     val isShadow = AbilityCondition("shadow") { element == Element.SHADOW }
 }
 
-val noCondition = AbilityCondition(emptyList(), emptySet()) { true }
+val noCondition = AbilityCondition("", emptySet()) { true }

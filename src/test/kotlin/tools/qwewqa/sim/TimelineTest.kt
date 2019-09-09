@@ -1,9 +1,9 @@
 package tools.qwewqa.sim
 
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import tools.qwewqa.sim.core.Timeline
 
 internal class TimelineTest {

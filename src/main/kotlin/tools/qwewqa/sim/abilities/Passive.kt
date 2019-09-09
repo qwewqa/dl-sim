@@ -1,6 +1,9 @@
-package tools.qwewqa.sim.stage
+package tools.qwewqa.sim.abilities
 
 import tools.qwewqa.sim.core.listen
+import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.Condition
+import tools.qwewqa.sim.stage.Logger
 
 class Passive(
     val name: String = "unamed",
@@ -8,12 +11,12 @@ class Passive(
     val condition: Condition = { true },
     val onActivated: Adventurer.() -> Unit = {},
     val onDeactivated: Adventurer.() -> Unit = {},
-    vararg listeners: String
+    vararg val listeners: String
 ) {
     var active = false
         private set
 
-    fun check() {
+    private fun check() {
         adventurer.apply {
             if (active && !condition()) {
                 onDeactivated()

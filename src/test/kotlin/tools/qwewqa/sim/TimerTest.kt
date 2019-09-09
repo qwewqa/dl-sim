@@ -1,7 +1,7 @@
 package tools.qwewqa.sim
 
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getTimer

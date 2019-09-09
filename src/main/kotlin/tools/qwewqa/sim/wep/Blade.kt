@@ -14,9 +14,7 @@ private val fs = forcestrike {
     wait(41.frames)
 }
 
-private val combo = combo { params ->
-    val doFsf = params["fsf"] as? Boolean ?: true
-
+private val combo = combo {
     doing = "x1"
     wait(10.frames)
     auto("x1", 97.percent, 130)
@@ -40,7 +38,7 @@ private val combo = combo { params ->
     doing = "x5"
     wait(65.frames)
     auto("x5", 194.percent, 660)
-    if (doFsf) wait(33.frames) else wait(62.frames)
+    wait(62.frames)
 }
 
 private val fsf = fsf(33.frames)
