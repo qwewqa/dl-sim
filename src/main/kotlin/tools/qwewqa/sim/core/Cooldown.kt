@@ -1,5 +1,8 @@
 package tools.qwewqa.sim.core
 
+/**
+ * Will be available after the [interval] has passed after each use
+ */
 class Cooldown(
     private val timeline: Timeline,
     val interval: Double,
@@ -9,10 +12,13 @@ class Cooldown(
     var available: Boolean = startsAvailable
         private set
 
-    fun ifAvailable(action: () -> Unit) {
+    /**
+     * Runs [block] if available and also uses the cooldown
+     */
+    fun ifAvailable(block: () -> Unit) {
         if (available) {
             use()
-            action()
+            block()
         }
     }
 

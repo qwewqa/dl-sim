@@ -7,11 +7,11 @@ import tools.qwewqa.sim.extensions.skill
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.MoveData
 
-fun blade(name: String, element: Element, str: Int, skill: MoveData, abilities: List<Ability> = listOf(
-    ability("crit-rate", 2.percent),
-    ability("crit-damage", 70.percent)
-)) =
-    Weapon(name, element, str, skill, tools.qwewqa.sim.wep.blade, abilities)
+fun blade(name: String, element: Element, str: Int, skill: MoveData, abilities: List<Ability> = emptyList()) =
+    Weapon(name, element, str, skill, tools.qwewqa.sim.wep.blade, abilities + listOf(
+        ability("crit-rate", 2.percent),
+        ability("crit-damage", 70.percent)
+    ))
 
 fun blade5b1(name: String, element: Element) = blade(name, element, 572,
     skill("s3", 8030) {

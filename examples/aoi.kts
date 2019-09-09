@@ -2,9 +2,8 @@ stage {
     adventurer {
         name = "Aoi"
         element = FLAME
-        str = 1881
+        str = 494
         ex = coability("str", 10.percent)
-        a1 = ability("str", 20.percent, Conditions.combo(15))
         weapon = HeavensAcuity
 
         s1(2630) {

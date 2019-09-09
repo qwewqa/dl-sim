@@ -1,17 +1,17 @@
 package tools.qwewqa.sim.core
 
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-
+/**
+ * A timer that runs the action after set for a certain duration
+ * Can be paused and started
+ */
 class Timer(private val timeline: Timeline, val action: () -> Unit) {
-    private val lock = Mutex()
     var event: Timeline.Event? = null
     var running = false
         private set
     private var duration = 0.0
     val remaining get() = event?.let { it.startTime - timeline.time } ?: duration
 
-    suspend fun start() = lock.withLock {
+    fun start() {
         if (running) return
         if (duration <= 0.0) return
         event = timeline.schedule(duration) {
@@ -20,7 +20,7 @@ class Timer(private val timeline: Timeline, val action: () -> Unit) {
         running = true
     }
 
-    suspend fun pause() = lock.withLock {
+    fun pause() {
         if (!running) return
         event!!.cancel()
         event = null

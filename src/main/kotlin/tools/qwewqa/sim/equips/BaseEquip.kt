@@ -10,6 +10,6 @@ abstract class BaseEquip {
     open val abilities: List<Ability> = emptyList()
     open fun initialize(adventurer: Adventurer) {
         abilities.forEach { it.initialize(adventurer) }
-        //adventurer.str += str * if(element == adventurer.element) 1.5 else 1.0
+        adventurer.stats["str"].base += str * if(element == adventurer.element) 1.5 else 1.0
     }
 }
