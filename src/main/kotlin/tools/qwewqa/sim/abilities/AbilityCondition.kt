@@ -7,28 +7,29 @@ import tools.qwewqa.sim.stage.Element
 
 
 class AbilityCondition(
+    val names: List<String>,
     val listeners: Set<String>,
     val condition: Condition
 ) {
-    constructor(vararg listeners: String, condition: Condition) : this(listeners.toSet(), condition)
+    constructor(name: String, vararg listeners: String, condition: Condition) : this(listOf(name), listeners.toSet(), condition)
 
     operator fun plus(other: AbilityCondition) =
-        AbilityCondition(listeners + other.listeners, condition + other.condition)
+        AbilityCondition(names + other.names, listeners + other.listeners, condition + other.condition)
 }
 
 object Conditions {
-    fun hp(amount: Double) = AbilityCondition("hp") { hp >= amount }
-    fun hpBelow(amount: Double) = AbilityCondition("hp") { hp < amount }
-    fun combo(amount: Double) = AbilityCondition("combo") { combo >= amount }
+    fun hp(amount: Double) = AbilityCondition("hp $amount","hp") { hp >= amount }
+    fun hpBelow(amount: Double) = AbilityCondition("hp under $amount","hp") { hp < amount }
+    fun combo(amount: Int) = AbilityCondition("combo $amount", "combo") { combo >= amount }
 
     val hp70 = hp(70.percent)
     val hp100 = hp(100.percent)
     val fullHp = hp100
-    val isFlame = AbilityCondition { element == Element.FLAME }
-    val isWater = AbilityCondition { element == Element.WATER }
-    val isWind = AbilityCondition { element == Element.WIND }
-    val isLight = AbilityCondition { element == Element.LIGHT }
-    val isShadow = AbilityCondition { element == Element.SHADOW }
+    val isFlame = AbilityCondition("flame") { element == Element.FLAME }
+    val isWater = AbilityCondition("water") { element == Element.WATER }
+    val isWind = AbilityCondition("wind") { element == Element.WIND }
+    val isLight = AbilityCondition("light") { element == Element.LIGHT }
+    val isShadow = AbilityCondition("shadow") { element == Element.SHADOW }
 }
 
-val noCondition = AbilityCondition { true }
+val noCondition = AbilityCondition(emptyList(), emptySet()) { true }

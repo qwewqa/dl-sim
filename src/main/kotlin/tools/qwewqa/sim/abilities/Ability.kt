@@ -50,14 +50,14 @@ fun coability(name: String, value: Double) = Coability(
 )
 
 fun ability(type: Stat, amount: Double, condition: AbilityCondition = noCondition) = StatAbility(
-    name = "${type.names[0]} $amount",
+    name = "${type.names[0]} ${condition.names}",
     value = amount,
     type = type,
     condition = condition
 )
 
 fun ability(name: String, amount: Double, condition: AbilityCondition = noCondition) = StatAbility(
-    name = "$name $amount",
+    name = "$name $amount ${condition.names}",
     value = amount,
     type = statNames[name] ?: error("Unknown stat $name"),
     condition = condition
