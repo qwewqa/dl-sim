@@ -7,7 +7,8 @@ import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
-import tools.qwewqa.sim.equips.weapons.Weapon
+import tools.qwewqa.sim.equip.dragons.Dragon
+import tools.qwewqa.sim.equip.weapons.Weapon
 import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
@@ -73,6 +74,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var fs: Move? = null
     var fsf: Move? = null
     var dodge: Move? = genericDodge
+    var dragon: Dragon? = null
 
     /**
      * Ran before everything else at the start of the stage run
@@ -130,12 +132,12 @@ class Adventurer(val stage: Stage) : Listenable {
         combo++
     }
 
-    // TODO: Rest of formula; move element out?
     fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
         floor(
             5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
                     (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
-                    if (skill) stats[SKILL].value else 1.0 * element.multiplier(enemy.element)
+                    (if (skill) stats[SKILL].value else 1.0) *
+                    element.multiplier(enemy.element)
         ).toInt()
 
     private fun prerunChecks() {
@@ -162,6 +164,7 @@ class Adventurer(val stage: Stage) : Listenable {
         a2?.initialize(this)
         a3?.initialize(this)
         ex?.initialize(this)
+        dragon?.initialize(this)
         prerunChecks()
         prerun()
         think()

@@ -1,6 +1,7 @@
 package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.stage.StatType.*
+import kotlin.math.min
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
@@ -43,7 +44,23 @@ class Modifier(
     }
 }
 
+class CappedModifier(
+    private val target: KMutableProperty0<Double>,
+    val cap: Double
+) : ReadWriteProperty<Any?, Double> {
+    private var value = 0.0
+    override fun getValue(thisRef: Any?, property: KProperty<*>): Double {
+        return value
+    }
+
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Double) {
+        target.set(target.get() - this.value + min(value, cap))
+        this.value = value
+    }
+}
+
 fun KMutableProperty0<Double>.newModifier() = Modifier(this)
+fun KMutableProperty0<Double>.newCappedModifier(cap: Double) = CappedModifier(this, cap)
 
 enum class StatType {
     FULLY_ADDITIVE, SINGLE_BRACKET, MULTI_BRACKET, SINGLE_BRACKET_NO_BASE, MULTI_BRACKET_NO_BASE

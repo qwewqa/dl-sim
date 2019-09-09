@@ -1,4 +1,4 @@
-package tools.qwewqa.sim.equips.weapons
+package tools.qwewqa.sim.equip.weapons
 
 import tools.qwewqa.sim.abilities.Ability
 import tools.qwewqa.sim.abilities.ability
