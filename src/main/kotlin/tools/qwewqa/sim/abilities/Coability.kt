@@ -1,5 +1,6 @@
 package tools.qwewqa.sim.abilities
 
+import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.Stat
 import tools.qwewqa.sim.stage.statNames
 
@@ -8,11 +9,8 @@ fun coability(type: Stat, amount: Double) = ability {
     value = amount
     onStart = {
         stage.adventurers.forEach {
-            Passive(
-                name = this@ability.name,
-                adventurer = it,
-                onActivated = { it.stats[type].coability = Math.max(it.stats[type].coability, amount) }
-            )
+            it.stats[type].coability = Math.max(it.stats[type].coability, amount)
+            log(Logger.Level.VERBOSER, "coability", "${this@ability.name} activated")
         }
     }
 }
