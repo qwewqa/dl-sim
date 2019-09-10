@@ -18,4 +18,4 @@ class Wyrmprint(
 }
 
 val CE = Wyrmprint(57, listOf(ability("str", 13.percent, Conditions.hp70)))
-val RR = Wyrmprint(57, listOf(ability("skill", 30.percent), ability("crit-rate", 8.percent, Conditions.hp70)))
+val RR = Wyrmprint(64, listOf(ability("skill", 30.percent), ability("crit-rate", 8.percent, Conditions.hp70)))
