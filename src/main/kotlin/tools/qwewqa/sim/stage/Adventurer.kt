@@ -2,7 +2,6 @@ package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
 import tools.qwewqa.sim.abilities.Ability
-import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -67,7 +66,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var s1: Move? = null
     var s2: Move? = null
     var s3: Move? = null
-    var ex: Coability? = null
+    var ex: Ability? = null
     var a1: Ability? = null
     var a2: Ability? = null
     var a3: Ability? = null
@@ -146,13 +145,7 @@ class Adventurer(val stage: Stage) : Listenable {
         check(weaponType != null) { "no weapon type specified" }
     }
 
-    init {
-        stage.timeline.schedule {
-            initialize()
-        }
-    }
-
-    private fun initialize() {
+    fun initialize() {
         stats["str"].base = str.toDouble()
         weapon?.initialize(this)
         x?.initialize(this)

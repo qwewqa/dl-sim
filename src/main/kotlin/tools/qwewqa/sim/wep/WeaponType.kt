@@ -4,6 +4,7 @@ import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Move
+import tools.qwewqa.sim.stage.move
 
 data class WeaponType(
     val name: String,

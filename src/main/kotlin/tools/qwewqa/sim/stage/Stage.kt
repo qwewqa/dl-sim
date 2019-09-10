@@ -14,6 +14,9 @@ class Stage {
     suspend fun run() {
         if (started) return
         started = true
+        adventurers.forEach {
+            it.initialize()
+        }
         timeline.startAndJoin()
         onEnd()
     }

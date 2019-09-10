@@ -1,11 +1,6 @@
 package tools.qwewqa.sim.extensions
 
-import tools.qwewqa.sim.stage.Action
-import tools.qwewqa.sim.stage.Adventurer
-import tools.qwewqa.sim.stage.Condition
-import tools.qwewqa.sim.stage.MoveBuilder
-
-fun move(init: MoveBuilder.() -> Unit) = MoveBuilder().apply { init() }.build()
+import tools.qwewqa.sim.stage.*
 
 fun action(action: Action) = action
 

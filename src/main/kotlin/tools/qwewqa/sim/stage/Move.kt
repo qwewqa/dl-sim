@@ -18,3 +18,5 @@ class MoveBuilder {
     var setup: (Adventurer) -> Unit = {}
     fun build() = Move(name, condition, action, setup)
 }
+
+fun move(init: MoveBuilder.() -> Unit) = MoveBuilder().apply { init() }.build()

@@ -1,27 +1,20 @@
 package tools.qwewqa.sim.abilities
 
-import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Stat
 import tools.qwewqa.sim.stage.statNames
 
-class Coability(
-    override val name: String,
-    override val value: Double = 0.0,
-    val type: Stat
-) : Ability() {
-    override fun initialize(adventurer: Adventurer) {
-        adventurer.stage.adventurers.forEach {
+fun coability(type: Stat, amount: Double) = ability {
+    name = "${type.names[0]} $amount coability"
+    value = amount
+    onStart = {
+        stage.adventurers.forEach {
             Passive(
-                name = name,
+                name = this@ability.name,
                 adventurer = it,
-                onActivated = { adventurer.stats[type].coability = Math.max(adventurer.stats[type].coability, value) }
+                onActivated = { it.stats[type].coability = Math.max(it.stats[type].coability, amount) }
             )
         }
     }
 }
 
-fun coability(name: String, value: Double) = Coability(
-    name = "$name $value coability",
-    value = value,
-    type = statNames[name] ?: error("Unknown stat $name")
-)
+fun coability(name: String, value: Double) = coability(statNames.getValue(name), value)
