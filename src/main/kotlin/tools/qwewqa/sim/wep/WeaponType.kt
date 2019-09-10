@@ -33,6 +33,7 @@ fun combo(action: Action) = move {
 fun fsf(duration: Double) = move {
     name = "fsf"
     condition { !skillLock }
+    action { wait(duration) }
 }
 
 suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0) = hit(name) {
