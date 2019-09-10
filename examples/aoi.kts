@@ -6,6 +6,7 @@ stage {
         ex = coability("str", 10.percent)
         weapon = HeavensAcuity
         dragon = sakuya
+        wp = RR+CE
 
         s1(2630) {
             damage(878.percent)

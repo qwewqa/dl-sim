@@ -9,6 +9,7 @@ import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.equip.dragons.Dragon
 import tools.qwewqa.sim.equip.weapons.Weapon
+import tools.qwewqa.sim.equip.wyrmprints.Wyrmprint
 import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
@@ -75,6 +76,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var fsf: Move? = null
     var dodge: Move? = genericDodge
     var dragon: Dragon? = null
+    var wp: Wyrmprint? = null
 
     /**
      * Ran before everything else at the start of the stage run
@@ -165,6 +167,7 @@ class Adventurer(val stage: Stage) : Listenable {
         a3?.initialize(this)
         ex?.initialize(this)
         dragon?.initialize(this)
+        wp?.initialize(this)
         prerunChecks()
         prerun()
         think()

@@ -9,10 +9,10 @@ class Dragon(
     val name: String,
     val element: Element = Element.NEUTRAL,
     val str: Int,
-    override val abilities: List<Ability> = emptyList()
+    val abilities: List<Ability> = emptyList()
 ) : BaseEquip() {
     override fun initialize(adventurer: Adventurer) {
-        super.initialize(adventurer)
+        abilities.forEach { it.initialize(adventurer) }
         adventurer.stats["str"].base += str * if(element == adventurer.element) 1.5 else 1.0
     }
 }

@@ -14,10 +14,10 @@ class Weapon(
     val str: Int,
     val skill: Move = noMove(),
     val type: WeaponType,
-    override val abilities: List<Ability> = emptyList()
+    val abilities: List<Ability> = emptyList()
 ) : BaseEquip() {
     override fun initialize(adventurer: Adventurer) {
-        super.initialize(adventurer)
+        abilities.forEach { it.initialize(adventurer) }
         adventurer.stats["str"].base += str * if(element == adventurer.element) 1.5 else 1.0
         check(adventurer.weaponType == null || adventurer.weaponType == type)
         adventurer.weaponType = type
