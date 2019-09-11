@@ -8,7 +8,7 @@ fun MoveBuilder.action(action: Action) {
     this.action = action
 }
 
-fun MoveBuilder.condition(condition: Condition) {
+fun MoveBuilder.condition(condition: AdventurerCondition) {
     this.condition = condition
 }
 

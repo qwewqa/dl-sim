@@ -7,7 +7,7 @@ import kotlin.reflect.KMutableProperty0
 class Passive(
     val name: String = "unamed",
     val adventurer: Adventurer,
-    val condition: PassiveCondition,
+    val condition: Condition,
     target: KMutableProperty0<Double>,
     val value: Double
 ) {

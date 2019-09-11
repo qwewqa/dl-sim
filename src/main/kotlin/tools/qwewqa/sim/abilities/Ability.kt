@@ -6,7 +6,7 @@ import tools.qwewqa.sim.stage.*
 data class Ability(
     val name: String,
     val value: Double,
-    val condition: PassiveCondition = noCondition
+    val condition: Condition = noCondition
 ) {
     fun initialize(adventurer: Adventurer) {
         val stack = Abilities[name].getStack(adventurer)
@@ -40,6 +40,6 @@ data class AbilityBehavior(
     fun getStack(adventurer: Adventurer) =
         adventurer.abilityStacks[name] ?: Stack(adventurer).also { adventurer.abilityStacks[name] = it }
 
-    operator fun invoke(value: Double, condition: PassiveCondition = noCondition) = getAbility(value, condition)
-    fun getAbility(value: Double, condition: PassiveCondition = noCondition) = Ability(name, value, condition)
+    operator fun invoke(value: Double, condition: Condition = noCondition) = getAbility(value, condition)
+    fun getAbility(value: Double, condition: Condition = noCondition) = Ability(name, value, condition)
 }

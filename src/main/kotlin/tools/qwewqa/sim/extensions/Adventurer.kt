@@ -52,4 +52,4 @@ fun Adventurer.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
         }.value }
 }
 
-operator fun Condition.plus(condition: Condition): Condition = { this@plus() && condition() }
+operator fun AdventurerCondition.plus(condition: AdventurerCondition): AdventurerCondition = { this@plus() && condition() }

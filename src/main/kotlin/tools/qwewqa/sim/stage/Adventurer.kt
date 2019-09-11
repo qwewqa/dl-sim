@@ -247,5 +247,5 @@ enum class Element {
     }
 }
 
-typealias Condition = Adventurer.() -> Boolean
+typealias AdventurerCondition = Adventurer.() -> Boolean
 typealias Action = suspend Adventurer.() -> Unit
