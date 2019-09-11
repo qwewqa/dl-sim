@@ -6,17 +6,12 @@ import tools.qwewqa.sim.stage.Stat
 import tools.qwewqa.sim.stage.newModifier
 import tools.qwewqa.sim.stage.statNames
 
-fun statAbility(type: Stat, amount: Double, condition: PassiveCondition = noCondition) = ability {
-    name = "${type.names[0]} $amount ability (${condition.name})"
+fun statAbility(type: Stat, amount: Double, cond: PassiveCondition = noCondition) = ability {
+    name = "${type.names[0]} ability"
     value = amount
-    onStart = {
-        Passive(
-            name = this@ability.name,
-            adventurer = this,
-            condition = condition,
-            target = stats[type]::passive.newModifier(),
-            value = value
-        )
+    condition = cond
+    onChange = { old, new ->
+        stats[type].passive += new - old
     }
 }
 

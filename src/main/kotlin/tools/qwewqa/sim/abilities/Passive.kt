@@ -1,19 +1,17 @@
 package tools.qwewqa.sim.abilities
 
 import tools.qwewqa.sim.core.listen
-import tools.qwewqa.sim.stage.Adventurer
-import tools.qwewqa.sim.stage.Condition
-import tools.qwewqa.sim.stage.Logger
-import tools.qwewqa.sim.stage.Modifier
+import tools.qwewqa.sim.stage.*
+import kotlin.reflect.KMutableProperty0
 
 class Passive(
     val name: String = "unamed",
     val adventurer: Adventurer,
     val condition: PassiveCondition,
-    target: Modifier,
+    target: KMutableProperty0<Double>,
     val value: Double
 ) {
-    var target: Double by target
+    var target: Double by target.newModifier()
     var active = false
         private set
 
@@ -22,11 +20,11 @@ class Passive(
             if (active && !condition.condition(this)) {
                 target = 0.0
                 active = false
-                adventurer.log(Logger.Level.VERBOSER, "passive", "${this@Passive.name} deactivated")
+                adventurer.log(Logger.Level.VERBOSER, "passive", "(${condition.name}) ${this@Passive.name} [$value] deactivated")
             } else if (!active && condition.condition(this)) {
                 target = value
                 active = true
-                adventurer.log(Logger.Level.VERBOSER, "passive", "${this@Passive.name} activated")
+                adventurer.log(Logger.Level.VERBOSER, "passive", "(${condition.name}) ${this@Passive.name} [$value] activated")
             }
         }
     }

@@ -2,6 +2,8 @@ package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
 import tools.qwewqa.sim.abilities.Ability
+import tools.qwewqa.sim.abilities.AbilityStack
+import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -63,10 +65,12 @@ class Adventurer(val stage: Stage) : Listenable {
 
     var weapon: Weapon? = null
 
+    val abilityStacks = mutableMapOf<String, AbilityStack>()
+
     var s1: Move? = null
     var s2: Move? = null
     var s3: Move? = null
-    var ex: Ability? = null
+    var ex: Coability? = null
     var a1: Ability? = null
     var a2: Ability? = null
     var a3: Ability? = null
