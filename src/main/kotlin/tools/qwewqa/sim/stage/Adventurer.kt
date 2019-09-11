@@ -2,15 +2,15 @@ package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
 import tools.qwewqa.sim.abilities.Ability
-import tools.qwewqa.sim.abilities.AbilityStack
+import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
-import tools.qwewqa.sim.equip.dragons.Dragon
-import tools.qwewqa.sim.equip.weapons.Weapon
-import tools.qwewqa.sim.equip.wyrmprints.Wyrmprint
+import tools.qwewqa.sim.equip.Dragon
+import tools.qwewqa.sim.equip.Weapon
+import tools.qwewqa.sim.equip.Wyrmprint
 import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
@@ -65,7 +65,7 @@ class Adventurer(val stage: Stage) : Listenable {
 
     var weapon: Weapon? = null
 
-    val abilityStacks = mutableMapOf<String, AbilityStack>()
+    val abilityStacks = mutableMapOf<String, AbilityBehavior.Stack>()
 
     var s1: Move? = null
     var s2: Move? = null
@@ -131,7 +131,7 @@ class Adventurer(val stage: Stage) : Listenable {
      * Directly applies given damage
      */
     fun trueDamage(amount: Int, name: String) {
-        log(Logger.Level.VERBOSE, "damage", "$amount damage by $name")
+        log(Logger.Level.MORE, "damage", "$amount damage by $name")
         enemy.damage(amount)
         listeners.raise("dmg")
         combo++
@@ -141,7 +141,7 @@ class Adventurer(val stage: Stage) : Listenable {
         floor(
             5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
                     (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
-                    (if (skill) stats[SKILL].value else 1.0) *
+                    (if (skill) stats[SKILL_DAMAGE].value else 1.0) *
                     element.multiplier(enemy.element)
         ).toInt()
 
@@ -179,7 +179,7 @@ class Adventurer(val stage: Stage) : Listenable {
          * TODO: Actually include haste
          */
         operator fun invoke(amount: Int, fs: Boolean = false) {
-            log(Logger.Level.VERBOSE, "sp", "$amount sp by $doing")
+            log(Logger.Level.MORE, "sp", "$amount sp by $doing")
             charge(amount)
         }
 

@@ -1,20 +1,15 @@
 package tools.qwewqa.sim.abilities
 
+import tools.qwewqa.sim.data.Abilities
 import tools.qwewqa.sim.stage.*
 
 data class Ability(
     val name: String,
     val value: Double,
-    val condition: PassiveCondition,
-    val onStart: Adventurer.() -> Unit,
-    val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
+    val condition: PassiveCondition = noCondition
 ) {
     fun initialize(adventurer: Adventurer) {
-        val stack = adventurer.abilityStacks[name] ?: AbilityStack(
-            adventurer,
-            onStart,
-            onChange
-        ).also { adventurer.abilityStacks[name] = it }
+        val stack = Abilities[name].getStack(adventurer)
         Passive(
             name = name,
             adventurer = adventurer,
@@ -25,29 +20,26 @@ data class Ability(
     }
 }
 
-class AbilityStack(
-    val adventurer: Adventurer,
-    onStart: Adventurer.() -> Unit,
-    val onChange: Adventurer.(Double, Double) -> Unit
+data class AbilityBehavior(
+    val name: String,
+    val onStart: Adventurer.() -> Unit,
+    val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
 ) {
-    var value: Double = 0.0
-        set(value) {
-            adventurer.onChange(field, value)
-            field = value
+    inner class Stack(val adventurer: Adventurer) {
+        var value: Double = 0.0
+            set(value) {
+                adventurer.onChange(field, value)
+                field = value
+            }
+
+        init {
+            adventurer.onStart()
         }
-
-    init {
-        adventurer.onStart()
     }
-}
 
-class AbilityBuilder {
-    var name = "unnamed ability"
-    var value = 0.0
-    var condition: PassiveCondition = noCondition
-    var onStart: Adventurer.() -> Unit = {}
-    var onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
-    fun build() = Ability(name, value, condition, onStart, onChange)
-}
+    fun getStack(adventurer: Adventurer) =
+        adventurer.abilityStacks[name] ?: Stack(adventurer).also { adventurer.abilityStacks[name] = it }
 
-fun ability(init: AbilityBuilder.() -> Unit) = AbilityBuilder().apply(init).build()
+    operator fun invoke(value: Double, condition: PassiveCondition = noCondition) = getAbility(value, condition)
+    fun getAbility(value: Double, condition: PassiveCondition = noCondition) = Ability(name, value, condition)
+}

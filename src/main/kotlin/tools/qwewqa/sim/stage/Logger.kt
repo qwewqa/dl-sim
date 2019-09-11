@@ -5,12 +5,13 @@ class Logger(val stage: Stage) {
     enum class Level {
         NONE,
         BASIC,
+        MORE,
         VERBOSE,
         VERBOSER,
-        VERBOSEIST
+        VERBOSIEST
     }
 
-    var filterLevel = Level.VERBOSEIST
+    var filterLevel = Level.VERBOSER
 
     fun log(level: Level, name: String, category: String, message: String) {
         if (level.ordinal <= filterLevel.ordinal) {

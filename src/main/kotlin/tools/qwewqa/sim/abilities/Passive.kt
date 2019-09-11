@@ -20,11 +20,11 @@ class Passive(
             if (active && !condition.condition(this)) {
                 target = 0.0
                 active = false
-                adventurer.log(Logger.Level.VERBOSER, "passive", "(${condition.name}) ${this@Passive.name} [$value] deactivated")
+                adventurer.log(Logger.Level.VERBOSE, "passive", "(${condition.name}) ${this@Passive.name} [$value] deactivated")
             } else if (!active && condition.condition(this)) {
                 target = value
                 active = true
-                adventurer.log(Logger.Level.VERBOSER, "passive", "(${condition.name}) ${this@Passive.name} [$value] activated")
+                adventurer.log(Logger.Level.VERBOSE, "passive", "(${condition.name}) ${this@Passive.name} [$value] activated")
             }
         }
     }

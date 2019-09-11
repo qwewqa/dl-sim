@@ -4,9 +4,9 @@ stage {
         element = FLAME
         str = 494
         ex = coability("str", 10.percent)
-        weapon = HeavensAcuity
-        dragon = sakuya
-        wp = RR+CE
+        weapon = Weapons["Heaven's Acuity"]
+        dragon = Dragons["Sakuya"]
+        wp = Wyrmprints["CE", "RR"]
 
         s1(2630) {
             damage(878.percent)

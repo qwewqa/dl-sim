@@ -1,7 +1,6 @@
-package tools.qwewqa.sim.equip.weapons
+package tools.qwewqa.sim.equip
 
 import tools.qwewqa.sim.abilities.Ability
-import tools.qwewqa.sim.equip.BaseEquip
 import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Element

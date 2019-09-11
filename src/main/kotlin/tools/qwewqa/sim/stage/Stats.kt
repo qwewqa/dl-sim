@@ -68,7 +68,7 @@ enum class StatType {
 
 enum class Stat(val type: StatType, vararg val names: String) {
     STR(MULTI_BRACKET, "strength", "str"),
-    SKILL(MULTI_BRACKET_NO_BASE, "skill damage", "skill", "skill-damage", "sd"),
+    SKILL_DAMAGE(MULTI_BRACKET_NO_BASE, "skill damage", "skill", "skill-damage", "sd"),
     DEF(SINGLE_BRACKET, "defense", "def"),
     CRIT_RATE(FULLY_ADDITIVE, "crit", "crit-rate", "critrate", "crit rate", "critical rate"),
     CRIT_DAMAGE(FULLY_ADDITIVE, "crit-damage", "critdmg", "crit damage", "critical damage", "crit-dmg")

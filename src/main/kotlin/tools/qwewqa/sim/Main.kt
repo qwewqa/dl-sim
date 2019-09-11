@@ -18,9 +18,7 @@ fun main(vararg args: String) {
     import tools.qwewqa.sim.stage.Element.*
     import tools.qwewqa.sim.abilities.*
     import tools.qwewqa.sim.equip.*
-    import tools.qwewqa.sim.equip.weapons.*
-    import tools.qwewqa.sim.equip.dragons.*
-    import tools.qwewqa.sim.equip.wyrmprints.*
+    import tools.qwewqa.sim.data.*
     """)
     engine.eval(File(fileName).bufferedReader())
 }
