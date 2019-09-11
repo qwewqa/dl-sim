@@ -23,7 +23,7 @@ object Abilities : LooseMap<AbilityBehavior>() {
             val vorig = min(orig, cap)
             val vnew = min(new, cap)
             stats[stat].passive += vnew - vorig
-            log(Logger.Level.VERBOSER, "ability", "$name ability set to from $vorig to $vnew")
+            log(Logger.Level.VERBOSER, "ability", "$name ability set to from $vorig to $vnew (uncapped: $new)")
         }
     )
 
