@@ -12,7 +12,7 @@ fun statAbility(type: Stat, amount: Double, cond: PassiveCondition = noCondition
     value = amount
     condition = cond
     onChange = { old, new ->
-        log(Logger.Level.VERBOSEIST, "ability", "${this@ability.name} ability set to $new")
+        log(Logger.Level.VERBOSEIST, "ability", "${this@ability.name} set to $new")
         stats[type].passive += new - old
     }
 }
@@ -34,7 +34,7 @@ fun cappedStatAbility(
     condition = cond
     onChange = { old, new ->
         stats[type].passive += min(cap, new) - min(cap, old)
-        log(Logger.Level.VERBOSEIST, "ability", "${this@ability.name} ability set to ${min(cap, new)}")
+        log(Logger.Level.VERBOSEIST, "ability", "${this@ability.name} set from ${min(cap, old)} to ${min(cap, new)}")
     }
 }
 
