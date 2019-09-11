@@ -17,5 +17,5 @@ class Wyrmprint(
     operator fun plus(other: Wyrmprint) = Wyrmprint(str + other.str, abilities + other.abilities)
 }
 
-val CE = Wyrmprint(57, listOf(statAbility("str", 13.percent, Conditions.hp70)))
-val RR = Wyrmprint(64, listOf(statAbility("skill", 30.percent), statAbility("crit-rate", 8.percent, Conditions.hp70)))
+val CE = Wyrmprint(57, listOf(cappedStatAbility("str", 13.percent, 20.percent, Conditions.hp70)))
+val RR = Wyrmprint(64, listOf(cappedStatAbility("skill", 30.percent, 40.percent), cappedStatAbility("crit-rate", 8.percent, 15.percent, Conditions.hp70)))

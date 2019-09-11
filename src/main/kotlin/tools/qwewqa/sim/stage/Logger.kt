@@ -1,14 +1,16 @@
 package tools.qwewqa.sim.stage
 
 class Logger(val stage: Stage) {
-    enum class Level{
+    // TODO: give these actual names
+    enum class Level {
         NONE,
         BASIC,
         VERBOSE,
-        VERBOSER
+        VERBOSER,
+        VERBOSEIST
     }
 
-    var filterLevel = Level.VERBOSER
+    var filterLevel = Level.VERBOSEIST
 
     fun log(level: Level, name: String, category: String, message: String) {
         if (level.ordinal <= filterLevel.ordinal) {
