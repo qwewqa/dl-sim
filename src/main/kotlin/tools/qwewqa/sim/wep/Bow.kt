@@ -8,17 +8,17 @@ private val fs = forcestrike {
     doing = "fs"
     wait(63.frames)
     hit("fs") {
-        hit(0.5, "fs-a") {
-            damage(31.percent, fs = true)
-            sp(460, fs = true)
+        schedule {
+            wait(0.5)
+            fs("fs-a", 31.percent, 460)
+            fs("fs-b", 31.percent)
+            fs("fs-c", 31.percent)
+            fs("fs-d", 31.percent)
+            fs("fs-e", 31.percent)
+            fs("fs-f", 31.percent)
+            fs("fs-g", 31.percent)
+            fs("fs-h", 31.percent)
         }
-        hit(0.5, "fs-b") { damage(31.percent, fs = true) }
-        hit(0.5, "fs-c") { damage(31.percent, fs = true) }
-        hit(0.5, "fs-d") { damage(31.percent, fs = true) }
-        hit(0.5, "fs-e") { damage(31.percent, fs = true) }
-        hit(0.5, "fs-f") { damage(31.percent, fs = true) }
-        hit(0.5, "fs-g") { damage(31.percent, fs = true) }
-        hit(0.5, "fs-h") { damage(31.percent, fs = true) }
     }
     wait(34.frames)
 }
@@ -27,9 +27,9 @@ private val combo = combo {
     doing = "x1"
     wait(23.frames)
     hit("x1") {
-        auto("x1-a1", 29.percent, 184)
-        auto("x1-a2", 29.percent)
-        auto("x1-a3", 29.percent)
+        auto("x1-a", 29.percent, 184)
+        auto("x1-b", 29.percent)
+        auto("x1-c", 29.percent)
     }
 
     doing = "x2"
@@ -42,9 +42,9 @@ private val combo = combo {
     doing = "x3"
     wait(33.frames)
     hit("x3") {
-        auto("x3-a1", 42.percent, 276)
-        auto("x3-a2", 42.percent)
-        auto("x3-a3", 42.percent)
+        auto("x3-a", 42.percent, 276)
+        auto("x3-b", 42.percent)
+        auto("x3-c", 42.percent)
     }
 
     doing = "x4"
@@ -57,11 +57,11 @@ private val combo = combo {
     doing = "x5"
     wait(66.frames)
     hit("x5") {
-        auto("x5-a1", 35.percent, 529)
-        auto("x5-a2", 35.percent)
-        auto("x5-a3", 35.percent)
-        auto("x5-a4", 35.percent)
-        auto("x5-a5", 35.percent)
+        auto("x5-a", 35.percent, 529)
+        auto("x5-b", 35.percent)
+        auto("x5-c", 35.percent)
+        auto("x5-d", 35.percent)
+        auto("x5-e", 35.percent)
     }
     wait(24.frames)
 }

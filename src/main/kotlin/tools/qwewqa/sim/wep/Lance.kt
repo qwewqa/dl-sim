@@ -7,15 +7,11 @@ import tools.qwewqa.sim.extensions.percent
 private val fs = forcestrike {
     doing = "fs"
     wait(49.frames)
-    hit("fs", "fsc") {
-        hit("fs-a") {
-            damage(30.percent, fs = true)
-            sp(400, fs = true)
-        }
-        hit("fs-b") { damage(30.percent, fs = true) }
-        hit("fs-c") { damage(30.percent, fs = true) }
-        hit("fs-d") { damage(30.percent, fs = true) }
-        hit("fs-e") { damage(30.percent, fs = true) }
+    hit("fs") {
+        fs("fs-a", 30.percent, 400)
+        fs("fs-b", 30.percent)
+        fs("fs-c", 30.percent)
+        fs("fs-d", 30.percent)
     }
     wait(25.frames)
 }

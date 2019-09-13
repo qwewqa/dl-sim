@@ -12,18 +12,18 @@ fun MoveBuilder.condition(condition: AdventurerCondition) {
     this.condition = condition
 }
 
-fun MoveBuilder.initialize(initialize: Adventurer.() -> Unit) {
+fun MoveBuilder.initialize(initialize: AdventurerInstance.() -> Unit) {
     this.setup = initialize
 }
 
-suspend fun Adventurer.hit(vararg name: String, action: Action) {
+suspend fun AdventurerInstance.hit(vararg name: String, action: Action) {
     think(*(name.map { "pre-$it" }.toTypedArray()))
     action()
     think(*(name.map { "connect-$it" }.toTypedArray()))
     think(*name)
 }
 
-suspend fun Adventurer.hit(delay: Double, vararg name: String, action: Action) {
+suspend fun AdventurerInstance.hit(delay: Double, vararg name: String, action: Action) {
     think(*(name.map { "pre-$it" }.toTypedArray()))
     schedule(delay) {
         action()
@@ -49,5 +49,5 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
 
 fun noMove() = move { condition { false } }
 
-fun Adventurer.s1(cost: Int, includeUILatency: Boolean = true, action: Action) { s1 = skill("s1", cost, includeUILatency, action) }
-fun Adventurer.s2(cost: Int, includeUILatency: Boolean = true, action: Action) { s2 = skill("s2", cost, includeUILatency, action) }
+fun AdventurerInstance.s1(cost: Int, includeUILatency: Boolean = true, action: Action) { s1 = skill("s1", cost, includeUILatency, action) }
+fun AdventurerInstance.s2(cost: Int, includeUILatency: Boolean = true, action: Action) { s2 = skill("s2", cost, includeUILatency, action) }

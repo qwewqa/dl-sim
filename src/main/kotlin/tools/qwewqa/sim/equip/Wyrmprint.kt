@@ -1,14 +1,14 @@
 package tools.qwewqa.sim.equip
 
 import tools.qwewqa.sim.abilities.*
-import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.AdventurerInstance
 
 class Wyrmprint(
     val name: String,
     val str: Int,
     val abilities: List<AbilityInstance>
 ) : BaseEquip() {
-    override fun initialize(adventurer: Adventurer) {
+    override fun initialize(adventurer: AdventurerInstance) {
         abilities.forEach { it.initialize(adventurer) }
         adventurer.stats["str"].base += str
     }

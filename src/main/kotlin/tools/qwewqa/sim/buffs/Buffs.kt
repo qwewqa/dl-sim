@@ -2,7 +2,7 @@ package tools.qwewqa.sim.buffs
 
 import tools.qwewqa.sim.core.Timer
 import tools.qwewqa.sim.core.getTimer
-import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.AdventurerInstance
 
 /**
  * Data on an buff without any behavior. A base stack is created by searching for the name in []
@@ -12,7 +12,7 @@ data class BuffInstance(
     val value: Double,
     val behavior: BuffBehavior
 ) {
-    fun apply(adventurer: Adventurer, duration: Double? = null) : Timer? {
+    fun apply(adventurer: AdventurerInstance, duration: Double? = null) : Timer? {
         val stack = behavior.getStack(adventurer)
         if (stack.count > behavior.stackCap) return null
         stack.value += value
@@ -29,14 +29,14 @@ data class BuffInstance(
 
 data class BuffBehavior(
     val name: String,
-    val onStart: Adventurer.(Stack) -> Unit = {},
-    val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> },
+    val onStart: AdventurerInstance.(Stack) -> Unit = {},
+    val onChange: AdventurerInstance.(Double, Double) -> Unit = { _: Double, _: Double -> },
     val stackCap: Int = 20
 ) {
     /**
      * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps
      */
-    inner class Stack(val adventurer: Adventurer) {
+    inner class Stack(val adventurer: AdventurerInstance) {
         var count: Int = 0
         var value: Double = 0.0
             set(value) {
@@ -56,13 +56,13 @@ data class BuffBehavior(
     /**
      * Get the stack of this for the given [adventurer], creating a new one first if needed
      */
-    fun getStack(adventurer: Adventurer) =
+    fun getStack(adventurer: AdventurerInstance) =
         adventurer.buffStacks[this] ?: Stack(adventurer).also { adventurer.buffStacks[this] = it }
 
     /**
-     * Clears all stacks of this for the given [Adventurer]
+     * Clears all stacks of this for the given [AdventurerInstance]
      */
-    fun clearStack(adventurer: Adventurer) {
+    fun clearStack(adventurer: AdventurerInstance) {
         getStack(adventurer).value = 0.0
         adventurer.buffStacks.remove(this)
     }

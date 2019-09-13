@@ -12,7 +12,7 @@ data class AbilityInstance(
     val behavior: AbilityBehavior,
     val condition: Condition = noCondition
 ) {
-    fun initialize(adventurer: Adventurer) {
+    fun initialize(adventurer: AdventurerInstance) {
         val stack = behavior.getStack(adventurer)
         Passive(
             name = name,
@@ -26,13 +26,13 @@ data class AbilityInstance(
 
 data class AbilityBehavior(
     val name: String,
-    val onStart: Adventurer.(Stack) -> Unit = {},
-    val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
+    val onStart: AdventurerInstance.(Stack) -> Unit = {},
+    val onChange: AdventurerInstance.(Double, Double) -> Unit = { _: Double, _: Double -> }
 ) {
     /**
      * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps
      */
-    inner class Stack(val adventurer: Adventurer) {
+    inner class Stack(val adventurer: AdventurerInstance) {
         var value: Double = 0.0
             set(value) {
                 adventurer.onChange(field, value)
@@ -47,7 +47,7 @@ data class AbilityBehavior(
     /**
      * Get the stack of this for the given [adventurer], creating a new one first if needed
      */
-    fun getStack(adventurer: Adventurer) =
+    fun getStack(adventurer: AdventurerInstance) =
         adventurer.abilityStacks[this] ?: Stack(adventurer).also { adventurer.abilityStacks[this] = it }
 
     /**

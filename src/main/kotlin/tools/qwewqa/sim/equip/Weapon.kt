@@ -2,7 +2,7 @@ package tools.qwewqa.sim.equip
 
 import tools.qwewqa.sim.abilities.AbilityInstance
 import tools.qwewqa.sim.extensions.noMove
-import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.AdventurerInstance
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.Move
 import tools.qwewqa.sim.wep.WeaponType
@@ -15,7 +15,7 @@ class Weapon(
     val type: WeaponType,
     val abilities: List<AbilityInstance> = emptyList()
 ) : BaseEquip() {
-    override fun initialize(adventurer: Adventurer) {
+    override fun initialize(adventurer: AdventurerInstance) {
         abilities.forEach { it.initialize(adventurer) }
         adventurer.stats["str"].base += str * if(element == adventurer.element) 1.5 else 1.0
         check(adventurer.weaponType == null || adventurer.weaponType == type)

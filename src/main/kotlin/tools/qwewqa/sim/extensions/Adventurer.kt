@@ -2,17 +2,17 @@ package tools.qwewqa.sim.extensions
 
 import tools.qwewqa.sim.stage.*
 
-fun Adventurer.prerun(prerun: Adventurer.() -> Unit) {
+fun AdventurerInstance.prerun(prerun: AdventurerInstance.() -> Unit) {
     this.prerun = prerun
 }
 
-fun Stage.adventurer(init: Adventurer.() -> Unit) {
-    val adventurer = Adventurer(this)
+fun Stage.adventurer(init: AdventurerInstance.() -> Unit) {
+    val adventurer = AdventurerInstance(this)
     adventurer.init()
     adventurers += adventurer
 }
 
-class AclSelector(val adventurer: Adventurer) {
+class AclSelector(val adventurer: AdventurerInstance) {
     var value: Move? = null
         private set
 
@@ -45,7 +45,7 @@ class AclSelector(val adventurer: Adventurer) {
     operator fun String.unaryMinus() = !+this
 }
 
-fun Adventurer.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
+fun AdventurerInstance.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
     logic = { AclSelector(this).apply {
             init()
         if (implicitX) add(x)

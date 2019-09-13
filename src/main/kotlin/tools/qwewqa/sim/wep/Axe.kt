@@ -14,10 +14,7 @@ private val fs = forcestrike {
         "x5" -> wait(40.frames)
         else -> wait((40+78).frames)
     }
-    hit("fs", "fsc") {
-        damage(192.percent, fs = true)
-        sp(300,  fs = true)
-    }
+    fs("fs", 192.percent, 300)
     wait(34.frames)
 }
 

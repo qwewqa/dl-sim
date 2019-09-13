@@ -8,11 +8,8 @@ private val fs = forcestrike {
     doing = "fs"
     wait(42.frames)
     hit("fs") {
-        hit("fs-a") {
-            damage(90.percent, fs = true)
-            sp(460, fs = true)
-        }
-        hit("fs-b") { damage(90.percent, fs = true) }
+        fs("fs-a", 90.percent, 460)
+        fs("fs-b", 90.percent)
     }
     wait(81.frames)
 }

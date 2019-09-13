@@ -4,9 +4,9 @@ data class Move(
     val name: String = "unnamed",
     val condition: AdventurerCondition = { true },
     val action: Action = {},
-    val setup: Adventurer.() -> Unit = {}
+    val setup: AdventurerInstance.() -> Unit = {}
 ) {
-    fun initialize(adventurer: Adventurer) {
+    fun initialize(adventurer: AdventurerInstance) {
         setup(adventurer)
     }
 }
@@ -15,7 +15,7 @@ class MoveBuilder {
     var name = "unnamed"
     var condition: AdventurerCondition = { true }
     var action: Action = {}
-    var setup: (Adventurer) -> Unit = {}
+    var setup: (AdventurerInstance) -> Unit = {}
     fun build() = Move(name, condition, action, setup)
 }
 

@@ -20,7 +20,7 @@ import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.floor
 
-class Adventurer(val stage: Stage) : Listenable {
+class AdventurerInstance(override val stage: Stage) : Listenable, Character {
     val timeline get() = stage.timeline
     val enemy get() = stage.enemy
 
@@ -37,7 +37,7 @@ class Adventurer(val stage: Stage) : Listenable {
      */
     override val listeners = ListenerMap()
 
-    val stats = StatMap()
+    override val stats = StatMap()
     var str: Int = 0
 
     var name: String = "unnamed"
@@ -69,7 +69,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var weapon: Weapon? = null
 
     val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
-    val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
+    override val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
 
     var s1: Move? = null
     var s2: Move? = null
@@ -88,13 +88,13 @@ class Adventurer(val stage: Stage) : Listenable {
     /**
      * Ran before everything else at the start of the stage run
      */
-    var prerun: Adventurer.() -> Unit = {}
+    var prerun: AdventurerInstance.() -> Unit = {}
 
     /**
      * Decides what moves to make
      * null is a noop
      */
-    var logic: Adventurer.(String) -> Move? = { null }
+    var logic: AdventurerInstance.(String) -> Move? = { null }
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -109,7 +109,7 @@ class Adventurer(val stage: Stage) : Listenable {
             val move = logic(trigger) ?: return@forEach
             current?.cancel()
             current = stage.timeline.schedule {
-                move.action(this@Adventurer)
+                move.action(this@AdventurerInstance)
                 if (coroutineContext.isActive) {
                     doing = "idle"
                     think()
@@ -174,15 +174,15 @@ class Adventurer(val stage: Stage) : Listenable {
         think()
     }
 
-    fun BaseEquip?.init() = this?.initialize(this@Adventurer)
-    fun Move?.init() = this?.initialize(this@Adventurer)
-    fun AbilityInstance?.init() = this?.initialize(this@Adventurer)
-    fun Coability?.init() = this?.initialize(this@Adventurer)
+    fun BaseEquip?.init() = this?.initialize(this@AdventurerInstance)
+    fun Move?.init() = this?.initialize(this@AdventurerInstance)
+    fun AbilityInstance?.init() = this?.initialize(this@AdventurerInstance)
+    fun Coability?.init() = this?.initialize(this@AdventurerInstance)
     fun BuffInstance?.selfBuff() {
-        this?.apply(this@Adventurer)
+        this?.apply(this@AdventurerInstance)
     }
     fun BuffInstance?.selfBuff(duration: Double) {
-        this?.apply(this@Adventurer, duration)
+        this?.apply(this@AdventurerInstance, duration)
     }
     fun BuffInstance?.teamBuff(duration: Double) {
         stage.adventurers.forEach {
@@ -267,5 +267,5 @@ enum class Element {
     }
 }
 
-typealias AdventurerCondition = Adventurer.() -> Boolean
-typealias Action = suspend Adventurer.() -> Unit
+typealias AdventurerCondition = AdventurerInstance.() -> Boolean
+typealias Action = suspend AdventurerInstance.() -> Unit
