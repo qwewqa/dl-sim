@@ -7,8 +7,8 @@ stage {
         dragon = dragons["Arctos"]
         wp = wyrmprints["RR"] + wyrmprints["CE"]
 
-        a1 = Abilities["barrage obliteration"](6.percent)
-        a3 = Abilities["barrage devastation"](3.percent)
+        a1 = abilities["barrage obliteration"](6.percent)
+        a3 = abilities["barrage devastation"](3.percent)
 
         s1(2500) {
             buffs["crit rate"](10.percent).selfBuff(5.0)
