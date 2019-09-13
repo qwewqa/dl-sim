@@ -7,7 +7,7 @@ import tools.qwewqa.sim.extensions.skill
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.Move
 
-object Weapons : LooseMap<Weapon>() {
+object Weapons : CaseInsensitiveMap<Weapon>() {
     fun blade(name: String, element: Element, str: Int, skill: Move, abilities: List<Ability> = emptyList()) =
         Weapon(
             name, element, str, skill, tools.qwewqa.sim.wep.blade, abilities + listOf(
@@ -30,6 +30,6 @@ object Weapons : LooseMap<Weapon>() {
     val flameBlade5t3 = blade5b1("Heaven's Acuity", Element.FLAME)
 
     init {
-        this["flame blade 5t3", "Heaven's Acuity"] = flameBlade5t3
+        this["flame 5t3 blade", "Heaven's Acuity"] = flameBlade5t3
     }
 }

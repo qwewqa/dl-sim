@@ -4,6 +4,10 @@ import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.stage.*
 import kotlin.reflect.KMutableProperty0
 
+/**
+ * A Passive acts as if its value is added to the target Double property (using a [Modifier]) when active
+ * Its condition is checked once at the start, and then checked based on the condition listeners
+ */
 class Passive(
     val name: String = "unamed",
     val adventurer: Adventurer,

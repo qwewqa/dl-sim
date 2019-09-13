@@ -65,7 +65,7 @@ class Adventurer(val stage: Stage) : Listenable {
 
     var weapon: Weapon? = null
 
-    val abilityStacks = mutableMapOf<String, AbilityBehavior.Stack>()
+    val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
 
     var s1: Move? = null
     var s2: Move? = null

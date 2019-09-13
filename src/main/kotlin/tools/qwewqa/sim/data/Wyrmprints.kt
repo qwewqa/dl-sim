@@ -3,7 +3,7 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.equip.Wyrmprint
 import tools.qwewqa.sim.extensions.percent
 
-object Wyrmprints : LooseMap<Wyrmprint>() {
+object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
     operator fun get(vararg names: String) = names.map { this[it] }.reduce { a, v -> a + v }
 
     val ce = Wyrmprint(

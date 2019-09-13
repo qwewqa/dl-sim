@@ -3,7 +3,14 @@ package tools.qwewqa.sim.abilities
 import tools.qwewqa.sim.extensions.plus
 import tools.qwewqa.sim.stage.AdventurerCondition
 
-class Condition(
+/**
+ * Contains information about a condition and necessary listeners
+ *
+ * @property name the display name of the condition
+ * @property listeners the names of the events that must be listened on for the conditions
+ * @property condition the condition
+ */
+data class Condition(
     val name: String,
     val listeners: Set<String>,
     val condition: AdventurerCondition
