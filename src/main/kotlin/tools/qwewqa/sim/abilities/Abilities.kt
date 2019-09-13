@@ -6,7 +6,7 @@ import tools.qwewqa.sim.stage.*
 /**
  * Data on an ability without any behavior. A base stack is created by searching for the name in [Abilities]
  */
-data class Ability(
+data class AbilityInstance(
     val name: String,
     val value: Double,
     val behavior: AbilityBehavior,
@@ -26,7 +26,7 @@ data class Ability(
 
 data class AbilityBehavior(
     val name: String,
-    val onStart: Adventurer.() -> Unit = {},
+    val onStart: Adventurer.(Stack) -> Unit = {},
     val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
 ) {
     /**
@@ -40,7 +40,7 @@ data class AbilityBehavior(
             }
 
         init {
-            adventurer.onStart()
+            adventurer.onStart(this)
         }
     }
 
@@ -51,12 +51,12 @@ data class AbilityBehavior(
         adventurer.abilityStacks[this] ?: Stack(adventurer).also { adventurer.abilityStacks[this] = it }
 
     /**
-     * Creates an [Ability] instance targeting this
+     * Creates an [AbilityInstance] targeting this
      */
-    operator fun invoke(value: Double, condition: Condition = noCondition) = getAbility(value, condition)
+    operator fun invoke(value: Double, condition: Condition = noCondition) = getInstance(value, condition)
 
     /**
-     * Creates an [Ability] instance targeting this
+     * Creates an [AbilityInstance] targeting this
      */
-    fun getAbility(value: Double, condition: Condition = noCondition) = Ability(name, value, this, condition)
+    fun getInstance(value: Double, condition: Condition = noCondition) = AbilityInstance(name, value, this, condition)
 }

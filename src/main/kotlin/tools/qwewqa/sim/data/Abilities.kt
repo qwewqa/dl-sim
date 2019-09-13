@@ -1,6 +1,7 @@
 package tools.qwewqa.sim.data
 
 import tools.qwewqa.sim.abilities.AbilityBehavior
+import tools.qwewqa.sim.buffs.BuffBehavior
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Logger
@@ -39,19 +40,23 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
     val wpCritDamage = cappedStatAbility("crit damage (wp)", Stat.CRIT_DAMAGE, 25.percent)
 
 
-    fun barrageAbility(name: String, stat: Stat, interval: Int) = AbilityBehavior(
+    fun barrageAbility(name: String, buff: BuffBehavior, interval: Int) = AbilityBehavior(
         name = name,
-        onStart = {
+        onStart = { stack ->
+            var charges = 3
             listen("combo") {
+                if (charges == 0) return@listen
                 if (combo > 0 && combo % interval == 0) {
-                    log(Logger.Level.VERBOSER, "ability", "$name ability proc at combo $combo")
+                    charges--
+                    log(Logger.Level.VERBOSER, "ability", "$name ability proc at combo $combo (charges left: $charges)")
+                    buff(stack.value).selfBuff()
                 }
             }
         }
     )
 
-    val barrageObliteration = barrageAbility("Barrage Obliteration", Stat.CRIT_DAMAGE, 20)
-    val barrageDevastation = barrageAbility("Barrage Devastation", Stat.CRIT_RATE, 30)
+    val barrageObliteration = barrageAbility("barrage obliteration", Buffs.critDamage, 20)
+    val barrageDevastation = barrageAbility("barrage devastation", Buffs.critRate, 30)
 
     init {
         this["strength", "str"] = strength

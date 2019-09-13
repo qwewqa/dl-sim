@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.equip
 
-import tools.qwewqa.sim.abilities.Ability
+import tools.qwewqa.sim.abilities.AbilityInstance
 import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Element
@@ -13,7 +13,7 @@ class Weapon(
     val str: Int,
     val skill: Move = noMove(),
     val type: WeaponType,
-    val abilities: List<Ability> = emptyList()
+    val abilities: List<AbilityInstance> = emptyList()
 ) : BaseEquip() {
     override fun initialize(adventurer: Adventurer) {
         abilities.forEach { it.initialize(adventurer) }

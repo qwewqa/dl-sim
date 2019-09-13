@@ -1,13 +1,16 @@
 package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.sim.abilities.Ability
+import tools.qwewqa.sim.abilities.AbilityInstance
 import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
+import tools.qwewqa.sim.buffs.BuffBehavior
+import tools.qwewqa.sim.buffs.BuffInstance
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
+import tools.qwewqa.sim.equip.BaseEquip
 import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
@@ -66,14 +69,15 @@ class Adventurer(val stage: Stage) : Listenable {
     var weapon: Weapon? = null
 
     val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
+    val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
 
     var s1: Move? = null
     var s2: Move? = null
     var s3: Move? = null
     var ex: Coability? = null
-    var a1: Ability? = null
-    var a2: Ability? = null
-    var a3: Ability? = null
+    var a1: AbilityInstance? = null
+    var a2: AbilityInstance? = null
+    var a3: AbilityInstance? = null
     var x: Move? = null
     var fs: Move? = null
     var fsf: Move? = null
@@ -151,23 +155,39 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun initialize() {
         stats["str"].base = str.toDouble()
-        weapon?.initialize(this)
-        x?.initialize(this)
-        fsf?.initialize(this)
-        fs?.initialize(this)
-        dodge?.initialize(this)
-        s1?.initialize(this)
-        s2?.initialize(this)
-        s3?.initialize(this)
-        a1?.initialize(this)
-        a2?.initialize(this)
-        a3?.initialize(this)
-        ex?.initialize(this)
-        dragon?.initialize(this)
-        wp?.initialize(this)
+        weapon.init()
+        x.init()
+        fsf.init()
+        fs.init()
+        dodge.init()
+        s1.init()
+        s2.init()
+        s3.init()
+        a1.init()
+        a2.init()
+        a3.init()
+        ex.init()
+        dragon?.init()
+        wp.init()
         prerunChecks()
         prerun()
         think()
+    }
+
+    fun BaseEquip?.init() = this?.initialize(this@Adventurer)
+    fun Move?.init() = this?.initialize(this@Adventurer)
+    fun AbilityInstance?.init() = this?.initialize(this@Adventurer)
+    fun Coability?.init() = this?.initialize(this@Adventurer)
+    fun BuffInstance?.selfBuff() {
+        this?.apply(this@Adventurer)
+    }
+    fun BuffInstance?.selfBuff(duration: Double) {
+        this?.apply(this@Adventurer, duration)
+    }
+    fun BuffInstance?.teamBuff(duration: Double) {
+        stage.adventurers.forEach {
+            this?.apply(it, duration)
+        }
     }
 
     inner class SP {

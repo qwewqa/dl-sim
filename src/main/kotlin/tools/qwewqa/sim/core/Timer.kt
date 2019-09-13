@@ -28,24 +28,22 @@ class Timer(private val timeline: Timeline, val action: () -> Unit) {
     }
 
     /**
-     * Sets the duration of the timer
-     *
-     * If the timer is already running it will continue to run.
-     * If it was stopped it remains stopped
+     * Sets the duration of the timer and starts it (if not already started)
      */
-    suspend fun set(time: Double) {
+    fun set(time: Double) {
         if (running) {
             pause()
             duration = time
             start()
         } else {
             duration = time
+            start()
         }
     }
 }
 
 fun Timeline.getTimer(action: () -> Unit) = Timer(this, action)
-suspend fun Timeline.getTimer(time: Double, action: () -> Unit) = getTimer(action).apply {
+fun Timeline.getTimer(time: Double, action: () -> Unit) = getTimer(action).apply {
     set(time)
     start()
 }
