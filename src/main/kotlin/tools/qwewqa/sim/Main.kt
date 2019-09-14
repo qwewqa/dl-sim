@@ -9,7 +9,6 @@ fun main(vararg args: String) {
         return
     }
     val engine = ScriptEngineManager().getEngineByExtension("kts")!!
-    println("Compiling...")
     engine.eval("""
     import tools.qwewqa.sim.core.*
     import tools.qwewqa.sim.extensions.*

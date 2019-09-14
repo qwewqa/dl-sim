@@ -60,7 +60,7 @@ class Stage(
 }
 
 fun stage(
-    mass: Int = 10000,
+    mass: Int = 4000,
     logLevel: Logger.Level = Logger.Level.NONE,
     init: Stage.() -> Unit
 ) = runBlocking {
@@ -71,8 +71,8 @@ fun stage(
             }.awaitResults()
         }
     }.awaitAll()
-    val dpss = results.map { it.dps }.sorted()
-    println("Overall dps: %.3f".format(results.map { it.dps }.average()))
+    val dpss = results.map { it.dps }
+    println("Overall dps: %.3f".format(dpss.average()))
     val totalSlices = mutableMapOf<String, MutableMap<String, Long>>()
     results.forEach { result ->
         result.slices.forEach { slice ->
@@ -82,18 +82,18 @@ fun stage(
             }
         }
     }
-    var totalDamage = 0L
+    val totalTime = results.sumByDouble { it.duration }
     totalSlices.forEach { (name, slices) ->
+        var selfTotal = 0L
         println("\n$name:")
         slices.forEach { (attack, value)  ->
             println("$attack: ${"%.3f".format(value / mass.toDouble())}")
-            totalDamage += value
+            selfTotal += value
         }
+        println("Self damage: ${"%.3f".format(selfTotal / mass.toDouble())}")
+        println("Average duration: ${"%.3f".format(totalTime / mass)}")
+        println("Self dps: ${"%.3f".format(selfTotal / totalTime)}")
     }
-    println("Self damage: ${"%.3f".format(totalDamage / mass.toDouble())}")
-    val totalTime = results.sumByDouble { it.duration }
-    println("Average duration: ${"%.3f".format(totalTime / mass)}")
-    println("Self dps: ${"%.3f".format(totalDamage / totalTime)}")
 }
 
 data class StageResults(val dps: Double, val duration: Double, val slices: Map<String, Map<String, Int>>)
