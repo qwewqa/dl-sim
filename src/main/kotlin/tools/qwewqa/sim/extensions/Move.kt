@@ -17,20 +17,20 @@ fun MoveBuilder.initialize(initialize: Adventurer.() -> Unit) {
     this.setup = initialize
 }
 
-suspend fun Adventurer.hit(vararg name: String, action: Action) {
-    think(*(name.map { "pre-$it" }.toTypedArray()))
+suspend fun Adventurer.hit(name: String, action: Action) {
+    think("pre-$name")
     action()
-    think(*(name.map { "connect-$it" }.toTypedArray()))
-    think(*name)
+    think("connect-$name")
+    think(name)
 }
 
-suspend fun Adventurer.hit(delay: Double, vararg name: String, action: Action) {
-    think(*(name.map { "pre-$it" }.toTypedArray()))
+suspend fun Adventurer.hit(delay: Double, name: String, action: Action) {
+    think("pre-$name")
     schedule(delay) {
         action()
-        think(*(name.map { "connect-$it" }.toTypedArray()))
+        think("connect-$name")
     }
-    think(*name)
+    think(name)
 }
 
 fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Action) = move {

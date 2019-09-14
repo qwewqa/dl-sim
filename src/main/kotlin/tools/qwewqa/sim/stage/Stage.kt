@@ -1,6 +1,7 @@
 package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.abilities.AbilityBehavior
+import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.abilities.Condition
 import tools.qwewqa.sim.buffs.BuffBehavior
 import tools.qwewqa.sim.core.Timeline
@@ -13,6 +14,7 @@ class Stage(
     val abilities: CaseInsensitiveMap<AbilityBehavior> = Abilities.toCaseInsensitiveMap(),
     val buffs: CaseInsensitiveMap<BuffBehavior> = Buffs.toCaseInsensitiveMap(),
     val conditions: CaseInsensitiveMap<Condition> = Conditions.toCaseInsensitiveMap(),
+    val coabilities: CaseInsensitiveMap<Coability> = Coabilities.toCaseInsensitiveMap(),
     val dragons: CaseInsensitiveMap<Dragon> = Dragons.toCaseInsensitiveMap(),
     val weapons: CaseInsensitiveMap<Weapon> = Weapons.toCaseInsensitiveMap(),
     val wyrmprints: CaseInsensitiveMap<Wyrmprint> = Wyrmprints.toCaseInsensitiveMap()

@@ -13,11 +13,11 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
 
     fun blade5b1(name: String, element: Element) = blade(name, element, 572,
         skill("s3", 8030) {
-            damage(354.percent)
+            sdamage(354.percent)
             wait(0.0)
-            damage(354.percent)
+            sdamage(354.percent)
             wait(0.0)
-            damage(354.percent)
+            sdamage(354.percent)
             wait(2.65)
         }
     )
@@ -30,15 +30,15 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
 
     fun sword5b1(name: String, element: Element) = sword(name, element, 556,
         skill("s3", 6847) {
-            damage(165.percent)
+            sdamage(165.percent)
             wait(0.0)
-            damage(165.percent)
+            sdamage(165.percent)
             wait(0.0)
-            damage(165.percent)
+            sdamage(165.percent)
             wait(0.0)
-            damage(165.percent)
+            sdamage(165.percent)
             wait(0.0)
-            damage(165.percent)
+            sdamage(165.percent)
             wait(3.1)
         }
     )

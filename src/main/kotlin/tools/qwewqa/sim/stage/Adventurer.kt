@@ -18,6 +18,7 @@ import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
+import kotlin.math.ceil
 import kotlin.math.floor
 
 class Adventurer(val stage: Stage) : Listenable {
@@ -25,11 +26,13 @@ class Adventurer(val stage: Stage) : Listenable {
     val enemy get() = stage.enemy
 
     // this will eventually have atk speed applied to it
-    suspend fun wait(time: Double) = timeline.wait(time)
+    suspend fun wait(time: Double) = timeline.wait(time / stats[ATTACK_SPEED].value)
 
     suspend fun yield() = timeline.yield()
 
-    fun schedule(time: Double = 0.0, action: suspend () -> Unit) = timeline.schedule(time) { action() }
+    fun schedule(time: Double = 0.0, action: suspend () -> Unit) =
+        timeline.schedule(time / stats[ATTACK_SPEED].value) { action() }
+
     fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
     fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category, message)
 
@@ -92,25 +95,27 @@ class Adventurer(val stage: Stage) : Listenable {
     /**
      * Decides what move to make (potentially) based on [logic]
      * Can be called during a move to potentially cancel it
-     * This should be called before [wait] so that it will cancel during the wait
+     * (This should be called right before [wait] so that it will cancel during the wait)
      * Otherwise is called at the end of an uncancelled move and at stage start
      */
-    fun think(vararg triggers: String = arrayOf("idle")) {
-        triggers.forEach { listeners.raise(it) }
-        triggers.forEach { trigger ->
-            this.trigger = trigger
-            val move = logic(trigger) ?: return@forEach
-            current?.cancel()
-            current = stage.timeline.schedule {
-                move.action(this@Adventurer)
-                if (coroutineContext.isActive) {
-                    doing = "idle"
-                    think()
-                }
+    fun think(trigger: String = "idle") {
+        this.trigger = trigger
+        val move = logic(trigger) ?: return
+        act(move)
+    }
+
+    fun act(move: Move) {
+        current?.cancel()
+        current = stage.timeline.schedule {
+            move.action(this@Adventurer)
+            if (coroutineContext.isActive) {
+                doing = "idle"
+                think()
             }
-            return
         }
     }
+
+    val damageSlices = mutableMapOf<String, Int>().withDefault { 0 }
 
     /**
      * Applies damage based on damage formula accounting for all passives, buffs, etc.
@@ -118,20 +123,31 @@ class Adventurer(val stage: Stage) : Listenable {
     fun damage(
         mod: Double,
         name: String = doing,
-        skill: Boolean = doing in listOf("s1", "s2", "s3", "ds"),
-        fs: Boolean = doing in listOf("fs")
+        skill: Boolean = false,
+        fs: Boolean = false
     ) {
         trueDamage(damageFormula(mod, skill, fs), name)
     }
+
+    fun sdamage(
+        mod: Double,
+        name: String = doing
+    ) = damage(mod, name, skill = true, fs = false)
+
+    fun fsdamage(
+        mod: Double,
+        name: String = doing
+    ) = damage(mod, name, skill = false, fs = true)
 
     /**
      * Directly applies given damage
      */
     fun trueDamage(amount: Int, name: String) {
-        log(Logger.Level.MORE, "damage", "$amount damage by $name")
         enemy.damage(amount)
+        damageSlices[name] = damageSlices.getValue(name) + amount
         listeners.raise("dmg")
         combo++
+        log(Logger.Level.MORE, "damage", "$amount damage by $name (combo: $combo)")
     }
 
     fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
@@ -139,6 +155,7 @@ class Adventurer(val stage: Stage) : Listenable {
             5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
                     (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
                     (if (skill) stats[SKILL_DAMAGE].value else 1.0) *
+                    (if (fs) stats[FORCESTRIKE_DAMAGE].value else 1.0) *
                     element.multiplier(enemy.element)
         ).toInt()
 
@@ -173,19 +190,22 @@ class Adventurer(val stage: Stage) : Listenable {
     fun BuffInstance?.selfBuff() {
         this?.apply(this@Adventurer)
     }
+
     fun WeaponType?.init() {
         check(this != null) { "no weapon type specified" }
         this.initialize(this@Adventurer)
     }
 
-    fun BuffInstance?.selfBuff(duration: Double) {
-        this?.apply(this@Adventurer, duration)
+    fun BuffInstance.selfBuff(duration: Double) {
+        this.apply(this@Adventurer, duration)
+        log("buff", "selfbuff $name [value: $value]")
     }
 
-    fun BuffInstance?.teamBuff(duration: Double) {
+    fun BuffInstance.teamBuff(duration: Double) {
         stage.adventurers.forEach {
-            this?.apply(it, duration)
+            this.apply(it, duration)
         }
+        log("buff", "teambuff $name [value: $value]")
     }
 
     inner class SP {
@@ -196,9 +216,11 @@ class Adventurer(val stage: Stage) : Listenable {
          * Increases the sp accounting for haste on all skills
          * TODO: Actually include haste
          */
-        operator fun invoke(amount: Int, fs: Boolean = false) {
-            log(Logger.Level.MORE, "sp", "$amount sp by $doing")
-            charge(amount)
+        operator fun invoke(amount: Int, fs: Boolean = false, source: String = doing) {
+            val value = applyHaste(amount, fs)
+            log(Logger.Level.MORE, "sp", "charged $value sp by $source")
+            charge(value, source)
+            logCharges()
         }
 
         operator fun get(name: String) = charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")
@@ -208,13 +230,29 @@ class Adventurer(val stage: Stage) : Listenable {
         fun ready(name: String) =
             (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= maximums[name]!!
 
-        fun charge(amount: Int) {
+        fun applyHaste(amount: Int, fs: Boolean = false) =
+            ceil((amount.toFloat() * (stats[SKILL_HASTE].value.toFloat() + if (fs) stats[STRIKING_HASTE].value.toFloat() else 0.0f)).toDouble()).toInt()
+
+        fun logCharges() =
+            log(Logger.Level.VERBOSE, "sp", charges.keys.map { "$it: ${charges[it]}/${maximums[it]}" }.toString())
+
+        fun charge(amount: Int, source: String = doing) {
             charges.keys.forEach {
-                charge(amount, it)
+                charge(amount, it, source)
             }
         }
 
-        fun charge(amount: Int, name: String) {
+        fun charge(fraction: Double) {
+            charges.keys.forEach {
+                charge(fraction, it)
+            }
+        }
+
+        fun charge(fraction: Double, name: String, source: String = doing) {
+            charge(ceil(fraction * maximums[name]!!).toInt(), name, source)
+        }
+
+        fun charge(amount: Int, name: String, source: String = doing) {
             require(charges[name] != null) { "Unknown skill [$name]" }
             if (charges[name] == maximums[name]) return
             charges[name] = charges[name]!! + amount
@@ -222,6 +260,11 @@ class Adventurer(val stage: Stage) : Listenable {
                 charges[name] = maximums[name]!!
                 listeners.raise("$name-charged")
             }
+            log(
+                Logger.Level.VERBOSIEST,
+                "sp",
+                "$name charged $amount sp by $source (${charges[name]}/${maximums[name]})"
+            )
         }
 
         fun use(name: String) {

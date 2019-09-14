@@ -3,6 +3,7 @@ stage {
         name = "Serena"
         element = FLAME
         str = 443
+        ex = coabilities["Sword"]
         weapon = weapons["Levatein"]
         dragon = dragons["Arctos"]
         wp = wyrmprints["RR"] + wyrmprints["CE"]
@@ -12,16 +13,16 @@ stage {
 
         s1(2500) {
             buffs["crit rate"](10.percent).selfBuff(5.0)
-            damage(350.percent)
-            damage(350.percent)
+            sdamage(350.percent)
+            sdamage(350.percent)
             wait(1.55)
         }
 
         s2(4593) {
-            damage(169.percent)
-            damage(169.percent)
-            damage(169.percent)
-            damage(169.percent)
+            sdamage(169.percent)
+            sdamage(169.percent)
+            sdamage(169.percent)
+            sdamage(169.percent)
             wait(2.2)
         }
 

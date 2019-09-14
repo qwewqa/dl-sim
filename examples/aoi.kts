@@ -3,18 +3,18 @@ stage {
         name = "Aoi"
         element = FLAME
         str = 494
-        ex = coability("str", 10.percent)
+        ex = coabilities["Str"]
         weapon = weapons["Heaven's Acuity"]
         dragon = dragons["Sakuya"]
         wp = wyrmprints["CE"] + wyrmprints["RR"]
 
         s1(2630) {
-            damage(878.percent)
+            sdamage(878.percent)
             wait(1.85)
         }
 
         s2(5280) {
-            damage(790.percent)
+            sdamage(790.percent)
             wait(1.85)
         }
 
