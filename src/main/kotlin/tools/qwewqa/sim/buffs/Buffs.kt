@@ -77,19 +77,3 @@ data class BuffBehavior(
      */
     fun getInstance(value: Double) = BuffInstance(name, value, this)
 }
-
-class BuffBuilder {
-    var name: String = "unnamed"
-    var cap: Int = 0
-    fun onStart(action: Adventurer.(BuffBehavior.Stack) -> Unit) {
-        _onStart = action
-    }
-    fun onChange(action: Adventurer.(Double, Double) -> Unit) {
-        _onChange = action
-    }
-    private var _onStart: Adventurer.(BuffBehavior.Stack) -> Unit = {}
-    private var _onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
-    fun build() = BuffBehavior(name, _onStart, _onChange)
-}
-
-fun buff(init: BuffBuilder.() -> Unit) = BuffBuilder().apply(init).build()

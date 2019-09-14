@@ -16,12 +16,3 @@ data class Wyrmprint(
     operator fun plus(other: Wyrmprint) =
         Wyrmprint("$name + ${other.name}", str + other.str, abilities + other.abilities)
 }
-
-class WyrmprintBuilder {
-    var name = "unnamed"
-    var str = 0
-    val abilities = mutableListOf<AbilityInstance>()
-    fun build() = Wyrmprint(name, str, abilities)
-}
-
-fun wyrmprint(init: WyrmprintBuilder.() -> Unit) = WyrmprintBuilder().apply(init).build()

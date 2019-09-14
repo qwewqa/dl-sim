@@ -23,15 +23,3 @@ data class Weapon(
         adventurer.s3 = skill
     }
 }
-
-class WeaponBuilder {
-    var name = "unnamed"
-    var element = Element.NEUTRAL
-    var str = 0
-    var skill = noMove()
-    var type: WeaponType? = null
-    var abilities = mutableListOf<AbilityInstance>()
-    fun build() = Weapon(name, element, str, skill, type ?: error("no weapon type specified"), abilities)
-}
-
-fun weapon(init: WeaponBuilder.() -> Unit) = WeaponBuilder().apply(init).build()

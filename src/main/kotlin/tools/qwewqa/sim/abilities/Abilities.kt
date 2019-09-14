@@ -62,21 +62,3 @@ data class AbilityBehavior(
      */
     fun getInstance(value: Double, condition: Condition = noCondition) = AbilityInstance(name, value, this, condition)
 }
-
-class AbilityBuilder {
-    var name = "unnamed"
-    fun onStart(action: Adventurer.(AbilityBehavior.Stack) -> Unit) {
-        _onStart = action
-    }
-
-    fun onChange(action: Adventurer.(Double, Double) -> Unit) {
-        _onChange = action
-    }
-
-    private var _onStart: Adventurer.(AbilityBehavior.Stack) -> Unit = {}
-    private var _onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
-    fun build() = AbilityBehavior(name, _onStart, _onChange)
-}
-
-fun ability(init: AbilityBuilder.() -> Unit) = AbilityBuilder().apply(init).build()
-fun singleAbility(init: AbilityBuilder.() -> Unit) = AbilityBuilder().apply(init).build()(0.0)

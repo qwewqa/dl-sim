@@ -15,13 +15,3 @@ data class Dragon(
         adventurer.stats["str"].base += str * if(element == adventurer.element) 1.5 else 1.0
     }
 }
-
-class DragonBuilder {
-    var name = "unnamed"
-    var element = Element.NEUTRAL
-    var str = 0
-    val abilities = mutableListOf<AbilityInstance>()
-    fun build() = Dragon(name, element, str, abilities)
-}
-
-fun dragon(init: DragonBuilder.() -> Unit) = DragonBuilder().apply(init).build()

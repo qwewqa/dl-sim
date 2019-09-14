@@ -21,6 +21,4 @@ data class Condition(
         Condition("$name ${other.name}", listeners + other.listeners, condition + other.condition)
 }
 
-fun condition(name: String, vararg listeners: String, check: AdventurerCondition) = Condition(name, listeners.toSet(), check)
-
 val noCondition = Condition("", emptySet()) { true }
