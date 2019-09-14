@@ -39,9 +39,8 @@ class Stage(
         timeline.start()
     }
 
-    suspend fun end() {
+    fun end() {
         timeline.end()
-        timeline.join()
         onEnd()
     }
 
@@ -61,7 +60,7 @@ class Stage(
 
 fun stage(
     mass: Int = 4000,
-    logLevel: Logger.Level = Logger.Level.NONE,
+    logLevel: Logger.Level = Logger.Level.VERBOSIEST,
     init: Stage.() -> Unit
 ) = runBlocking {
     val results = (1..mass).map {

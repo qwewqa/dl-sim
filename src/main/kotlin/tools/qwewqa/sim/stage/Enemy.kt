@@ -8,7 +8,14 @@ class Enemy(val stage: Stage) : Listenable {
     val stats = StatMap()
     var element = Element.NEUTRAL
 
+    var hp: Int = -1
+        set(value) {
+            field = value
+            useHp = true
+        }
     var def: Double by stats["def"]::base.newModifier()
+
+    var useHp = false
 
     var totalDamage = 0
         private set
@@ -18,6 +25,12 @@ class Enemy(val stage: Stage) : Listenable {
     fun damage(amount: Int) {
         totalDamage += amount
         listeners.raise("dmg")
+        if (useHp) {
+            hp -= amount
+            if (hp <= 0) {
+                stage.end()
+            }
+        }
     }
 }
 

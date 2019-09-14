@@ -26,11 +26,6 @@ stage {
         }
     }
 
-    enemy {
-        def = 10.0
-        element = WIND
-    }
-
     // We can easily just add a second adventurer block
     adventurer {
         name = "Serena"
@@ -67,5 +62,9 @@ stage {
         }
     }
 
-    endIn(180.0)
+    enemy {
+        def = 10.0
+        hp = 1_000_000 // if an hp is specified stage will end at 0 hp
+        element = WIND
+    }
 }
