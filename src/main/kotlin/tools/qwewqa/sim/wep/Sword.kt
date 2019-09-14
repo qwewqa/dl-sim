@@ -1,7 +1,6 @@
 package tools.qwewqa.sim.wep
 
 import tools.qwewqa.sim.extensions.frames
-import tools.qwewqa.sim.extensions.hit
 import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
 
@@ -42,7 +41,7 @@ private val fsf = noMove()
 
 val sword = WeaponType(
     name = "sword",
-    combo = combo,
+    x = combo,
     fs = fs,
     fsf = fsf
 )

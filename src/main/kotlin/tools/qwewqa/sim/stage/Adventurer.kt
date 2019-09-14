@@ -20,7 +20,7 @@ import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.floor
 
-class AdventurerInstance(override val stage: Stage) : Listenable, Character {
+class Adventurer(val stage: Stage) : Listenable {
     val timeline get() = stage.timeline
     val enemy get() = stage.enemy
 
@@ -31,13 +31,14 @@ class AdventurerInstance(override val stage: Stage) : Listenable, Character {
 
     fun schedule(time: Double = 0.0, action: suspend () -> Unit) = timeline.schedule(time) { action() }
     fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
+    fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category, message)
 
     /**
      * Listeners are called with the trigger before [logic] and by observable properties
      */
     override val listeners = ListenerMap()
 
-    override val stats = StatMap()
+    val stats = StatMap()
     var str: Int = 0
 
     var name: String = "unnamed"
@@ -58,18 +59,8 @@ class AdventurerInstance(override val stage: Stage) : Listenable, Character {
     var doing: String = "idle"
     var current: Timeline.Event? = null
 
-    var weaponType: WeaponType? = null
-        set(value) {
-            field = value
-            x = value?.combo
-            fs = value?.fs
-            fsf = value?.fsf
-        }
-
-    var weapon: Weapon? = null
-
     val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
-    override val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
+    val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
 
     var s1: Move? = null
     var s2: Move? = null
@@ -83,18 +74,20 @@ class AdventurerInstance(override val stage: Stage) : Listenable, Character {
     var fsf: Move? = null
     var dodge: Move? = genericDodge
     var dragon: Dragon? = null
+    var weapon: Weapon? = null
     var wp: Wyrmprint? = null
+    var weaponType: WeaponType? = null
 
     /**
      * Ran before everything else at the start of the stage run
      */
-    var prerun: AdventurerInstance.() -> Unit = {}
+    var prerun: Adventurer.() -> Unit = {}
 
     /**
      * Decides what moves to make
      * null is a noop
      */
-    var logic: AdventurerInstance.(String) -> Move? = { null }
+    var logic: Adventurer.(String) -> Move? = { null }
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -109,7 +102,7 @@ class AdventurerInstance(override val stage: Stage) : Listenable, Character {
             val move = logic(trigger) ?: return@forEach
             current?.cancel()
             current = stage.timeline.schedule {
-                move.action(this@AdventurerInstance)
+                move.action(this@Adventurer)
                 if (coroutineContext.isActive) {
                     doing = "idle"
                     think()
@@ -149,13 +142,12 @@ class AdventurerInstance(override val stage: Stage) : Listenable, Character {
                     element.multiplier(enemy.element)
         ).toInt()
 
-    private fun prerunChecks() {
-        check(weaponType != null) { "no weapon type specified" }
-    }
+    private fun prerunChecks() {}
 
     fun initialize() {
         stats["str"].base = str.toDouble()
         weapon.init()
+        weaponType.init()
         x.init()
         fsf.init()
         fs.init()
@@ -174,16 +166,22 @@ class AdventurerInstance(override val stage: Stage) : Listenable, Character {
         think()
     }
 
-    fun BaseEquip?.init() = this?.initialize(this@AdventurerInstance)
-    fun Move?.init() = this?.initialize(this@AdventurerInstance)
-    fun AbilityInstance?.init() = this?.initialize(this@AdventurerInstance)
-    fun Coability?.init() = this?.initialize(this@AdventurerInstance)
+    fun BaseEquip?.init() = this?.initialize(this@Adventurer)
+    fun Move?.init() = this?.initialize(this@Adventurer)
+    fun AbilityInstance?.init() = this?.initialize(this@Adventurer)
+    fun Coability?.init() = this?.initialize(this@Adventurer)
     fun BuffInstance?.selfBuff() {
-        this?.apply(this@AdventurerInstance)
+        this?.apply(this@Adventurer)
     }
+    fun WeaponType?.init() {
+        check(this != null) { "no weapon type specified" }
+        this.initialize(this@Adventurer)
+    }
+
     fun BuffInstance?.selfBuff(duration: Double) {
-        this?.apply(this@AdventurerInstance, duration)
+        this?.apply(this@Adventurer, duration)
     }
+
     fun BuffInstance?.teamBuff(duration: Double) {
         stage.adventurers.forEach {
             this?.apply(it, duration)
@@ -237,6 +235,50 @@ class AdventurerInstance(override val stage: Stage) : Listenable, Character {
     }
 }
 
+data class AdventurerData(
+    val name: String,
+    val element: Element,
+    val str: Int,
+    val s1: Move? = null,
+    val s2: Move? = null,
+    val s3: Move? = null,
+    val ex: Coability? = null,
+    val a1: AbilityInstance? = null,
+    val a2: AbilityInstance? = null,
+    val a3: AbilityInstance? = null,
+    val x: Move? = null,
+    val fs: Move? = null,
+    val fsf: Move? = null,
+    val dodge: Move? = genericDodge,
+    val dragon: Dragon? = null,
+    val wp: Wyrmprint? = null,
+    val weaponType: WeaponType? = null,
+    val prerun: (Adventurer.() -> Unit)? = null,
+    val logic: (Adventurer.(String) -> Move?)? = null
+) {
+    fun create(stage: Stage) = Adventurer(stage).also {
+        it.name = name
+        it.element = element
+        it.str = str
+        it.weaponType = weaponType
+        it.s1 = s1
+        it.s2 = s2
+        it.s3 = s3
+        it.ex = ex
+        it.a1 = a1
+        it.a2 = a2
+        it.a3 = a3
+        x?.apply { it.x = x }
+        fs?.apply { it.fs = fs }
+        fsf?.apply { it.fsf = fsf }
+        dodge?.apply { it.dodge = dodge }
+        it.dragon = dragon
+        it.wp = wp
+        prerun?.apply { it.prerun = prerun }
+        logic?.apply { it.logic = logic }
+    }
+}
+
 enum class Element {
     NEUTRAL,
     FLAME,
@@ -267,5 +309,5 @@ enum class Element {
     }
 }
 
-typealias AdventurerCondition = AdventurerInstance.() -> Boolean
-typealias Action = suspend AdventurerInstance.() -> Unit
+typealias AdventurerCondition = Adventurer.() -> Boolean
+typealias Action = suspend Adventurer.() -> Unit

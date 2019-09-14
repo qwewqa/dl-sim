@@ -1,17 +1,27 @@
 package tools.qwewqa.sim.wep
 
+import tools.qwewqa.sim.abilities.AbilityInstance
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Action
-import tools.qwewqa.sim.stage.AdventurerInstance
+import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.data.Abilities
 import tools.qwewqa.sim.stage.Move
 import tools.qwewqa.sim.stage.move
 
 data class WeaponType(
     val name: String,
-    val combo: Move,
+    val x: Move,
     val fs: Move,
-    val fsf: Move
-)
+    val fsf: Move,
+    val abilities: List<AbilityInstance> = listOf(Abilities.critDamage(70.percent), Abilities.critRate(2.percent))
+) {
+    fun initialize(adventurer: Adventurer) {
+        abilities.forEach { it.initialize(adventurer) }
+        adventurer.fs = adventurer.fs ?: fs
+        adventurer.fsf = adventurer.fsf ?: fsf
+        adventurer.x = adventurer.x ?: x
+    }
+}
 
 val genericDodge = move {
     name = "dodge"
@@ -37,13 +47,13 @@ fun fsf(duration: Double) = move {
     action { wait(duration) }
 }
 
-suspend fun AdventurerInstance.auto(name: String, mod: Double, sp: Int = 0) = hit(name) {
+suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0) = hit(name) {
     damage(mod)
     if (sp > 0) sp(sp)
     think("x-connect")
 }
 
-suspend fun AdventurerInstance.fs(name: String, mod: Double, sp: Int = 0) = hit(name) {
+suspend fun Adventurer.fs(name: String, mod: Double, sp: Int = 0) = hit(name) {
     damage(mod, fs = true)
     if (sp > 0) sp(sp, fs = true)
     think("fs-connect")

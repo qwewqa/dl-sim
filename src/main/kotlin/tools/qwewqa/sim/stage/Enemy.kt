@@ -1,13 +1,11 @@
 package tools.qwewqa.sim.stage
 
-import tools.qwewqa.sim.buffs.BuffBehavior
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 
-class Enemy(override val stage: Stage) : Listenable, Character {
+class Enemy(val stage: Stage) : Listenable {
     override val listeners = ListenerMap()
-    override val stats = StatMap()
-    override val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
+    val stats = StatMap()
     var element = Element.NEUTRAL
 
     var def: Double by stats["def"]::base.newModifier()

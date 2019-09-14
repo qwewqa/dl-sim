@@ -60,7 +60,7 @@ private val fsf = noMove()
 
 val dagger = WeaponType(
     name = "dagger",
-    combo = combo,
+    x = combo,
     fs = fs,
     fsf = fsf
 )

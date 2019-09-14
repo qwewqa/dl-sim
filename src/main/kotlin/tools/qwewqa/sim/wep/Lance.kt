@@ -46,7 +46,7 @@ private val fsf = fsf(35.frames)
 
 val lance = WeaponType(
     name = "lance",
-    combo = combo,
+    x = combo,
     fs = fs,
     fsf = fsf
 )

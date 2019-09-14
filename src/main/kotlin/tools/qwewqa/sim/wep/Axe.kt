@@ -1,7 +1,7 @@
 package tools.qwewqa.sim.wep
 
+import tools.qwewqa.sim.data.Abilities
 import tools.qwewqa.sim.extensions.frames
-import tools.qwewqa.sim.extensions.hit
 import tools.qwewqa.sim.extensions.percent
 
 private val fs = forcestrike {
@@ -45,7 +45,8 @@ private val fsf = fsf(41.frames)
 
 val axe = WeaponType(
     name = "axe",
-    combo = combo,
+    x = combo,
     fs = fs,
-    fsf = fsf
+    fsf = fsf,
+    abilities = listOf(Abilities.critDamage(70.percent), Abilities.critRate(4.percent))
 )

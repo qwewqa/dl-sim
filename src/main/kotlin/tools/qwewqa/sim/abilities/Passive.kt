@@ -1,5 +1,6 @@
 package tools.qwewqa.sim.abilities
 
+import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.stage.*
 import kotlin.reflect.KMutableProperty0
@@ -10,7 +11,7 @@ import kotlin.reflect.KMutableProperty0
  */
 class Passive(
     val name: String = "unamed",
-    val adventurer: AdventurerInstance,
+    val adventurer: Adventurer,
     val condition: Condition,
     target: KMutableProperty0<Double>,
     val value: Double

@@ -63,7 +63,7 @@ private val fsf = fsf(29.frames)
 
 val wand = WeaponType(
     name = "wand",
-    combo = combo,
+    x = combo,
     fs = fs,
     fsf = fsf
 )

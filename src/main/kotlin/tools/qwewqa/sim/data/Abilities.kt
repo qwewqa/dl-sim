@@ -13,7 +13,6 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
         name = name,
         onChange = { orig: Double, new: Double ->
             stats[stat].passive += new - orig
-            log(Logger.Level.VERBOSER, "ability", "$name ability set from $orig to $new")
         }
     )
 
@@ -23,7 +22,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
             val vorig = min(orig, cap)
             val vnew = min(new, cap)
             stats[stat].passive += vnew - vorig
-            log(Logger.Level.VERBOSER, "ability", "$name ability set to from $vorig to $vnew (uncapped: $new)")
+            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability capped at $vnew")
         }
     )
 

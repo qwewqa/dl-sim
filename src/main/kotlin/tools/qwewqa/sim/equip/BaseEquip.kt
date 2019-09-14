@@ -1,7 +1,7 @@
 package tools.qwewqa.sim.equip
 
-import tools.qwewqa.sim.stage.AdventurerInstance
+import tools.qwewqa.sim.stage.Adventurer
 
 abstract class BaseEquip {
-    abstract fun initialize(adventurer: AdventurerInstance)
+    abstract fun initialize(adventurer: Adventurer)
 }
