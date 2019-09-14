@@ -72,7 +72,9 @@ fun stage(
         }
     }.awaitAll()
     val dpss = results.map { it.dps }
+    val totalTime = results.sumByDouble { it.duration }
     println("Overall dps: %.3f".format(dpss.average()))
+    println("Average duration: ${"%.3f".format(totalTime / mass)}")
     val totalSlices = mutableMapOf<String, MutableMap<String, Long>>()
     results.forEach { result ->
         result.slices.forEach { slice ->
@@ -82,7 +84,6 @@ fun stage(
             }
         }
     }
-    val totalTime = results.sumByDouble { it.duration }
     totalSlices.forEach { (name, slices) ->
         var selfTotal = 0L
         println("\n$name:")
@@ -91,7 +92,6 @@ fun stage(
             selfTotal += value
         }
         println("Self damage: ${"%.3f".format(selfTotal / mass.toDouble())}")
-        println("Average duration: ${"%.3f".format(totalTime / mass)}")
         println("Self dps: ${"%.3f".format(selfTotal / totalTime)}")
     }
 }
