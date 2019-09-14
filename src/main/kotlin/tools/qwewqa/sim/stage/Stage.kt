@@ -1,5 +1,8 @@
 package tools.qwewqa.sim.stage
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.abilities.Condition
@@ -27,16 +30,53 @@ class Stage(
     var onEnd: Stage.() -> Unit = {}
 
     val log = logger::log
-    suspend fun run() {
+    fun run() {
         if (started) return
         started = true
         adventurers.forEach {
             it.initialize()
         }
-        timeline.startAndJoin()
+        timeline.start()
+    }
+
+    suspend fun end() {
+        timeline.end()
+        timeline.join()
         onEnd()
     }
-    fun end() = timeline.end()
+
+    suspend fun awaitResults(): StageResults {
+        if (!started) run()
+        timeline.join()
+        return StageResults(
+            dps = enemy.dps,
+            duration = timeline.time,
+            slices = adventurers.map { adv -> "$adv.name" to adv.damageSlices }.toMap()
+        )
+    }
+
     fun AdventurerData.create() = this.create(this@Stage)
     fun AdventurerData.create(init: Adventurer.() -> Unit) = this.create(this@Stage).apply(init)
+}
+
+fun stage(
+    mass: Int = 10000,
+    logLevel: Logger.Level = Logger.Level.NONE,
+    init: Stage.() -> Unit
+) = runBlocking {
+    val results = (1..mass).map {
+        async {
+            Stage().apply(init).also {
+                if (mass <= 1) it.logger.filterLevel = logLevel else it.logger.filterLevel = Logger.Level.NONE
+            }.awaitResults()
+        }
+    }.awaitAll()
+    println(results.map { it.dps }.average())
+}
+
+data class StageResults(val dps: Double, val duration: Double, val slices: Map<String, Map<String, Int>>)
+
+fun Stage.endIn(time: Double) = timeline.schedule(time) { end() }
+fun Stage.onEnd(action: Stage.() -> Unit) {
+    this.onEnd = action
 }

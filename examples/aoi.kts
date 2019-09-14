@@ -32,8 +32,4 @@ stage {
     }
 
     endIn(180.0)
-
-    onEnd {
-        println("${"%.3f".format(enemy.totalDamage / timeline.time)} dps")
-    }
 }

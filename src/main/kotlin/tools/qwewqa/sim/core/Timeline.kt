@@ -41,6 +41,8 @@ class Timeline {
         job.join()
     }
 
+    suspend fun join() = job.join()
+
     private fun run() {
         val action = queue.poll()
         if (action == null) {

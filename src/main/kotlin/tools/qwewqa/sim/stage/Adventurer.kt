@@ -20,12 +20,30 @@ import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.random.Random
 
 class Adventurer(val stage: Stage) : Listenable {
+    var name: String = "unnamed"
+    var element = Element.NEUTRAL
+    var str: Int = 0
+    var s1: Move? = null
+    var s2: Move? = null
+    var s3: Move? = null
+    var ex: Coability? = null
+    var a1: AbilityInstance? = null
+    var a2: AbilityInstance? = null
+    var a3: AbilityInstance? = null
+    var x: Move? = null
+    var fs: Move? = null
+    var fsf: Move? = null
+    var dodge: Move? = genericDodge
+    var dragon: Dragon? = null
+    var weapon: Weapon? = null
+    var wp: Wyrmprint? = null
+    var weaponType: WeaponType? = null
     val timeline get() = stage.timeline
     val enemy get() = stage.enemy
 
-    // this will eventually have atk speed applied to it
     suspend fun wait(time: Double) = timeline.wait(time / stats[ATTACK_SPEED].value)
 
     suspend fun yield() = timeline.yield()
@@ -42,15 +60,11 @@ class Adventurer(val stage: Stage) : Listenable {
     override val listeners = ListenerMap()
 
     val stats = StatMap()
-    var str: Int = 0
-
-    var name: String = "unnamed"
     var combo: Int by listeners.observable(0, "combo")
     var hp: Double by listeners.observable(1.0, "hp")
     val ui = timeline.getCooldown(1.9) { think("ui") }
     var skillLock = false
     val sp = SP()
-    var element = Element.NEUTRAL
 
     val time: Double
         get() {
@@ -64,22 +78,6 @@ class Adventurer(val stage: Stage) : Listenable {
 
     val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
     val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
-
-    var s1: Move? = null
-    var s2: Move? = null
-    var s3: Move? = null
-    var ex: Coability? = null
-    var a1: AbilityInstance? = null
-    var a2: AbilityInstance? = null
-    var a3: AbilityInstance? = null
-    var x: Move? = null
-    var fs: Move? = null
-    var fsf: Move? = null
-    var dodge: Move? = genericDodge
-    var dragon: Dragon? = null
-    var weapon: Weapon? = null
-    var wp: Wyrmprint? = null
-    var weaponType: WeaponType? = null
 
     /**
      * Ran before everything else at the start of the stage run
@@ -153,11 +151,13 @@ class Adventurer(val stage: Stage) : Listenable {
     fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
         floor(
             5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
-                    (1.0 + stats[CRIT_RATE].value * stats[CRIT_DAMAGE].value) *
+                    (1.0 + getCritMod()) *
                     (if (skill) stats[SKILL_DAMAGE].value else 1.0) *
                     (if (fs) stats[FORCESTRIKE_DAMAGE].value else 1.0) *
                     element.multiplier(enemy.element)
         ).toInt()
+
+    fun getCritMod() = if (Random.nextDouble() <= stats[CRIT_RATE].value) stats[CRIT_DAMAGE].value else 0.0
 
     private fun prerunChecks() {}
 

@@ -13,6 +13,8 @@ class Enemy(val stage: Stage) : Listenable {
     var totalDamage = 0
         private set
 
+    val dps get() = totalDamage / stage.timeline.time
+
     fun damage(amount: Int) {
         totalDamage += amount
         listeners.raise("dmg")
