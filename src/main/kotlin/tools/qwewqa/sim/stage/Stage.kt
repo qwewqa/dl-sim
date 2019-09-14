@@ -51,7 +51,7 @@ class Stage(
         return StageResults(
             dps = enemy.dps,
             duration = timeline.time,
-            slices = adventurers.map { adv -> "$adv.name" to adv.damageSlices }.toMap()
+            slices = adventurers.map { adv -> adv.name to adv.damageSlices }.toMap()
         )
     }
 
@@ -71,7 +71,29 @@ fun stage(
             }.awaitResults()
         }
     }.awaitAll()
-    println(results.map { it.dps }.average())
+    val dpss = results.map { it.dps }.sorted()
+    println("Overall dps: %.3f".format(results.map { it.dps }.average()))
+    val totalSlices = mutableMapOf<String, MutableMap<String, Long>>()
+    results.forEach { result ->
+        result.slices.forEach { slice ->
+            val adv = totalSlices.getOrPut(slice.key) { mutableMapOf() }
+            slice.value.forEach { attack ->
+                adv[attack.key] = (adv[attack.key] ?: 0L) + attack.value.toLong()
+            }
+        }
+    }
+    var totalDamage = 0L
+    totalSlices.forEach { (name, slices) ->
+        println("\n$name:")
+        slices.forEach { (attack, value)  ->
+            println("$attack: ${"%.3f".format(value / mass.toDouble())}")
+            totalDamage += value
+        }
+    }
+    println("Self damage: ${"%.3f".format(totalDamage / mass.toDouble())}")
+    val totalTime = results.sumByDouble { it.duration }
+    println("Average duration: ${"%.3f".format(totalTime / mass)}")
+    println("Self dps: ${"%.3f".format(totalDamage / totalTime)}")
 }
 
 data class StageResults(val dps: Double, val duration: Double, val slices: Map<String, Map<String, Int>>)
