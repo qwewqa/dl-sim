@@ -187,25 +187,29 @@ class Adventurer(val stage: Stage) : Listenable {
     fun Move?.init() = this?.initialize(this@Adventurer)
     fun AbilityInstance?.init() = this?.initialize(this@Adventurer)
     fun Coability?.init() = this?.initialize(this@Adventurer)
-    fun BuffInstance?.selfBuff() {
-        this?.apply(this@Adventurer)
-    }
 
     fun WeaponType?.init() {
         check(this != null) { "no weapon type specified" }
         this.initialize(this@Adventurer)
     }
 
-    fun BuffInstance.selfBuff(duration: Double) {
-        this.apply(this@Adventurer, duration)
+    fun BuffInstance.selfBuff() {
+        this.apply(this@Adventurer)
         log("buff", "selfbuff $name [value: $value]")
     }
 
+    fun BuffInstance.selfBuff(duration: Double) {
+        val rdur = duration * stats[BUFF_TIME].value
+        this.apply(this@Adventurer, rdur)
+        log("buff", "selfbuff $name for duration $rdur [value: $value]")
+    }
+
     fun BuffInstance.teamBuff(duration: Double) {
+        val rdur = duration * stats[BUFF_TIME].value
         stage.adventurers.forEach {
-            this.apply(it, duration)
+            this.apply(it, rdur)
         }
-        log("buff", "teambuff $name [value: $value]")
+        log("buff", "teambuff $name [value: $rdur]")
     }
 
     inner class SP {
@@ -214,7 +218,6 @@ class Adventurer(val stage: Stage) : Listenable {
 
         /**
          * Increases the sp accounting for haste on all skills
-         * TODO: Actually include haste
          */
         operator fun invoke(amount: Int, fs: Boolean = false, source: String = doing) {
             val value = applyHaste(amount, fs)
@@ -275,50 +278,6 @@ class Adventurer(val stage: Stage) : Listenable {
             charges[name] = 0
             maximums[name] = max
         }
-    }
-}
-
-data class AdventurerData(
-    val name: String,
-    val element: Element,
-    val str: Int,
-    val s1: Move? = null,
-    val s2: Move? = null,
-    val s3: Move? = null,
-    val ex: Coability? = null,
-    val a1: AbilityInstance? = null,
-    val a2: AbilityInstance? = null,
-    val a3: AbilityInstance? = null,
-    val x: Move? = null,
-    val fs: Move? = null,
-    val fsf: Move? = null,
-    val dodge: Move? = genericDodge,
-    val dragon: Dragon? = null,
-    val wp: Wyrmprint? = null,
-    val weaponType: WeaponType? = null,
-    val prerun: (Adventurer.() -> Unit)? = null,
-    val logic: (Adventurer.(String) -> Move?)? = null
-) {
-    fun create(stage: Stage) = Adventurer(stage).also {
-        it.name = name
-        it.element = element
-        it.str = str
-        it.weaponType = weaponType
-        it.s1 = s1
-        it.s2 = s2
-        it.s3 = s3
-        it.ex = ex
-        it.a1 = a1
-        it.a2 = a2
-        it.a3 = a3
-        x?.apply { it.x = x }
-        fs?.apply { it.fs = fs }
-        fsf?.apply { it.fsf = fsf }
-        dodge?.apply { it.dodge = dodge }
-        it.dragon = dragon
-        it.wp = wp
-        prerun?.apply { it.prerun = prerun }
-        logic?.apply { it.logic = logic }
     }
 }
 

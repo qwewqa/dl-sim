@@ -7,6 +7,7 @@ import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.abilities.Condition
 import tools.qwewqa.sim.buffs.BuffBehavior
+import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.equip.Dragon
@@ -16,6 +17,7 @@ import tools.qwewqa.sim.equip.Wyrmprint
 class Stage(
     val abilities: CaseInsensitiveMap<AbilityBehavior> = Abilities.toCaseInsensitiveMap(),
     val buffs: CaseInsensitiveMap<BuffBehavior> = Buffs.toCaseInsensitiveMap(),
+    val debuffs: CaseInsensitiveMap<DebuffBehavior> = Debuffs.toCaseInsensitiveMap(),
     val conditions: CaseInsensitiveMap<Condition> = Conditions.toCaseInsensitiveMap(),
     val coabilities: CaseInsensitiveMap<Coability> = Coabilities.toCaseInsensitiveMap(),
     val dragons: CaseInsensitiveMap<Dragon> = Dragons.toCaseInsensitiveMap(),
@@ -53,9 +55,6 @@ class Stage(
             slices = adventurers.map { adv -> adv.name to adv.damageSlices }.toMap()
         )
     }
-
-    fun AdventurerData.create() = this.create(this@Stage)
-    fun AdventurerData.create(init: Adventurer.() -> Unit) = this.create(this@Stage).apply(init)
 }
 
 fun stage(

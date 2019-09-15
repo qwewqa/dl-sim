@@ -1,12 +1,17 @@
 package tools.qwewqa.sim.stage
 
+import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 
 class Enemy(val stage: Stage) : Listenable {
     override val listeners = ListenerMap()
+    var name: String = "Enemy"
     val stats = StatMap()
     var element = Element.NEUTRAL
+
+    fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
+    fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category, message)
 
     var hp: Int = -1
         set(value) {
@@ -21,6 +26,8 @@ class Enemy(val stage: Stage) : Listenable {
         private set
 
     val dps get() = totalDamage / stage.timeline.time
+
+    val debuffStacks = mutableMapOf<DebuffBehavior, DebuffBehavior.Stack>()
 
     fun damage(amount: Int) {
         totalDamage += amount

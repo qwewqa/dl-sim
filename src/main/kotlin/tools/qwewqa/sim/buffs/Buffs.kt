@@ -5,7 +5,7 @@ import tools.qwewqa.sim.core.getTimer
 import tools.qwewqa.sim.stage.Adventurer
 
 /**
- * Data on an buff without any behavior. A base stack is created by searching for the name in []
+ * Data on an buff without any behavior
  */
 data class BuffInstance(
     val name: String,
@@ -60,7 +60,7 @@ data class BuffBehavior(
         adventurer.buffStacks[this] ?: Stack(adventurer).also { adventurer.buffStacks[this] = it }
 
     /**
-     * Clears all stacks of this for the given [Adventurer]
+     * Clears all stacks of this for the given [adventurer]
      */
     fun clearStack(adventurer: Adventurer) {
         getStack(adventurer).value = 0.0
