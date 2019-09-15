@@ -1,5 +1,7 @@
 package tools.qwewqa.sim.core
 
+import kotlin.math.max
+
 /**
  * Will be available after the [interval] has passed after each use
  */
@@ -11,6 +13,9 @@ class Cooldown(
 ) {
     var available: Boolean = startsAvailable
         private set
+
+    private var nextEvent: Timeline.Event? = null
+    val remaining get() = max(0.0, (nextEvent?.startTime ?: 0.0) - timeline.time)
 
     /**
      * Runs [block] if available and also uses the cooldown
@@ -25,7 +30,7 @@ class Cooldown(
     fun use() {
         check(available)
         available = false
-        timeline.schedule(interval) {
+        nextEvent = timeline.schedule(interval) {
             available = true
             onAvailable()
         }

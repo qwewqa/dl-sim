@@ -15,6 +15,7 @@ data class BuffInstance(
     fun apply(adventurer: Adventurer, duration: Double? = null) : Timer? {
         val stack = behavior.getStack(adventurer)
         if (stack.count > behavior.stackCap) return null
+        behavior.onApply(adventurer, duration, value, stack)
         stack.value += value
         stack.count++
         if (duration == null) return null
@@ -32,13 +33,15 @@ data class BuffInstance(
  *
  * @property name the name of this ability for display
  * @property stackStart ran when the number of stacks changes from 0 to 1
+ * @property onApply ran when it is applied at any point
  * @property onChange ran when the value changes
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
 data class BuffBehavior(
     val name: String,
     val stackStart: Adventurer.(Stack) -> Unit = {},
-    val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> },
+    val onApply: Adventurer.(duration: Double?, value: Double, stack: Stack) -> Unit = { _, _, _ -> },
+    val onChange: Adventurer.(old: Double, new: Double) -> Unit = { _, _ -> },
     val stackCap: Int = 20
 ) {
     /**

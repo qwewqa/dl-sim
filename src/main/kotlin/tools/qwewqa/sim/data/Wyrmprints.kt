@@ -10,7 +10,7 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         name = "Crystalian Envoy",
         str = 57,
         abilities = listOf(
-            Abilities.wpStrength(13.percent, Conditions.hp70)
+            Abilities.wpStr(13.percent, Conditions.hp70)
         )
     )
 
@@ -27,8 +27,16 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         name = "Beautiful Nothingness",
         str = 51,
         abilities = listOf(
-            Abilities.strength(10.percent, Conditions.hp70),
-            Abilities.critRate(5.percent)
+            Abilities.wpStr(10.percent, Conditions.hp70),
+            Abilities.wpCritRate(5.percent)
+        )
+    )
+
+    val ee = Wyrmprint(
+        name = "Elegant Escort",
+        str = 54,
+        abilities = listOf(
+            Abilities.wpPunisher(30.percent, Conditions.burning)
         )
     )
 
@@ -36,5 +44,6 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
         this["BN", "Beautiful Nothingness"] = bn
+        this["EE", "Elegant Escort"] = ee
     }
 }

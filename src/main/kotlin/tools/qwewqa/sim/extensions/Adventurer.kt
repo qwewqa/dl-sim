@@ -43,6 +43,8 @@ class AclSelector(val adventurer: Adventurer) {
     fun pre(name: String) = adventurer.trigger == "pre-$name"
     fun connect(name: String) = adventurer.trigger == "connect-$name"
 
+    val cancel = adventurer.trigger in listOf("x1", "x2", "x3", "x4", "x5", "fs")
+
     operator fun String.unaryPlus() = adventurer.trigger == this
     operator fun String.unaryMinus() = !+this
 }

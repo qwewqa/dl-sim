@@ -35,7 +35,7 @@ data class AbilityInstance(
 data class AbilityBehavior(
     val name: String,
     val onStart: Adventurer.(Stack) -> Unit = {},
-    val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> }
+    val onChange: Adventurer.(old: Double, new: Double) -> Unit = { _: Double, _: Double -> }
 ) {
     /**
      * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps

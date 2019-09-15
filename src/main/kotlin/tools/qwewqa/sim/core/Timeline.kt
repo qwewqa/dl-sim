@@ -93,6 +93,11 @@ class Timeline {
             action()
         }
 
+        suspend fun invokeNow() {
+            invoke()
+            cancel()
+        }
+
         fun cancel() {
             unschedule(this)
             if (job.isActive) {

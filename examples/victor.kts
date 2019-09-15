@@ -28,7 +28,7 @@ stage {
         }
 
         acl {
-            +s1 { seq >= 0 }
+            +s1 { +"idle" || cancel }
             +s2 { seq == 5 }
             +s3 { seq == 5 }
         }

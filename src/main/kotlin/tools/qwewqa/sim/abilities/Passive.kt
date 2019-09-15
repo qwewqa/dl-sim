@@ -38,6 +38,9 @@ class Passive(
         adventurer.listen(*condition.listeners.toTypedArray()) {
             check()
         }
+        adventurer.enemy.listen(*condition.enemyListeners.toTypedArray()) {
+            check()
+        }
         check()
     }
 }

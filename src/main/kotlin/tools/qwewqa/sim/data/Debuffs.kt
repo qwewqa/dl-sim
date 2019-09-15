@@ -22,17 +22,14 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior>() {
 
     val bleed = DebuffBehavior(
         name = "bleed",
-        stackStart = { stack ->
-            stack.enemy.apply {
-                stage.timeline.schedule {
-                    while (true) {
-                        val count = stack.count
-                        val nextTick = (stack.value * (0.5 + 0.5 * stack.count)).toInt()
-                        wait(4.99)
-                        damage(nextTick, "Other", "bleed")
-                        log(Logger.Level.VERBOSE, "debuff", "bleed tick for $nextTick (stacks: $count)")
-                        if (stack.count == 0) return@schedule
-                    }
+        onApply = { duration, value, stack ->
+            val endTime = (duration ?: error("bleed has no duration")) + timeline.time
+            timeline.schedule {
+                while (endTime > timeline.time) {
+                    wait(4.99)
+                    val dmg = value * 0.5 * (1 + stack.count)
+                    damage(dmg.toInt(), "Dot", "bleed")
+                    log(Logger.Level.VERBOSE, "bleed", "bleed for $dmg (stacks: ${stack.count}")
                 }
             }
         }

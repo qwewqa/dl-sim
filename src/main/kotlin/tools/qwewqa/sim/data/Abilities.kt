@@ -27,7 +27,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
     )
 
     val strength = statAbility("strength", Stat.STR)
-    val wpStrength = cappedStatAbility("strength (wp)", Stat.STR, 20.percent)
+    val wpStr = cappedStatAbility("strength (wp)", Stat.STR, 20.percent)
 
     val skillDamage = statAbility("skill damage", Stat.SKILL_DAMAGE)
     val wpSkillDamage = cappedStatAbility("skill damage (wp)", Stat.SKILL_DAMAGE, 40.percent)
@@ -37,6 +37,9 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
 
     val critDamage = statAbility("crit damage", Stat.CRIT_DAMAGE)
     val wpCritDamage = cappedStatAbility("crit damage (wp)", Stat.CRIT_DAMAGE, 25.percent)
+
+    val punisher = statAbility("punisher", Stat.PUNISHER)
+    val wpPunisher = cappedStatAbility("punisher (wp)", Stat.PUNISHER, 30.percent)
 
 
     fun barrageAbility(name: String, buff: BuffBehavior, interval: Int) = AbilityBehavior(
@@ -59,13 +62,15 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
 
     init {
         this["strength", "str"] = strength
-        this["strength (wp)", "str (wp)"] = wpStrength
+        this["strength (wp)", "str (wp)"] = wpStr
         this["skill damage", "skill-damage", "sd"] = skillDamage
         this["skill damage (wp)", "skill-damage (wp)", "sd (wp)"] = wpSkillDamage
         this["crit rate", "crit-rate", "cr"] = critRate
         this["crit rate (wp)", "crit-rate (wp)", "cr (wp)"] = wpCritRate
         this["crit damage", "crit-damage", "cd"] = critDamage
         this["crit damage (wp)", "crit-damage (wp)", "cd (wp)"] = wpCritDamage
+        this["punisher", "k"] = punisher
+        this["punisher (wp)", "k (wp)"] = wpPunisher
         this["barrage obliteration"] = barrageObliteration
         this["barrage devastation"] = barrageDevastation
     }

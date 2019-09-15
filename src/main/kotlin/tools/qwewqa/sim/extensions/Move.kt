@@ -39,11 +39,17 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
     action {
         skillLock = true
         doing = name
+        log(Logger.Level.VERBOSE, "skill", "$name startup")
         sp.use(name)
         ui.use()
         if (includeUILatency) wait(6.frames)
+        log(Logger.Level.VERBOSE, "skill", "$name begin")
         action()
         skillLock = false
+        log(Logger.Level.VERBOSE, "skill", "$name end")
+        schedule(ui.remaining) {
+            think(name)
+        }
     }
     initialize { sp.register(name, cost) }
 }

@@ -1,5 +1,6 @@
 package tools.qwewqa.sim.stage
 
+import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.StatType.*
 import kotlin.math.min
 import kotlin.properties.ReadWriteProperty
@@ -71,13 +72,14 @@ enum class Stat(val type: StatType, vararg val names: String, val default: Doubl
     CRIT_RATE(FULLY_ADDITIVE, "crit", "crit-rate", "critrate", "crit rate", "critical rate"),
     CRIT_DAMAGE(FULLY_ADDITIVE, "crit-damage", "critdmg", "crit damage", "critical damage", "crit-dmg"),
     ATTACK_SPEED(SINGLE_BRACKET, "attack speed", "atk spd", "spd", default = 1.0),
-    HP(MULTI_BRACKET, "hp", "health"),
-    BUFF_TIME(SINGLE_BRACKET, "buff time", "bt", default = 1.0),
-    DRAGON_HASTE(SINGLE_BRACKET, "dragon haste", "dh", default = 1.0),
-    SKILL_HASTE(SINGLE_BRACKET, "skill haste", "sh", default = 1.0),
+    HP(MULTI_BRACKET, "hp", "health", default = 100.percent),
+    BUFF_TIME(FULLY_ADDITIVE, "buff time", "bt", default = 100.percent),
+    DRAGON_HASTE(FULLY_ADDITIVE, "dragon haste", "dh", default = 100.percent),
+    SKILL_HASTE(FULLY_ADDITIVE, "skill haste", "sh", default = 100.percent),
     STRIKING_HASTE(SINGLE_BRACKET, "striking haste", "fs haste", "fsh"),
-    FORCESTRIKE_DAMAGE(SINGLE_BRACKET, "forcestrike damage", "forcestrike", "fs", "fs dmg", default = 1.0),
-    HEALING_POTENCY(SINGLE_BRACKET, "healing potency", "healing", "potency", default = 1.0)
+    FORCESTRIKE_DAMAGE(FULLY_ADDITIVE, "forcestrike damage", "forcestrike", "fs", "fs dmg", default = 100.percent),
+    HEALING_POTENCY(FULLY_ADDITIVE, "healing potency", "healing", "potency", default = 100.percent),
+    PUNISHER(FULLY_ADDITIVE, "punisher", "bane", "killer", "k", default = 100.percent)
 }
 
 val statNames = enumValues<Stat>().map { stat -> stat.names.map { name -> name to stat }.toMap() }.fold(emptyMap<String, Stat>()) { a, v -> a + v }.withDefault { error("Unknown stat $it") }

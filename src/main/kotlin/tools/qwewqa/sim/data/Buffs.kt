@@ -10,15 +10,22 @@ object Buffs : CaseInsensitiveMap<BuffBehavior>()  {
         onChange = { orig: Double, new: Double ->
             stats[stat].buff += new - orig
             log(Logger.Level.VERBOSER, "buff", "$name buff set from $orig to $new")
+            listeners.raise("$name buff")
         },
         stackCap = cap
     )
 
+    val str = statBuff("str", Stat.STR)
     val critRate = statBuff("crit rate", Stat.CRIT_RATE)
     val critDamage = statBuff("crit damage", Stat.CRIT_DAMAGE)
+    val skillHaste = statBuff("skill haste", Stat.SKILL_HASTE)
+    val def = statBuff("def", Stat.DEF)
 
     init {
+        this["str", "strength"] = str
         this["crit rate", "crit-rate", "cr"] = critRate
-        this["crit damage", "crit-damage", "cd"] = critRate
+        this["crit damage", "crit-damage", "cd"] = critDamage
+        this["skill haste", "haste", "sp"] = skillHaste
+        this["def", "defense"] = def
     }
 }

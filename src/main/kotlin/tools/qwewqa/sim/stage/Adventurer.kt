@@ -99,6 +99,7 @@ class Adventurer(val stage: Stage) : Listenable {
      */
     fun think(trigger: String = "idle") {
         this.trigger = trigger
+        listeners.raise(trigger)
         val move = logic(trigger) ?: return
         act(move)
     }
@@ -152,6 +153,8 @@ class Adventurer(val stage: Stage) : Listenable {
                     (1.0 + getCritMod()) *
                     (if (skill) stats[SKILL_DAMAGE].value else 1.0) *
                     (if (fs) stats[FORCESTRIKE_DAMAGE].value else 1.0) *
+                    stats[PUNISHER].value *
+                    (if (enemy.afflictions.bogged) 1.5 else 1.0) *
                     element.multiplier(enemy.element)
         ).toInt()
 
