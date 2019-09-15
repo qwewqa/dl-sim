@@ -6,6 +6,7 @@ import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.buffs.BuffBehavior
 import tools.qwewqa.sim.buffs.BuffInstance
+import tools.qwewqa.sim.buffs.DebuffInstance
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -113,8 +114,6 @@ class Adventurer(val stage: Stage) : Listenable {
         }
     }
 
-    val damageSlices = mutableMapOf<String, Int>().withDefault { 0 }
-
     /**
      * Applies damage based on damage formula accounting for all passives, buffs, etc.
      */
@@ -141,14 +140,13 @@ class Adventurer(val stage: Stage) : Listenable {
      * Directly applies given damage
      */
     fun trueDamage(amount: Int, name: String) {
-        enemy.damage(amount)
-        damageSlices[name] = damageSlices.getValue(name) + amount
+        enemy.damage(amount, this.name, name)
         listeners.raise("dmg")
         combo++
         log(Logger.Level.MORE, "damage", "$amount damage by $name (combo: $combo)")
     }
 
-    fun damageFormula(mod: Double, skill: Boolean, fs: Boolean): Int =
+    fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false): Int =
         floor(
             5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
                     (1.0 + getCritMod()) *
@@ -211,6 +209,9 @@ class Adventurer(val stage: Stage) : Listenable {
         }
         log("buff", "teambuff $name [value: $rdur]")
     }
+
+    fun DebuffInstance.apply() = this.apply(enemy)
+    fun DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
 
     inner class SP {
         private val charges = mutableMapOf<String, Int>()

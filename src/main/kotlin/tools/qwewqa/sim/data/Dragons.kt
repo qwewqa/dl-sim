@@ -34,9 +34,20 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
         )
     )
 
+    val vayu = Dragon(
+        name = "Vayu",
+        element = Element.WIND,
+        str = 127,
+        abilities = listOf(
+            Abilities.strength(20.percent, Conditions.wind),
+            Abilities.skillDamage(90.percent, Conditions.wind)
+        )
+    )
+
     init {
         this["Cerberus", "Agni", "Flame STR"] = cerberus
         this["Sakuya", "Konohana", "Konohana Sakuya", "Flame SD"] = sakuya
         this["Arctos", "Flame CD"] = arctos
+        this["Vayu", "Wind SD"] = vayu
     }
 }

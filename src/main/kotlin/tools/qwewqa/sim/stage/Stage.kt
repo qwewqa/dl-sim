@@ -52,7 +52,7 @@ class Stage(
         return StageResults(
             dps = enemy.dps,
             duration = timeline.time,
-            slices = adventurers.map { adv -> adv.name to adv.damageSlices }.toMap()
+            slices = enemy.damageSlices
         )
     }
 }
@@ -71,26 +71,28 @@ fun stage(
     }.awaitAll()
     val dpss = results.map { it.dps }
     val totalTime = results.sumByDouble { it.duration }
-    println("Overall dps: %.3f".format(dpss.average()))
-    println("Average duration: ${"%.3f".format(totalTime / mass)}")
-    val totalSlices = mutableMapOf<String, MutableMap<String, Long>>()
+    val averageTime = totalTime / mass
+    println("Overall dps: %.0f".format(dpss.average()))
+    println("Average duration: ${"%.0f".format(averageTime)}")
+    val totalSlices = mutableMapOf<String, MutableMap<String, MutableList<Int>>>()
     results.forEach { result ->
-        result.slices.forEach { slice ->
-            val adv = totalSlices.getOrPut(slice.key) { mutableMapOf() }
-            slice.value.forEach { attack ->
-                adv[attack.key] = (adv[attack.key] ?: 0L) + attack.value.toLong()
+        result.slices.forEach { (sourceName, attacks) ->
+            val adv = totalSlices.getOrPut(sourceName) { mutableMapOf() }
+            attacks.forEach { (attackName, damage) ->
+                adv.getOrPut(attackName) { mutableListOf() } += damage
             }
         }
     }
     totalSlices.forEach { (name, slices) ->
-        var selfTotal = 0L
+        var selfAverage = 0.0
         println("\n$name:")
-        slices.forEach { (attack, value)  ->
-            println("$attack: ${"%.3f".format(value / mass.toDouble())}")
-            selfTotal += value
+        slices.forEach { (attack, values)  ->
+            val average = values.average()
+            val dpsAverage = average / averageTime
+            println("$attack: ${"%.0f (%.0f)".format(dpsAverage, average)}")
+            selfAverage += average
         }
-        println("Self damage: ${"%.3f".format(selfTotal / mass.toDouble())}")
-        println("Self dps: ${"%.3f".format(selfTotal / totalTime)}")
+        println("dps: %.0f (%.0f)".format(selfAverage / averageTime, selfAverage))
     }
 }
 

@@ -25,6 +25,13 @@ data class AbilityInstance(
     }
 }
 
+/**
+ * Contains the behavior of an ability. Instantiated on the first use of the ability on an adventurer
+ *
+ * @property name the name of this ability for display
+ * @property onStart ran when this ability is first created
+ * @property onChange ran when the value changes
+ */
 data class AbilityBehavior(
     val name: String,
     val onStart: Adventurer.(Stack) -> Unit = {},

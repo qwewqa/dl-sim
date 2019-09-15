@@ -3,7 +3,6 @@ package tools.qwewqa.sim.buffs
 import tools.qwewqa.sim.stage.Enemy
 import tools.qwewqa.sim.core.Timer
 import tools.qwewqa.sim.core.getTimer
-import tools.qwewqa.sim.stage.Adventurer
 
 /**
  * Data on a debuff without any behavior
@@ -28,14 +27,28 @@ data class DebuffInstance(
     }
 }
 
+/**
+ * Contains the behavior of a debuff. Instantiated on the first use of the debuff on an adventurer
+ *
+ * @property name the name of this ability for display
+ * @property stackStart ran when the number of stacks changes from 0 to 1
+ * @property onChange ran when the value changes
+ * @property stackCap maximum number of stacks after which further stacks will bounce
+ */
 data class DebuffBehavior(
     val name: String,
-    val onStart: Enemy.(Stack) -> Unit = {},
+    val stackStart: Enemy.(Stack) -> Unit = {},
     val onChange: Enemy.(Double, Double) -> Unit = { _: Double, _: Double -> },
     val stackCap: Int = 20
 ) {
     inner class Stack(val enemy: Enemy) {
         var count: Int = 0
+            set(value) {
+                if (field == 0 && value == 1) {
+                    enemy.stackStart(this)
+                }
+                field = value
+            }
         var value: Double = 0.0
             set(value) {
                 update(field, value)
@@ -44,10 +57,6 @@ data class DebuffBehavior(
 
         fun update(old: Double, new: Double) {
             enemy.onChange(old, new)
-        }
-
-        init {
-            enemy.onStart(this)
         }
     }
 
@@ -69,6 +78,7 @@ data class DebuffBehavior(
      * Creates a [DebuffInstance] targeting this
      */
     operator fun invoke(value: Double) = getInstance(value)
+    operator fun invoke(value: Int) = getInstance(value.toDouble())
 
     /**
      * Creates a [DebuffInstance] targeting this

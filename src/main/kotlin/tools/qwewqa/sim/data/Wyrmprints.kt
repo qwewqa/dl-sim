@@ -23,8 +23,18 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         )
     )
 
+    val bn = Wyrmprint(
+        name = "Beautiful Nothingness",
+        str = 51,
+        abilities = listOf(
+            Abilities.strength(10.percent, Conditions.hp70),
+            Abilities.critRate(5.percent)
+        )
+    )
+
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
+        this["BN", "Beautiful Nothingness"] = bn
     }
 }

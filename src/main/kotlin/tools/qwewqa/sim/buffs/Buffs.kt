@@ -27,9 +27,17 @@ data class BuffInstance(
     }
 }
 
+/**
+ * Contains the behavior of a buff. Instantiated on the first use of the buff on an adventurer
+ *
+ * @property name the name of this ability for display
+ * @property stackStart ran when the number of stacks changes from 0 to 1
+ * @property onChange ran when the value changes
+ * @property stackCap maximum number of stacks after which further stacks will bounce
+ */
 data class BuffBehavior(
     val name: String,
-    val onStart: Adventurer.(Stack) -> Unit = {},
+    val stackStart: Adventurer.(Stack) -> Unit = {},
     val onChange: Adventurer.(Double, Double) -> Unit = { _: Double, _: Double -> },
     val stackCap: Int = 20
 ) {
@@ -38,6 +46,12 @@ data class BuffBehavior(
      */
     inner class Stack(val adventurer: Adventurer) {
         var count: Int = 0
+            set(value) {
+                if (field == 0 && value == 1) {
+                    adventurer.stackStart(this)
+                }
+                field = value
+            }
         var value: Double = 0.0
             set(value) {
                 update(field, value)
@@ -49,7 +63,7 @@ data class BuffBehavior(
         }
 
         init {
-            adventurer.onStart(this)
+            adventurer.stackStart(this)
         }
     }
 

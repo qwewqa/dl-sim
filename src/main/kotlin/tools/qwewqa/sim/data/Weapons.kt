@@ -23,6 +23,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
     )
 
     val flameBlade5t3 = blade5b1("Heaven's Acuity", Element.FLAME)
+    val windBlade5t3 = blade5b1("Anemone", Element.WIND)
 
 
     fun sword(name: String, element: Element, str: Int, skill: Move, abilities: List<AbilityInstance> = emptyList()) =
@@ -47,6 +48,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
 
     init {
         this["flame 5t3 blade", "Heaven's Acuity"] = flameBlade5t3
+        this["wind 5t3 blade", "Anemone"] = windBlade5t3
         this["flame 5t3 sword", "Levatein"] = flameSword5t3
     }
 }
