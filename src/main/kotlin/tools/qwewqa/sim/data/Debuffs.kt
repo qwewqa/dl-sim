@@ -29,7 +29,7 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior>() {
                     wait(4.99)
                     val dmg = value * 0.5 * (1 + stack.count)
                     damage(dmg, "Dot", "bleed")
-                    log(Logger.Level.VERBOSE, "bleed", "bleed for $dmg (stacks: ${stack.count}")
+                    log(Logger.Level.VERBOSE, "bleed", "bleed for $dmg (stacks: ${stack.count})")
                 }
             }
         }
