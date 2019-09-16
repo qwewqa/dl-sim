@@ -164,6 +164,7 @@ class Adventurer(val stage: Stage) : Listenable {
     private fun prerunChecks() {}
 
     fun initialize() {
+        listeners.listenTo(enemy.listeners)
         stats["str"].base = str.toDouble()
         weapon.init()
         weaponType.init()

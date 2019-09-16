@@ -27,6 +27,12 @@ class ListenerMap(val map: MutableMap<String, MutableList<Listener>> = mutableMa
      */
     fun <T> observable(initial: T, event: String) = ObservableProperty(initial, event)
 
+    fun listenTo(listeners: ListenerMap) {
+        listeners.globalListeners += {
+            raise(it)
+        }
+    }
+
     inner class ObservableProperty<T>(private var value: T, val event: String) : ReadWriteProperty<Any?, T> {
         override fun getValue(thisRef: Any?, property: KProperty<*>): T {
             return value

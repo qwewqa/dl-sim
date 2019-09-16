@@ -17,23 +17,23 @@ object Conditions : CaseInsensitiveMap<Condition>() {
     val light = Condition("light") { element == Element.LIGHT }
     val shadow = Condition("shadow") { element == Element.SHADOW }
 
-    fun combo(count: Int) = Condition("combo $count", setOf("combo")) { combo >= count }
+    fun combo(count: Int) = Condition("combo $count", "combo") { combo >= count }
     val combo15 = combo(15)
-    fun everyCombo(count: Int) = Condition("combo $count", setOf("combo")) { combo >= count }
+    fun everyCombo(count: Int) = Condition("combo $count", "combo") { combo >= count }
     val every15 = everyCombo(15)
     val every20 = everyCombo(20)
     val every25 = everyCombo(25)
     val every30 = everyCombo(30)
 
-    val bleeding = Condition("bleeding", enemyListeners = setOf("bleeding")) { enemy.debuffStacks[Debuffs.bleed]?.count ?: 0 > 0 }
-    val burning = Condition("burning", enemyListeners = setOf("afflict")) { enemy.afflictions.burning }
-    val poisoned = Condition("poisoned", enemyListeners = setOf("afflict")) { enemy.afflictions.poisoned }
-    val paralyzed = Condition("paralyzed", enemyListeners = setOf("afflict")) { enemy.afflictions.paralyzed }
-    val bogged = Condition("bogged", enemyListeners = setOf("afflict")) { enemy.afflictions.bogged }
-    val blinded = Condition("blinded", enemyListeners = setOf("afflict")) { enemy.afflictions.blinded }
-    val sleeping = Condition("sleeping", enemyListeners = setOf("afflict")) { enemy.afflictions.sleeping }
-    val stunned = Condition("stunned", enemyListeners = setOf("afflict")) { enemy.afflictions.stunned }
-    val frozen = Condition("frozen", enemyListeners = setOf("afflict")) { enemy.afflictions.frozen }
+    val bleeding = Condition("bleeding", "bleeding") { enemy.debuffStacks[Debuffs.bleed]?.count ?: 0 > 0 }
+    val burning = Condition("burning", "afflict") { enemy.afflictions.burning }
+    val poisoned = Condition("poisoned", "afflict") { enemy.afflictions.poisoned }
+    val paralyzed = Condition("paralyzed", "afflict") { enemy.afflictions.paralyzed }
+    val bogged = Condition("bogged", "afflict") { enemy.afflictions.bogged }
+    val blinded = Condition("blinded", "afflict") { enemy.afflictions.blinded }
+    val sleeping = Condition("sleeping", "afflict") { enemy.afflictions.sleeping }
+    val stunned = Condition("stunned", "afflict") { enemy.afflictions.stunned }
+    val frozen = Condition("frozen", "afflict") { enemy.afflictions.frozen }
 
     init {
         this["hp70"] = hp70
