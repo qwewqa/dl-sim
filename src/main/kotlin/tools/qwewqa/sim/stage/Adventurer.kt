@@ -15,7 +15,6 @@ import tools.qwewqa.sim.equip.BaseEquip
 import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
-import tools.qwewqa.sim.extensions.withVariance
 import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
@@ -125,7 +124,7 @@ class Adventurer(val stage: Stage) : Listenable {
         skill: Boolean = false,
         fs: Boolean = false
     ) {
-        trueDamage(damageFormula(mod, skill, fs).withVariance, name)
+        trueDamage(damageFormula(mod, skill, fs), name)
     }
 
     fun sdamage(

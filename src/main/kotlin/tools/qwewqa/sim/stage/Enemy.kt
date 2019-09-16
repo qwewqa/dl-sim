@@ -5,7 +5,6 @@ import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.extensions.percent
-import tools.qwewqa.sim.extensions.withVariance
 import kotlin.random.Random
 
 class Enemy(val stage: Stage) : Listenable {
@@ -38,13 +37,13 @@ class Enemy(val stage: Stage) : Listenable {
     val damageSlices = mutableMapOf<String, MutableMap<String, Int>>()
 
     fun damage(amount: Double, source: String = "unknown", name: String = "unknown") {
-        val iAmount = amount.toInt()
+        val iAmount = (0.95 * amount + 0.1 * Random.nextDouble() * amount).toInt()
         totalDamage += iAmount
         val slice = damageSlices[source] ?: mutableMapOf<String, Int>().also { damageSlices[source] = it }.withDefault { 0 }
         slice[name] = (slice[name] ?: 0) + iAmount
         listeners.raise("dmg")
         if (useHp) {
-            hp -= iAmount.toInt()
+            hp -= iAmount
             if (hp <= 0) {
                 stage.end()
             }
@@ -119,7 +118,7 @@ class Enemy(val stage: Stage) : Listenable {
                     wait(burnInterval)
                     if (time > endTime) break
                     log(Logger.Level.VERBOSE, "affliction", "burn for $damage")
-                    damage(damage.withVariance, "Dot", "burn")
+                    damage(damage, "Dot", "burn")
                 }
             }
             timeline.schedule(duration) {
@@ -144,7 +143,7 @@ class Enemy(val stage: Stage) : Listenable {
                     wait(poisonInterval)
                     if (time > endTime) break
                     log(Logger.Level.VERBOSE, "affliction", "poison for $damage")
-                    damage(damage.withVariance, "Dot", "poison")
+                    damage(damage, "Dot", "poison")
                 }
             }
             timeline.schedule(duration) {
@@ -169,7 +168,7 @@ class Enemy(val stage: Stage) : Listenable {
                     wait(paralysisInterval)
                     if (time > endTime) break
                     log(Logger.Level.VERBOSE, "affliction", "paralysis for $damage")
-                    damage(damage.withVariance, "Dot", "paralysis")
+                    damage(damage, "Dot", "paralysis")
                 }
             }
             timeline.schedule(duration) {
