@@ -5,6 +5,7 @@ import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.extensions.percent
+import tools.qwewqa.sim.extensions.withVariance
 import kotlin.random.Random
 
 class Enemy(val stage: Stage) : Listenable {
@@ -26,7 +27,7 @@ class Enemy(val stage: Stage) : Listenable {
 
     var useHp = false
 
-    var totalDamage = 0
+    var totalDamage = 1
         private set
 
     val afflictions = Afflictions()
@@ -36,13 +37,14 @@ class Enemy(val stage: Stage) : Listenable {
     val debuffStacks = mutableMapOf<DebuffBehavior, DebuffBehavior.Stack>()
     val damageSlices = mutableMapOf<String, MutableMap<String, Int>>()
 
-    fun damage(amount: Int, source: String = "unknown", name: String = "unknown") {
-        totalDamage += amount
+    fun damage(amount: Double, source: String = "unknown", name: String = "unknown") {
+        val iAmount = amount.toInt()
+        totalDamage += iAmount
         val slice = damageSlices[source] ?: mutableMapOf<String, Int>().also { damageSlices[source] = it }.withDefault { 0 }
-        slice[name] = (slice[name] ?: 0) + amount
+        slice[name] = (slice[name] ?: 0) + iAmount
         listeners.raise("dmg")
         if (useHp) {
-            hp -= amount
+            hp -= iAmount.toInt()
             if (hp <= 0) {
                 stage.end()
             }
@@ -104,7 +106,7 @@ class Enemy(val stage: Stage) : Listenable {
             private set
         private var freezeEndEvent: Timeline.Event? = null
 
-        fun burn(chance: Double, damage: Int, duration: Double): Boolean {
+        fun burn(chance: Double, damage: Double, duration: Double): Boolean {
             if (burnRes >= 100.percent || Random.nextDouble() >= chance - burnRes) {
                 log(Logger.Level.VERBOSE, "affliction", "burn fail (res: $burnRes, chance: $chance)")
                 return false
@@ -117,7 +119,7 @@ class Enemy(val stage: Stage) : Listenable {
                     wait(burnInterval)
                     if (time > endTime) break
                     log(Logger.Level.VERBOSE, "affliction", "burn for $damage")
-                    damage(damage, "Dot", "burn")
+                    damage(damage.withVariance, "Dot", "burn")
                 }
             }
             timeline.schedule(duration) {
@@ -129,7 +131,7 @@ class Enemy(val stage: Stage) : Listenable {
             return true
         }
 
-        fun poison(chance: Double, damage: Int, duration: Double): Boolean {
+        fun poison(chance: Double, damage: Double, duration: Double): Boolean {
             if (poisonRes >= 100.percent || Random.nextDouble() >= chance - poisonRes) {
                 log(Logger.Level.VERBOSE, "affliction", "poison fail (res: $poisonRes, chance: $chance)")
                 return false
@@ -142,7 +144,7 @@ class Enemy(val stage: Stage) : Listenable {
                     wait(poisonInterval)
                     if (time > endTime) break
                     log(Logger.Level.VERBOSE, "affliction", "poison for $damage")
-                    damage(damage, "Dot", "poison")
+                    damage(damage.withVariance, "Dot", "poison")
                 }
             }
             timeline.schedule(duration) {
@@ -154,7 +156,7 @@ class Enemy(val stage: Stage) : Listenable {
             return true
         }
 
-        fun paralysis(chance: Double, damage: Int, duration: Double): Boolean {
+        fun paralysis(chance: Double, damage: Double, duration: Double): Boolean {
             if (paralysisRes >= 100.percent || Random.nextDouble() >= chance - paralysisRes) {
                 log(Logger.Level.VERBOSE, "affliction", "paralysis fail (res: $paralysisRes, chance: $chance)")
                 return false
@@ -167,7 +169,7 @@ class Enemy(val stage: Stage) : Listenable {
                     wait(paralysisInterval)
                     if (time > endTime) break
                     log(Logger.Level.VERBOSE, "affliction", "paralysis for $damage")
-                    damage(damage, "Dot", "paralysis")
+                    damage(damage.withVariance, "Dot", "paralysis")
                 }
             }
             timeline.schedule(duration) {

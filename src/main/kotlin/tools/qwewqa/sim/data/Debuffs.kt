@@ -2,6 +2,7 @@ package tools.qwewqa.sim.data
 
 import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.extensions.percent
+import tools.qwewqa.sim.extensions.withVariance
 import tools.qwewqa.sim.stage.Enemy
 import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.Stat
@@ -28,7 +29,7 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior>() {
                 while (endTime > timeline.time) {
                     wait(4.99)
                     val dmg = value * 0.5 * (1 + stack.count)
-                    damage(dmg.toInt(), "Dot", "bleed")
+                    damage(dmg.withVariance, "Dot", "bleed")
                     log(Logger.Level.VERBOSE, "bleed", "bleed for $dmg (stacks: ${stack.count}")
                 }
             }

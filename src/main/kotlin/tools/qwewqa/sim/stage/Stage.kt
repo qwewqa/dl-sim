@@ -13,6 +13,7 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
+import tools.qwewqa.sim.extensions.std
 
 class Stage(
     val abilities: CaseInsensitiveMap<AbilityBehavior> = Abilities.toCaseInsensitiveMap(),
@@ -72,7 +73,7 @@ fun stage(
     val dpss = results.map { it.dps }
     val totalTime = results.sumByDouble { it.duration }
     val averageTime = totalTime / mass
-    println("Overall dps: %.0f".format(dpss.average()))
+    println("Overall dps: %.0f; std: %.0f".format(dpss.average(), dpss.std()))
     println("Average duration: ${"%.0f".format(averageTime)}")
     val totalSlices = mutableMapOf<String, MutableMap<String, MutableList<Int>>>()
     results.forEach { result ->

@@ -15,6 +15,7 @@ import tools.qwewqa.sim.equip.BaseEquip
 import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
+import tools.qwewqa.sim.extensions.withVariance
 import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
@@ -124,7 +125,7 @@ class Adventurer(val stage: Stage) : Listenable {
         skill: Boolean = false,
         fs: Boolean = false
     ) {
-        trueDamage(damageFormula(mod, skill, fs), name)
+        trueDamage(damageFormula(mod, skill, fs).withVariance, name)
     }
 
     fun sdamage(
@@ -140,14 +141,14 @@ class Adventurer(val stage: Stage) : Listenable {
     /**
      * Directly applies given damage
      */
-    fun trueDamage(amount: Int, name: String) {
+    fun trueDamage(amount: Double, name: String) {
         enemy.damage(amount, this.name, name)
         listeners.raise("dmg")
         combo++
         log(Logger.Level.MORE, "damage", "$amount damage by $name (combo: $combo)")
     }
 
-    fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false): Int =
+    fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         floor(
             5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
                     (1.0 + getCritMod()) *
@@ -156,7 +157,7 @@ class Adventurer(val stage: Stage) : Listenable {
                     stats[PUNISHER].value *
                     (if (enemy.afflictions.bogged) 1.5 else 1.0) *
                     element.multiplier(enemy.element)
-        ).toInt()
+        )
 
     fun getCritMod() = if (Random.nextDouble() <= stats[CRIT_RATE].value) stats[CRIT_DAMAGE].value else 0.0
 
