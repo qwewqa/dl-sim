@@ -10,35 +10,22 @@ stage {
 
         var stance = 1
         s1(3303) {
-            enemy.afflictions.burn(120.percent, damageFormula(97.percent, skill = true), 12.0)
-            when(stance) {
-                1 -> {
-                    sdamage(72.percent)
-                    sdamage(72.percent)
-                    sdamage(72.percent)
-                    sdamage(72.percent)
-                    sdamage(665.percent)
-                    stance = 2
-                }
-                2 -> {
-                    sdamage(72.percent)
-                    sdamage(72.percent)
-                    sdamage(72.percent)
-                    sdamage(72.percent)
-                    sdamage(665.percent)
-                    buffs["crit rate"](10.percent).selfBuff(15.0)
-                    stance = 3
-                }
-                3 -> {
-                    val killer = if (enemy.afflictions.burning) 1.8 else 1.0
-                    sdamage(72.percent * killer)
-                    sdamage(72.percent * killer)
-                    sdamage(72.percent * killer)
-                    sdamage(72.percent * killer)
-                    sdamage(665.percent * killer)
-                    buffs["crit rate"](10.percent).selfBuff(15.0)
-                    stance = 1
-                }
+            enemy.afflictions.burn(
+                chance = 120.percent,
+                damage = damageFormula(97.percent, skill = true),
+                duration = 12.0
+            )
+            val killer = if (stance == 3 && enemy.afflictions.burning) 1.8 else 1.0
+            sdamage(72.percent * killer)
+            sdamage(72.percent * killer)
+            sdamage(72.percent * killer)
+            sdamage(72.percent * killer)
+            sdamage(665.percent * killer)
+            if (stance >= 2) buffs["crit rate"](10.percent).selfBuff(15.0)
+            stance = when(stance) {
+                1 -> 2
+                2 -> 3
+                else -> 1
             }
             wait(2.45)
         }
