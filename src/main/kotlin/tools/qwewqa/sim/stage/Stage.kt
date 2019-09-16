@@ -59,7 +59,7 @@ class Stage(
 }
 
 fun stage(
-    mass: Int = 4000,
+    mass: Int = 10000,
     logLevel: Logger.Level = Logger.Level.VERBOSIEST,
     init: Stage.() -> Unit
 ) = runBlocking {

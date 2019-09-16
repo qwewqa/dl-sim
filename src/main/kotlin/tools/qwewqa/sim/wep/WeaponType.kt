@@ -54,7 +54,7 @@ suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0) = hit(name) 
 }
 
 suspend fun Adventurer.fs(name: String, mod: Double, sp: Int = 0) = hit(name) {
-    damage(mod, fs = true)
+    damage(mod, "fs", fs = true)
     if (sp > 0) sp(sp, fs = true)
     think("fs-connect")
 }

@@ -40,10 +40,19 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         )
     )
 
+    val fog = Wyrmprint(
+        name = "Flash of Genius",
+        str = 57,
+        abilities = listOf(
+            Abilities.wpStr(20.percent, Conditions.combo15)
+        )
+    )
+
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
         this["BN", "Beautiful Nothingness"] = bn
         this["EE", "Elegant Escort"] = ee
+        this["FoG", "Flash of Genius"] = fog
     }
 }

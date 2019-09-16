@@ -20,7 +20,7 @@ private val fs = forcestrike {
             fs("fs-h", 31.percent)
         }
     }
-    wait(34.frames)
+    wait(37.frames)
 }
 
 private val combo = combo {
