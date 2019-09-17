@@ -12,14 +12,14 @@ private val fs = forcestrike {
     hit("fs") {
         schedule {
             wait(0.5)
-            doFsAtk(31.percent, 3.0, 460, "fs", "a")
-            doFsAtk(31.percent, 3.0, "fs", "b")
-            doFsAtk(31.percent, 3.0, "fs", "c")
-            doFsAtk(31.percent, 3.0, "fs", "d")
-            doFsAtk(31.percent, 3.0, "fs", "e")
-            doFsAtk(31.percent, 3.0, "fs", "f")
-            doFsAtk(31.percent, 3.0, "fs", "g")
-            doFsAtk(31.percent, 3.0, "fs", "h")
+            doFsAtk(31.percent, 3.0, 460, "fs")
+            doFsAtk(31.percent, 3.0, "fs")
+            doFsAtk(31.percent, 3.0, "fs")
+            doFsAtk(31.percent, 3.0, "fs")
+            doFsAtk(31.percent, 3.0, "fs")
+            doFsAtk(31.percent, 3.0, "fs")
+            doFsAtk(31.percent, 3.0, "fs")
+            doFsAtk(31.percent, 3.0, "fs")
         }
     }
     wait(37.frames)

@@ -16,7 +16,7 @@ private val fs = forcestrike {
         "x5" -> wait(40.frames)
         else -> wait((40+78).frames)
     }
-    doFsAtk(192.percent, 3.08, 300)
+    doFsAtk(192.percent, 3.08, 300, "fs")
     wait(34.frames)
 }
 

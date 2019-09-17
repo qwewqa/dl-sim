@@ -19,8 +19,8 @@ private val fs = forcestrike {
     }
     hit("fs") {
         doFsAtk(47.percent, 8.4, 300, "fs", "a")
-        doFsAtk(47.percent, 8.4, "fs", "a")
-        doFsAtk(47.percent, 4.2, "fs", "a")
+        doFsAtk(47.percent, 8.4, "fs", "b")
+        doFsAtk(47.percent, 4.2, "fs", "c")
     }
     wait(34.frames)
 }

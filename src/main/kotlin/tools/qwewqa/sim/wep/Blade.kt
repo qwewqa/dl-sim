@@ -9,7 +9,7 @@ import tools.qwewqa.sim.stage.doFsAtk
 private val fs = forcestrike {
     doing = "fs"
     wait(30.frames)
-    doFsAtk(92.percent, 6.0, 200)
+    doFsAtk(92.percent, 6.0, 200, "fs")
     wait(41.frames)
 }
 
