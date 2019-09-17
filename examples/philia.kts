@@ -11,14 +11,15 @@ stage {
         a1 = abilities["str"](10.percent, Conditions["hp100"])
 
         s1(2395) {
-            sdamage(262.percent)
-            sdamage(262.percent)
-            sdamage(262.percent)
+            val s1bolt = skillAtk(262.percent, "s1")
+            +s1bolt
+            +s1bolt
+            +s1bolt
             wait(2.05)
         }
 
         s2(5051) {
-            sdamage(667.percent)
+            +skillAtk(667.percent, "s2")
             enemy.afflictions.paralysis(
                 chance = 90.percent,
                 damage = damageFormula(60.percent, skill = true),

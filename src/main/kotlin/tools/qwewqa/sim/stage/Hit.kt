@@ -27,9 +27,9 @@ fun Adventurer.doFsAtk(
     sp: Int,
     vararg name: String
 ) {
-    val n = name.joinToString("-")
+    val n = if (name.isEmpty()) "fs" else name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, od = od, sp = sp, name = *arrayOf("attack", "fs") + name, fs = true)
+    +attack(mod = mod, od = od, sp = sp, name = *arrayOf("fs") + name, fs = true)
     think(n)
 }
 
@@ -38,9 +38,9 @@ fun Adventurer.doFsAtk(
     od: Double,
     vararg name: String
 ) {
-    val n = name.joinToString("-")
+    val n = if (name.isEmpty()) "fs" else name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, od = od, name = *arrayOf("attack", "fs") + name, fs = true)
+    +attack(mod = mod, od = od, name = *arrayOf("fs") + name, fs = true)
     think(n)
 }
 
@@ -51,7 +51,7 @@ fun Adventurer.doAutoAtk(
 ) {
     val n = name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, sp = sp, name = *arrayOf("attack") + name)
+    +attack(mod = mod, sp = sp, name = *arrayOf("combo") + name)
     think(n)
 }
 
@@ -61,7 +61,7 @@ fun Adventurer.doAutoAtk(
 ) {
     val n = name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, name = *arrayOf("attack") + name)
+    +attack(mod = mod, name = *arrayOf("combo") + name)
     think(n)
 }
 
