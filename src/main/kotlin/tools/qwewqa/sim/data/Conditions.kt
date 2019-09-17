@@ -25,15 +25,15 @@ object Conditions : CaseInsensitiveMap<Condition>() {
     val every25 = everyCombo(25)
     val every30 = everyCombo(30)
 
-    val bleeding = Condition("bleeding", "bleeding") { enemy.debuffStacks[Debuffs.bleed]?.count ?: 0 > 0 }
-    val burning = Condition("burning", "afflict") { enemy.afflictions.burning }
-    val poisoned = Condition("poisoned", "afflict") { enemy.afflictions.poisoned }
-    val paralyzed = Condition("paralyzed", "afflict") { enemy.afflictions.paralyzed }
-    val bogged = Condition("bogged", "afflict") { enemy.afflictions.bogged }
-    val blinded = Condition("blinded", "afflict") { enemy.afflictions.blinded }
-    val sleeping = Condition("sleeping", "afflict") { enemy.afflictions.sleeping }
-    val stunned = Condition("stunned", "afflict") { enemy.afflictions.stunned }
-    val frozen = Condition("frozen", "afflict") { enemy.afflictions.frozen }
+//    val bleeding = Condition("bleeding", "bleeding") { enemy.debuffStacks[Debuffs.bleed]?.count ?: 0 > 0 }
+//    val burning = Condition("burning", "afflict") { enemy.afflictions.burning }
+//    val poisoned = Condition("poisoned", "afflict") { enemy.afflictions.poisoned }
+//    val paralyzed = Condition("paralyzed", "afflict") { enemy.afflictions.paralyzed }
+//    val bogged = Condition("bogged", "afflict") { enemy.afflictions.bogged }
+//    val blinded = Condition("blinded", "afflict") { enemy.afflictions.blinded }
+//    val sleeping = Condition("sleeping", "afflict") { enemy.afflictions.sleeping }
+//    val stunned = Condition("stunned", "afflict") { enemy.afflictions.stunned }
+//    val frozen = Condition("frozen", "afflict") { enemy.afflictions.frozen }
 
     init {
         this["hp70"] = hp70
@@ -48,14 +48,14 @@ object Conditions : CaseInsensitiveMap<Condition>() {
         this["every20"] = every20
         this["every25"] = every25
         this["every30"] = every30
-        this["bleeding"] = bleeding
-        this["burning"] = burning
-        this["poisoned"] = poisoned
-        this["paralyzed"] = paralyzed
-        this["bogged"] = bogged
-        this["blinded"] = blinded
-        this["sleeping"] = sleeping
-        this["stunned"] = stunned
-        this["frozen"] = frozen
+//        this["bleeding"] = bleeding
+//        this["burning"] = burning
+//        this["poisoned"] = poisoned
+//        this["paralyzed"] = paralyzed
+//        this["bogged"] = bogged
+//        this["blinded"] = blinded
+//        this["sleeping"] = sleeping
+//        this["stunned"] = stunned
+//        this["frozen"] = frozen
     }
 }

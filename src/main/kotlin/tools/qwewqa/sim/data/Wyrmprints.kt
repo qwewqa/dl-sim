@@ -32,13 +32,13 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         )
     )
 
-    val ee = Wyrmprint(
-        name = "Elegant Escort",
-        str = 54,
-        abilities = listOf(
-            Abilities.wpPunisher(30.percent, Conditions.burning)
-        )
-    )
+//    val ee = Wyrmprint(
+//        name = "Elegant Escort",
+//        str = 54,
+//        abilities = listOf(
+//            Abilities.wpPunisher(30.percent, Conditions.burning)
+//        )
+//    )
 
     val fog = Wyrmprint(
         name = "Flash of Genius",
@@ -52,7 +52,7 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
         this["BN", "Beautiful Nothingness"] = bn
-        this["EE", "Elegant Escort"] = ee
+//        this["EE", "Elegant Escort"] = ee
         this["FoG", "Flash of Genius"] = fog
     }
 }

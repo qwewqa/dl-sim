@@ -6,6 +6,7 @@ import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.skill
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.Move
+import tools.qwewqa.sim.stage.skillAtk
 
 object Weapons : CaseInsensitiveMap<Weapon>() {
     fun blade(name: String, element: Element, str: Int, skill: Move, abilities: List<AbilityInstance> = emptyList()) =
@@ -13,11 +14,11 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
 
     fun blade5b1(name: String, element: Element) = blade(name, element, 572,
         skill("s3", 8030) {
-            sdamage(354.percent)
+            +skillAtk(354.percent, "s3")
             wait(0.0)
-            sdamage(354.percent)
+            +skillAtk(354.percent, "s3")
             wait(0.0)
-            sdamage(354.percent)
+            +skillAtk(354.percent, "s3")
             wait(2.65)
         }
     )
@@ -31,15 +32,15 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
 
     fun sword5b1(name: String, element: Element) = sword(name, element, 556,
         skill("s3", 6847) {
-            sdamage(165.percent)
+            +skillAtk(165.percent, "s3")
             wait(0.0)
-            sdamage(165.percent)
+            +skillAtk(165.percent, "s3")
             wait(0.0)
-            sdamage(165.percent)
+            +skillAtk(165.percent, "s3")
             wait(0.0)
-            sdamage(165.percent)
+            +skillAtk(165.percent, "s3")
             wait(0.0)
-            sdamage(165.percent)
+            +skillAtk(165.percent, "s3")
             wait(3.1)
         }
     )

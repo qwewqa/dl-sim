@@ -13,7 +13,6 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
-import tools.qwewqa.sim.extensions.std
 
 class Stage(
     val abilities: CaseInsensitiveMap<AbilityBehavior> = Abilities.toCaseInsensitiveMap(),
@@ -51,16 +50,16 @@ class Stage(
         if (!started) run()
         timeline.join()
         return StageResults(
-            dps = enemy.dps,
             duration = timeline.time,
-            slices = enemy.damageSlices
+            slice = enemy.damageSlices
         )
     }
 }
 
 fun stage(
-    mass: Int = 10000,
+    mass: Int = 2500,
     logLevel: Logger.Level = Logger.Level.VERBOSIEST,
+    yaml: Boolean = false,
     init: Stage.() -> Unit
 ) = runBlocking {
     val results = (1..mass).map {
@@ -70,34 +69,15 @@ fun stage(
             }.awaitResults()
         }
     }.awaitAll()
-    val dpss = results.map { it.dps }
-    val totalTime = results.sumByDouble { it.duration }
-    val averageTime = totalTime / mass
-    println("Overall dps: %.0f; std: %.0f".format(dpss.average(), dpss.std()))
-    println("Average duration: ${"%.0f".format(averageTime)}")
-    val totalSlices = mutableMapOf<String, MutableMap<String, MutableList<Int>>>()
-    results.forEach { result ->
-        result.slices.forEach { (sourceName, attacks) ->
-            val adv = totalSlices.getOrPut(sourceName) { mutableMapOf() }
-            attacks.forEach { (attackName, damage) ->
-                adv.getOrPut(attackName) { mutableListOf() } += damage
-            }
-        }
+
+    val slices = DamageSliceLists("Damage")
+    results.forEach { (duration, slice) ->
+        slices.add(slice, duration)
     }
-    totalSlices.forEach { (name, slices) ->
-        var selfAverage = 0.0
-        println("\n$name:")
-        slices.forEach { (attack, values)  ->
-            val average = values.average()
-            val dpsAverage = average / averageTime
-            println("$attack: ${"%.0f (%.0f)".format(dpsAverage, average)}")
-            selfAverage += average
-        }
-        println("dps: %.0f (%.0f)".format(selfAverage / averageTime, selfAverage))
-    }
+    if (yaml) slices.displayYAML() else slices.display()
 }
 
-data class StageResults(val dps: Double, val duration: Double, val slices: Map<String, Map<String, Int>>)
+data class StageResults(val duration: Double, val slice: DamageSlice)
 
 fun Stage.endIn(time: Double) = timeline.schedule(time) { end() }
 fun Stage.onEnd(action: Stage.() -> Unit) {

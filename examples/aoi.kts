@@ -9,12 +9,12 @@ stage {
         wp = wyrmprints["CE"] + wyrmprints["RR"]
 
         s1(2630) {
-            sdamage(878.percent)
+            +skillAtk(878.percent, "s1")
             wait(1.85)
         }
 
         s2(5280) {
-            sdamage(790.percent)
+            +skillAtk(790.percent, "s2")
             wait(1.85)
         }
 

@@ -3,15 +3,17 @@ package tools.qwewqa.sim.wep
 import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.hit
 import tools.qwewqa.sim.extensions.percent
+import tools.qwewqa.sim.stage.doAutoAtk
+import tools.qwewqa.sim.stage.doFsAtk
 
 private val fs = forcestrike {
     doing = "fs"
     wait(42.frames)
     hit("fs") {
-        fs("fs-a", 61.percent, 580)
-        fs("fs-b", 61.percent)
-        fs("fs-c", 61.percent)
-        fs("fs-d", 61.percent)
+        doFsAtk(61.percent, 0.0, 580, "fs", "a")
+        doFsAtk(61.percent, 0.0, "fs", "b")
+        doFsAtk(61.percent, 0.0, "fs", "c")
+        doFsAtk(61.percent, 0.0, "fs", "d")
     }
     wait(240.frames)
 }
@@ -19,26 +21,26 @@ private val fs = forcestrike {
 private val combo = combo {
     doing = "x1"
     wait(18.frames)
-    auto("x1", 69.percent, 232)
+    doAutoAtk(69.percent, 232, "x1")
 
     doing = "x2"
     wait(29.frames)
-    auto("x2", 80.percent, 232)
+    doAutoAtk(80.percent, 232, "x2")
 
     doing = "x3"
     wait(42.frames)
     hit("x3") {
-        auto("x3-a", 45.percent, 348)
-        auto("x3-b", 45.percent)
+        doAutoAtk(45.percent, 348, "x3", "a")
+        doAutoAtk(45.percent, "x3", "b")
     }
 
     doing = "x4"
     wait(38.frames)
-    auto("x4", 150.percent, 464)
+    doAutoAtk(150.percent, 464, "x4")
 
     doing = "x5"
     wait(67.frames)
-    auto("x5", 196.percent, 696)
+    doAutoAtk(196.percent, 696, "x5")
     wait(40.frames)
 }
 

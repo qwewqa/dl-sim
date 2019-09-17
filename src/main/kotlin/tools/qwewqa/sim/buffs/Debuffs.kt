@@ -16,13 +16,14 @@ data class DebuffInstance(
     fun apply(enemy: Enemy, duration: Double? = null) : Timer? {
         val stack = behavior.getStack(enemy)
         if (stack.count > behavior.stackCap) return null
-        behavior.onApply(enemy, duration, value, stack)
+        behavior.onStart(enemy, duration, value, stack)
         stack.value += value
         stack.count++
         if (duration == null) return null
         val timer = enemy.stage.timeline.getTimer {
             stack.value -= value
             stack.count--
+            behavior.onEnd(enemy, duration, value, stack)
         }
         timer.set(duration)
         return timer
@@ -33,16 +34,20 @@ data class DebuffInstance(
  * Contains the behavior of a debuff. Instantiated on the first use of the debuff on an adventurer
  *
  * @property name the name of this ability for display
- * @property stackStart ran on the timeline when the number of stacks changes from 0 to 1. canceled on stack end
- * @property onApply ran when it is applied at any point
+ * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
+ * @property onStart ran when it is applied at any point
  * @property onChange ran when the value changes
+ * @property stackEnd ran when the entire stack end
+ * @property onEnd ran when an individual instance ends
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
 data class DebuffBehavior(
     val name: String,
     val stackStart: Enemy.(Stack) -> Unit = {},
-    val onApply: Enemy.(duration: Double?, value: Double, stack: Stack) -> Unit = { _, _, _ -> },
-    val onChange: Enemy.(old: Double, new: Double) -> Unit = { _: Double, _: Double -> },
+    val onStart: Enemy.(duration: Double?, value: Double, stack: Stack) -> Unit = { _, _, _ -> },
+    val onChange: Enemy.(old: Double, new: Double) -> Unit = { _, _ -> },
+    val stackEnd: Enemy.(Stack) -> Unit = {},
+    val onEnd: Enemy.(duration: Double?, value: Double?, stack: Stack) -> Unit = { _, _, _ -> },
     val stackCap: Int = 20
 ) {
     inner class Stack(val enemy: Enemy) {
@@ -57,6 +62,7 @@ data class DebuffBehavior(
                 }
                 if (value == 0) {
                     startEvent?.cancel()
+                    enemy.stackEnd(this)
                 }
                 field = value
             }

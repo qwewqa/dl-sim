@@ -20,23 +20,23 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior>() {
 
     val def = statDebuff("def", Stat.DEF)
 
-    val bleed = DebuffBehavior(
-        name = "bleed",
-        onApply = { duration, value, stack ->
-            val endTime = (duration ?: error("bleed has no duration")) + timeline.time
-            timeline.schedule {
-                while (endTime > timeline.time) {
-                    wait(4.99)
-                    val dmg = value * 0.5 * (1 + stack.count)
-                    damage(dmg, "Dot", "bleed")
-                    log(Logger.Level.VERBOSE, "bleed", "bleed for $dmg (stacks: ${stack.count})")
-                }
-            }
-        }
-    )
+//    val bleed = DebuffBehavior(
+//        name = "bleed",
+//        onApply = { duration, value, stack ->
+//            val endTime = (duration ?: error("bleed has no duration")) + timeline.time
+//            timeline.schedule {
+//                while (endTime > timeline.time) {
+//                    wait(4.99)
+//                    val dmg = value * 0.5 * (1 + stack.count)
+//                    damage(dmg, "Dot", "bleed")
+//                    log(Logger.Level.VERBOSE, "bleed", "bleed for $dmg (stacks: ${stack.count})")
+//                }
+//            }
+//        }
+//    )
 
     init {
         this["def", "defense"] = def
-        this["bleed"] = bleed
+//        this["bleed"] = bleed
     }
 }

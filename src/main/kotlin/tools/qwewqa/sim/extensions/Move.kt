@@ -24,15 +24,6 @@ suspend fun Adventurer.hit(name: String, action: Action) {
     think(name)
 }
 
-suspend fun Adventurer.hit(delay: Double, name: String, action: Action) {
-    think("pre-$name")
-    schedule(delay) {
-        action()
-        think("connect-$name")
-    }
-    think(name)
-}
-
 fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Action) = move {
     this@move.name = name
     condition { !skillLock && sp.ready(name) && ui.available }

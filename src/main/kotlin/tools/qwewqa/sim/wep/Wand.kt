@@ -3,13 +3,15 @@ package tools.qwewqa.sim.wep
 import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.hit
 import tools.qwewqa.sim.extensions.percent
+import tools.qwewqa.sim.stage.doAutoAtk
+import tools.qwewqa.sim.stage.doFsAtk
 
 private val fs = forcestrike {
     doing = "fs"
     wait(42.frames)
     hit("fs") {
-        fs("fs-a", 90.percent, 460)
-        fs("fs-b", 90.percent)
+        doFsAtk(90.percent, 0.0, 460, "fs", "a")
+        doFsAtk(90.percent, 0.0, "fs", "b")
     }
     wait(81.frames)
 }
@@ -17,44 +19,38 @@ private val fs = forcestrike {
 private val combo = combo {
     doing = "x1"
     wait(18.frames)
-    auto("x1", 98.percent, 130)
+    doAutoAtk(98.percent, 130, "x1")
 
     doing = "x2"
     wait(33.frames)
     hit("x2") {
-        auto("x2-a1", 53.percent, 200)
-        auto("x2-a2", 53.percent)
+        doAutoAtk(53.percent, 200, "x2", "a1")
+        doAutoAtk(53.percent, "x2", "a2")
     }
 
     doing = "x3"
     wait(31.frames)
     hit("x3") {
-        auto("x3-a", 36.percent, 240)
-        hit("x3-b") {
-            auto("x3-b1", 36.percent)
-            auto("x3-b2", 36.percent)
-        }
+        doAutoAtk(36.percent, 240, "x3", "a")
+        doAutoAtk(36.percent, "x3", "b")
+        doAutoAtk(36.percent, "x3", "c")
     }
 
     doing = "x4"
     wait(53.frames)
     hit("x4") {
-        auto("x4-a1", 78.percent, 430)
-        auto("x4-a2", 78.percent)
+        doAutoAtk(78.percent, 430, "x4", "a1")
+        doAutoAtk(78.percent, "x4", "a2")
     }
 
     doing = "x5"
     wait(64.frames)
     hit("x5") {
-        auto("x5-a", 61.8.percent, 600)
-        hit("x5-b") {
-            auto("x5-b1", 36.05.percent)
-            auto("x5-b2", 36.05.percent)
-        }
-        hit("x5-c") {
-            auto("x5-c1", 36.05.percent)
-            auto("x5-c2", 36.05.percent)
-        }
+        doAutoAtk(61.8.percent, 600, "x5", "a")
+        doAutoAtk(36.05.percent, "x5", "b")
+        doAutoAtk(36.05.percent, "x5", "c")
+        doAutoAtk(36.05.percent, "x5", "d")
+        doAutoAtk(36.05.percent, "x5", "e")
     }
     wait(68.frames)
 }

@@ -63,6 +63,7 @@ class Adventurer(val stage: Stage) : Listenable {
     val stats = StatMap()
     var combo: Int by listeners.observable(0, "combo")
     var hp: Double by listeners.observable(1.0, "hp")
+    var buffCount = 0
     val ui = timeline.getCooldown(1.9) { think("ui") }
     var skillLock = false
     val sp = SP()
@@ -115,48 +116,29 @@ class Adventurer(val stage: Stage) : Listenable {
         }
     }
 
-    /**
-     * Applies damage based on damage formula accounting for all passives, buffs, etc.
-     */
-    fun damage(
-        mod: Double,
-        name: String = doing,
-        skill: Boolean = false,
-        fs: Boolean = false
-    ) {
-        trueDamage(damageFormula(mod, skill, fs), name)
-    }
+    operator fun Attack.unaryPlus() = this.apply()
 
-    fun sdamage(
-        mod: Double,
-        name: String = doing
-    ) = damage(mod, name, skill = true, fs = false)
-
-    fun fsdamage(
-        mod: Double,
-        name: String = doing
-    ) = damage(mod, name, skill = false, fs = true)
-
-    /**
-     * Directly applies given damage
-     */
-    fun trueDamage(amount: Double, name: String) {
-        enemy.damage(amount, this.name, name)
-        listeners.raise("dmg")
+    fun Hit.apply() {
+        enemy.damage(this)
         combo++
-        log(Logger.Level.MORE, "damage", "$amount damage by $name (combo: $combo)")
+        log(Logger.Level.MORE, "damage", "$amount damage by ${this.name} (combo: $combo)")
+        this@Adventurer.sp(sp, name.toString())
     }
+
+    fun Attack.apply() = this.hit().apply()
+
+    fun Attack.hit() = Hit(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), name = listOf(this@Adventurer.name) + name)
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
-        floor(
-            5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
-                    (1.0 + getCritMod()) *
-                    (if (skill) stats[SKILL_DAMAGE].value else 1.0) *
-                    (if (fs) stats[FORCESTRIKE_DAMAGE].value else 1.0) *
-                    stats[PUNISHER].value *
-                    (if (enemy.afflictions.bogged) 1.5 else 1.0) *
-                    element.multiplier(enemy.element)
-        )
+        5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
+                (1.0 + getCritMod()) *
+                (if (skill) stats[SKILL_DAMAGE].value else 1.0) *
+                (if (fs) stats[FORCESTRIKE_DAMAGE].value else 1.0) *
+                stats[PUNISHER].value *
+                element.multiplier(enemy.element)
+
+    fun spFormula(amount: Int, fs: Boolean = false) =
+        ceil((amount.toFloat() * (stats[SKILL_HASTE].value.toFloat() + if (fs) stats[STRIKING_HASTE].value.toFloat() else 0.0f)).toDouble()).toInt()
 
     fun getCritMod() = if (Random.nextDouble() <= stats[CRIT_RATE].value) stats[CRIT_DAMAGE].value else 0.0
 
@@ -224,10 +206,9 @@ class Adventurer(val stage: Stage) : Listenable {
         /**
          * Increases the sp accounting for haste on all skills
          */
-        operator fun invoke(amount: Int, fs: Boolean = false, source: String = doing) {
-            val value = applyHaste(amount, fs)
-            log(Logger.Level.MORE, "sp", "charged $value sp by $source")
-            charge(value, source)
+        operator fun invoke(amount: Int, source: String = doing) {
+            log(Logger.Level.MORE, "sp", "charged $amount sp by $source")
+            charge(amount, source)
             logCharges()
         }
 
@@ -237,9 +218,6 @@ class Adventurer(val stage: Stage) : Listenable {
 
         fun ready(name: String) =
             (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= maximums[name]!!
-
-        fun applyHaste(amount: Int, fs: Boolean = false) =
-            ceil((amount.toFloat() * (stats[SKILL_HASTE].value.toFloat() + if (fs) stats[STRIKING_HASTE].value.toFloat() else 0.0f)).toDouble()).toInt()
 
         fun logCharges() =
             log(Logger.Level.VERBOSE, "sp", charges.keys.map { "$it: ${charges[it]}/${maximums[it]}" }.toString())

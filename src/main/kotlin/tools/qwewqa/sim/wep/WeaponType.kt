@@ -46,15 +46,3 @@ fun fsf(duration: Double) = move {
     condition { !skillLock }
     action { wait(duration) }
 }
-
-suspend fun Adventurer.auto(name: String, mod: Double, sp: Int = 0) = hit(name) {
-    damage(mod)
-    if (sp > 0) sp(sp)
-    think("x-connect")
-}
-
-suspend fun Adventurer.fs(name: String, mod: Double, sp: Int = 0) = hit(name) {
-    damage(mod, "fs", fs = true)
-    if (sp > 0) sp(sp, fs = true)
-    think("fs-connect")
-}

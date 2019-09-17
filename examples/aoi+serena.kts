@@ -9,12 +9,12 @@ stage {
         wp = wyrmprints["CE"] + wyrmprints["RR"]
 
         s1(2630) {
-            sdamage(878.percent)
+            +skillAtk(878.percent, "s1")
             wait(1.85)
         }
 
         s2(5280) {
-            sdamage(790.percent)
+            +skillAtk(790.percent, "s2")
             wait(1.85)
         }
 
@@ -41,16 +41,18 @@ stage {
 
         s1(2500) {
             buffs["crit rate"](10.percent).selfBuff(5.0)
-            sdamage(350.percent)
-            sdamage(350.percent)
+            val s1hit = skillAtk(350.percent, "s1")
+            +s1hit
+            +s1hit
             wait(1.55)
         }
 
         s2(4593) {
-            sdamage(169.percent)
-            sdamage(169.percent)
-            sdamage(169.percent)
-            sdamage(169.percent)
+            val s2hit = skillAtk(169.percent, "s2")
+            +s2hit
+            +s2hit
+            +s2hit
+            +s2hit
             wait(2.2)
         }
 
