@@ -149,8 +149,9 @@ class DamageSliceLists(
         val indentation = "  ".repeat(level)
         println("$indentation$name:")
         println("$indentation  stats: [{dps: $dps}, {stdDps: $stdDps}, {dmg: $dmg}, {stdDmg: $stdDmg}]")
+        println("$indentation  children:")
         this.subslices.forEach {
-            it.value.displayYAML(level + 1)
+            it.value.displayYAML(level + 2)
         }
     }
 }
