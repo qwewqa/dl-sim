@@ -3,7 +3,7 @@ package tools.qwewqa.sim.stage
 import tools.qwewqa.sim.extensions.std
 import kotlin.math.roundToInt
 
-class Attack(
+data class Attack(
     val mod: Double,
     val od: Double = 1.0,
     val sp: Int = 0,
@@ -12,14 +12,14 @@ class Attack(
     val fs: Boolean = false
 )
 
-fun attack(
+fun Adventurer.attack(
     mod: Double,
     od: Double = 1.0,
     sp: Int = 0,
-    vararg name: String,
+    vararg names: String,
     skill: Boolean = false,
     fs: Boolean = false
-) = Attack(mod, od, sp, name.toList(), skill, fs)
+) = Attack(mod, od, sp, listOf(name) + names.toList(), skill, fs)
 
 fun Adventurer.doFsAtk(
     mod: Double,
@@ -29,7 +29,7 @@ fun Adventurer.doFsAtk(
 ) {
     val n = name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, od = od, sp = sp, name = *name, fs = true)
+    +attack(mod = mod, od = od, sp = sp, names = *name, fs = true)
     think(n)
 }
 
@@ -40,7 +40,7 @@ fun Adventurer.doFsAtk(
 ) {
     val n = name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, od = od, name = *name, fs = true)
+    +attack(mod = mod, od = od, names = *name, fs = true)
     think(n)
 }
 
@@ -51,7 +51,7 @@ fun Adventurer.doAutoAtk(
 ) {
     val n = name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, sp = sp, name = *arrayOf("attack") + name)
+    +attack(mod = mod, sp = sp, names = *arrayOf("attack") + name)
     think(n)
 }
 
@@ -61,16 +61,16 @@ fun Adventurer.doAutoAtk(
 ) {
     val n = name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, name = *arrayOf("attack") + name)
+    +attack(mod = mod, names = *arrayOf("attack") + name)
     think(n)
 }
 
-fun skillAtk(
+fun Adventurer.skillAtk(
     mod: Double,
     vararg name: String
-) = attack(mod = mod, name = *arrayOf("skill") + name, skill = true)
+) = attack(mod = mod, names = *arrayOf("skill") + name, skill = true)
 
-class Hit(
+data class Hit(
     val amount: Double,
     val sp: Int,
     val name: List<String>

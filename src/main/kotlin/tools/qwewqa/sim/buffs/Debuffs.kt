@@ -6,22 +6,20 @@ import tools.qwewqa.sim.core.Timer
 import tools.qwewqa.sim.core.getTimer
 
 /**
- * Data on a debuff without any behavior
+ * Data on an buff without any behavior
  */
-data class DebuffInstance(
+data class DebuffInstance<T, U>(
     val name: String,
-    val value: Double,
-    val behavior: DebuffBehavior
+    val value: T,
+    val behavior: DebuffBehavior<T, U>
 ) {
     fun apply(enemy: Enemy, duration: Double? = null) : Timer? {
         val stack = behavior.getStack(enemy)
         if (stack.count > behavior.stackCap) return null
         behavior.onStart(enemy, duration, value, stack)
-        stack.value += value
         stack.count++
         if (duration == null) return null
-        val timer = enemy.stage.timeline.getTimer {
-            stack.value -= value
+        val timer = enemy.timeline.getTimer {
             stack.count--
             behavior.onEnd(enemy, duration, value, stack)
         }
@@ -31,9 +29,9 @@ data class DebuffInstance(
 }
 
 /**
- * Contains the behavior of a debuff. Instantiated on the first use of the debuff on an adventurer
+ * Contains the behavior of a debuff
  *
- * @property name the name of this ability for display
+ * @property name the name of this debuff for display
  * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property onStart ran when it is applied at any point
  * @property onChange ran when the value changes
@@ -41,15 +39,19 @@ data class DebuffInstance(
  * @property onEnd ran when an individual instance ends
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-data class DebuffBehavior(
+data class DebuffBehavior<T, U>(
     val name: String,
-    val stackStart: Enemy.(Stack) -> Unit = {},
-    val onStart: Enemy.(duration: Double?, value: Double, stack: Stack) -> Unit = { _, _, _ -> },
-    val onChange: Enemy.(old: Double, new: Double) -> Unit = { _, _ -> },
-    val stackEnd: Enemy.(Stack) -> Unit = {},
-    val onEnd: Enemy.(duration: Double?, value: Double?, stack: Stack) -> Unit = { _, _, _ -> },
+    val initialValue: U,
+    val stackStart: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
+    val onStart: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
+    val onChange: Enemy.(old: U, new: U) -> Unit = { _, _ -> },
+    val stackEnd: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
+    val onEnd: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
     val stackCap: Int = 20
 ) {
+    /**
+     * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps
+     */
     inner class Stack(val enemy: Enemy) {
         var startEvent: Timeline.Event? = null
 
@@ -66,39 +68,38 @@ data class DebuffBehavior(
                 }
                 field = value
             }
-        var value: Double = 0.0
+        var value: U = initialValue
             set(value) {
                 update(field, value)
                 field = value
             }
 
-        fun update(old: Double, new: Double) {
+        fun update(old: U, new: U) {
             enemy.onChange(old, new)
         }
     }
 
     /**
-     * Get the stack of this for the given, creating a new one first if needed
+     * Get the stack of this for the given [enemy], creating a new one first if needed
      */
     fun getStack(enemy: Enemy) =
-        enemy.debuffStacks[this] ?: Stack(enemy).also { enemy.debuffStacks[this] = it }
+        enemy.debuffStacks[this] as DebuffBehavior<T, U>.Stack? ?: Stack(enemy).also { enemy.debuffStacks[this] = it }
 
     /**
-     * Clears all stacks of this for the given enemy
+     * Clears all stacks of this for the given [enemy]
      */
     fun clearStack(enemy: Enemy) {
-        getStack(enemy).value = 0.0
+        getStack(enemy).value = initialValue
         enemy.debuffStacks.remove(this)
     }
 
     /**
      * Creates a [DebuffInstance] targeting this
      */
-    operator fun invoke(value: Double) = getInstance(value)
-    operator fun invoke(value: Int) = getInstance(value.toDouble())
+    operator fun invoke(value: T) = getInstance(value)
 
     /**
      * Creates a [DebuffInstance] targeting this
      */
-    fun getInstance(value: Double) = DebuffInstance(name, value, this)
+    fun getInstance(value: T) = DebuffInstance(name, value, this)
 }

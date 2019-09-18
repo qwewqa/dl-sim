@@ -11,19 +11,20 @@ stage {
         a1 = abilities["str"](13.percent, conditions["hp70"])
 
         s1(2838) {
-            sdamage(190.percent)
-            sdamage(190.percent)
-            sdamage(190.percent)
-            sdamage(190.percent)
-            sdamage(190.percent)
+            val s1Hit = skillAtk(190.percent, "s1")
+            +s1Hit
+            +s1Hit
+            +s1Hit
+            +s1Hit
+            +s1Hit
             chance(80.percent) {
-                debuffs["bleed"](damageFormula(146.percent, skill = true)).apply(30.0)
+                debuffs["bleed"](skillAtk(146.percent, "s1", "bleed").hit()).apply(30.0)
             }
             wait(2.35)
         }
 
         s2(7500) {
-            sdamage(957.percent)
+            +skillAtk(957.percent, "s2")
             wait(2.7)
         }
 

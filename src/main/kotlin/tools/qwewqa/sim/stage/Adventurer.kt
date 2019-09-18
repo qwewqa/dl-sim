@@ -79,7 +79,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var current: Timeline.Event? = null
 
     val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
-    val buffStacks = mutableMapOf<BuffBehavior<*>, BuffBehavior<*>.Stack>()
+    val buffStacks = mutableMapOf<BuffBehavior<*, *>, BuffBehavior<*, *>.Stack>()
 
     /**
      * Ran before everything else at the start of the stage run
@@ -127,7 +127,7 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun Attack.apply() = this.hit().apply()
 
-    fun Attack.hit() = Hit(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), name = listOf(this@Adventurer.name) + name)
+    fun Attack.hit() = Hit(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), name = name)
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
@@ -177,18 +177,18 @@ class Adventurer(val stage: Stage) : Listenable {
         this.initialize(this@Adventurer)
     }
 
-    fun BuffInstance<*>.selfBuff() {
+    fun BuffInstance<*, *>.selfBuff() {
         this.apply(this@Adventurer)
         log("buff", "selfbuff $name [value: $value]")
     }
 
-    fun BuffInstance<*>.selfBuff(duration: Double) {
+    fun BuffInstance<*, *>.selfBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         this.apply(this@Adventurer, rdur)
         log("buff", "selfbuff $name for duration $rdur [value: $value]")
     }
 
-    fun BuffInstance<*>.teamBuff(duration: Double) {
+    fun BuffInstance<*, *>.teamBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         stage.adventurers.forEach {
             this.apply(it, rdur)
@@ -196,8 +196,8 @@ class Adventurer(val stage: Stage) : Listenable {
         log("buff", "teambuff $name [value: $rdur]")
     }
 
-    fun DebuffInstance.apply() = this.apply(enemy)
-    fun DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
+    fun DebuffInstance<*, *>.apply() = this.apply(enemy)
+    fun DebuffInstance<*, *>.apply(duration: Double) = this.apply(enemy, duration)
 
     inner class SP {
         private val charges = mutableMapOf<String, Int>()

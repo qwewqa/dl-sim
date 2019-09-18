@@ -34,7 +34,7 @@ class Enemy(val stage: Stage) : Listenable {
 
     val dps get() = totalDamage / stage.timeline.time
 
-    val debuffStacks = mutableMapOf<DebuffBehavior, DebuffBehavior.Stack>()
+    val debuffStacks = mutableMapOf<DebuffBehavior<*, *>, DebuffBehavior<*, *>.Stack>()
     val damageSlices = DamageSlice("Damage")
 
     fun damage(hit: Hit) {
