@@ -79,7 +79,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var current: Timeline.Event? = null
 
     val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
-    val buffStacks = mutableMapOf<BuffBehavior, BuffBehavior.Stack>()
+    val buffStacks = mutableMapOf<BuffBehavior<*>, BuffBehavior<*>.Stack>()
 
     /**
      * Ran before everything else at the start of the stage run
@@ -177,18 +177,18 @@ class Adventurer(val stage: Stage) : Listenable {
         this.initialize(this@Adventurer)
     }
 
-    fun BuffInstance.selfBuff() {
+    fun BuffInstance<*>.selfBuff() {
         this.apply(this@Adventurer)
         log("buff", "selfbuff $name [value: $value]")
     }
 
-    fun BuffInstance.selfBuff(duration: Double) {
+    fun BuffInstance<*>.selfBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         this.apply(this@Adventurer, rdur)
         log("buff", "selfbuff $name for duration $rdur [value: $value]")
     }
 
-    fun BuffInstance.teamBuff(duration: Double) {
+    fun BuffInstance<*>.teamBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         stage.adventurers.forEach {
             this.apply(it, rdur)

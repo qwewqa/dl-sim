@@ -42,7 +42,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
     val wpPunisher = cappedStatAbility("punisher (wp)", Stat.PUNISHER, 30.percent)
 
 
-    fun barrageAbility(name: String, buff: BuffBehavior, interval: Int) = AbilityBehavior(
+    fun barrageAbility(name: String, buff: BuffBehavior<Double>, interval: Int) = AbilityBehavior(
         name = name,
         onStart = { stack ->
             var charges = 3

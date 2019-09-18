@@ -16,7 +16,7 @@ import tools.qwewqa.sim.equip.Wyrmprint
 
 class Stage(
     val abilities: CaseInsensitiveMap<AbilityBehavior> = Abilities.toCaseInsensitiveMap(),
-    val buffs: CaseInsensitiveMap<BuffBehavior> = Buffs.toCaseInsensitiveMap(),
+    val buffs: CaseInsensitiveMap<BuffBehavior<*>> = Buffs.toCaseInsensitiveMap(),
     val debuffs: CaseInsensitiveMap<DebuffBehavior> = Debuffs.toCaseInsensitiveMap(),
     val conditions: CaseInsensitiveMap<Condition> = Conditions.toCaseInsensitiveMap(),
     val coabilities: CaseInsensitiveMap<Coability> = Coabilities.toCaseInsensitiveMap(),

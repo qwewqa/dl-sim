@@ -4,24 +4,23 @@ import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.Timer
 import tools.qwewqa.sim.core.getTimer
 import tools.qwewqa.sim.stage.Adventurer
+import kotlin.reflect.KClass
 
 /**
  * Data on an buff without any behavior
  */
-data class BuffInstance(
+data class BuffInstance<T>(
     val name: String,
-    val value: Double,
-    val behavior: BuffBehavior
+    val value: T,
+    val behavior: BuffBehavior<T>
 ) {
     fun apply(adventurer: Adventurer, duration: Double? = null) : Timer? {
         val stack = behavior.getStack(adventurer)
         if (stack.count > behavior.stackCap) return null
         behavior.onStart(adventurer, duration, value, stack)
-        stack.value += value
         stack.count++
         if (duration == null) return null
         val timer = adventurer.timeline.getTimer {
-            stack.value -= value
             stack.count--
             behavior.onEnd(adventurer, duration, value, stack)
         }
@@ -41,13 +40,13 @@ data class BuffInstance(
  * @property onEnd ran when an individual instance ends
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-data class BuffBehavior(
+data class BuffBehavior<T>(
     val name: String,
-    val stackStart: Adventurer.(Stack) -> Unit = {},
-    val onStart: Adventurer.(duration: Double?, value: Double, stack: Stack) -> Unit = { _, _, _ -> },
-    val onChange: Adventurer.(old: Double, new: Double) -> Unit = { _, _ -> },
-    val stackEnd: Adventurer.(Stack) -> Unit = {},
-    val onEnd: Adventurer.(duration: Double?, value: Double?, stack: Stack) -> Unit = { _, _, _ -> },
+    val stackStart: Adventurer.(BuffBehavior<T>.Stack) -> Unit = {},
+    val onStart: Adventurer.(duration: Double?, value: T?, stack: BuffBehavior<T>.Stack) -> Unit = { _, _, _ -> },
+    val onChange: Adventurer.(old: T?, new: T?) -> Unit = { _, _ -> },
+    val stackEnd: Adventurer.(BuffBehavior<T>.Stack) -> Unit = {},
+    val onEnd: Adventurer.(duration: Double?, value: T?, stack: BuffBehavior<T>.Stack) -> Unit = { _, _, _ -> },
     val stackCap: Int = 20
 ) {
     /**
@@ -69,13 +68,13 @@ data class BuffBehavior(
                 }
                 field = value
             }
-        var value: Double = 0.0
+        var value: T? = null
             set(value) {
                 update(field, value)
                 field = value
             }
 
-        fun update(old: Double, new: Double) {
+        fun update(old: T?, new: T?) {
             adventurer.onChange(old, new)
         }
     }
@@ -84,23 +83,23 @@ data class BuffBehavior(
      * Get the stack of this for the given [adventurer], creating a new one first if needed
      */
     fun getStack(adventurer: Adventurer) =
-        adventurer.buffStacks[this] ?: Stack(adventurer).also { adventurer.buffStacks[this] = it }
+        adventurer.buffStacks[this] as BuffBehavior<T>.Stack? ?: Stack(adventurer).also { adventurer.buffStacks[this] = it }
 
     /**
      * Clears all stacks of this for the given [adventurer]
      */
     fun clearStack(adventurer: Adventurer) {
-        getStack(adventurer).value = 0.0
+        getStack(adventurer).value = null
         adventurer.buffStacks.remove(this)
     }
 
     /**
      * Creates a [BuffInstance] targeting this
      */
-    operator fun invoke(value: Double) = getInstance(value)
+    operator fun invoke(value: T) = getInstance(value)
 
     /**
      * Creates a [BuffInstance] targeting this
      */
-    fun getInstance(value: Double) = BuffInstance(name, value, this)
+    fun getInstance(value: T) = BuffInstance(name, value, this)
 }
