@@ -7,9 +7,8 @@ import tools.qwewqa.sim.stage.Stat
 object Buffs : CaseInsensitiveMap<BuffBehavior<*>>()  {
     fun statBuff(name: String, stat: Stat, cap: Int = 20) = BuffBehavior<Double>(
         name = name,
-        onChange = { orig: Double?, new: Double? ->
-            val orig = orig ?: 0.0
-            val new = new ?: 0.0
+        initialValue = 0.0,
+        onChange = { orig: Double, new: Double ->
             stats[stat].buff += new - orig
             log(Logger.Level.VERBOSER, "buff", "$name buff set from $orig to $new")
             listeners.raise("$name buff")

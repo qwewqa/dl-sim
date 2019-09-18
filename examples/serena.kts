@@ -1,4 +1,4 @@
-stage {
+stage(1) {
     adventurer {
         name = "Serena"
         element = FLAME

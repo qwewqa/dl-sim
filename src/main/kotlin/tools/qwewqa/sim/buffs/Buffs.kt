@@ -42,11 +42,12 @@ data class BuffInstance<T>(
  */
 data class BuffBehavior<T>(
     val name: String,
+    val initialValue: T,
     val stackStart: Adventurer.(BuffBehavior<T>.Stack) -> Unit = {},
-    val onStart: Adventurer.(duration: Double?, value: T?, stack: BuffBehavior<T>.Stack) -> Unit = { _, _, _ -> },
-    val onChange: Adventurer.(old: T?, new: T?) -> Unit = { _, _ -> },
+    val onStart: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T>.Stack) -> Unit = { _, _, _ -> },
+    val onChange: Adventurer.(old: T, new: T) -> Unit = { _, _ -> },
     val stackEnd: Adventurer.(BuffBehavior<T>.Stack) -> Unit = {},
-    val onEnd: Adventurer.(duration: Double?, value: T?, stack: BuffBehavior<T>.Stack) -> Unit = { _, _, _ -> },
+    val onEnd: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T>.Stack) -> Unit = { _, _, _ -> },
     val stackCap: Int = 20
 ) {
     /**
@@ -68,13 +69,13 @@ data class BuffBehavior<T>(
                 }
                 field = value
             }
-        var value: T? = null
+        var value: T = initialValue
             set(value) {
                 update(field, value)
                 field = value
             }
 
-        fun update(old: T?, new: T?) {
+        fun update(old: T, new: T) {
             adventurer.onChange(old, new)
         }
     }
@@ -89,7 +90,7 @@ data class BuffBehavior<T>(
      * Clears all stacks of this for the given [adventurer]
      */
     fun clearStack(adventurer: Adventurer) {
-        getStack(adventurer).value = null
+        getStack(adventurer).value = initialValue
         adventurer.buffStacks.remove(this)
     }
 
