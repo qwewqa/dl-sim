@@ -28,14 +28,14 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
 
     val def = statDebuff("def", Stat.DEF)
 
-    val bleed = DebuffBehavior<Hit, MutableList<Hit>>(
+    val bleed = DebuffBehavior<Hit, List<Hit>>(
         name = "bleed",
-        initialValue = mutableListOf(),
+        initialValue = listOf(),
         onStart = { _, hit, stack ->
-            stack.value.add(hit)
+            stack.value += hit
         },
         onEnd = { _, hit, stack ->
-            stack.value.remove(hit)
+            stack.value -= hit
         },
         stackStart = { stack ->
             timeline.schedule {
@@ -47,7 +47,8 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
                     }
                 }
             }
-        }
+        },
+        stackCap = 3
     )
 
     init {

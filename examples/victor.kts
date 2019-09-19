@@ -11,7 +11,7 @@ stage {
         a1 = abilities["str"](13.percent, conditions["hp70"])
 
         s1(2838) {
-            val s1Hit = skillAtk(190.percent, "s1")
+            val s1Hit = skillAtk(190.percent, "s1", "hit")
             +s1Hit
             +s1Hit
             +s1Hit
@@ -40,5 +40,5 @@ stage {
         element = WATER
     }
 
-    endIn(180.0)
+    endIn(181.317)
 }

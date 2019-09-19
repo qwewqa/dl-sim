@@ -15,7 +15,7 @@ data class DebuffInstance<T, U>(
 ) {
     fun apply(enemy: Enemy, duration: Double? = null) : Timer? {
         val stack = behavior.getStack(enemy)
-        if (stack.count > behavior.stackCap) return null
+        if (stack.count >= behavior.stackCap) return null
         behavior.onStart(enemy, duration, value, stack)
         stack.count++
         if (duration == null) return null
@@ -32,6 +32,7 @@ data class DebuffInstance<T, U>(
  * Contains the behavior of a debuff
  *
  * @property name the name of this debuff for display
+ * @property initialValue the initial value for a stack. Should be immutable or bad things can happen
  * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property onStart ran when it is applied at any point
  * @property onChange ran when the value changes

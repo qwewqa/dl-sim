@@ -16,7 +16,7 @@ data class BuffInstance<T, U>(
 ) {
     fun apply(adventurer: Adventurer, duration: Double? = null) : Timer? {
         val stack = behavior.getStack(adventurer)
-        if (stack.count > behavior.stackCap) return null
+        if (stack.count >= behavior.stackCap) return null
         behavior.onStart(adventurer, duration, value, stack)
         stack.count++
         if (duration == null) return null
@@ -33,6 +33,7 @@ data class BuffInstance<T, U>(
  * Contains the behavior of a buff
  *
  * @property name the name of this buff for display
+ * @property initialValue the initial value for a stack. Should be immutable or bad things can happen
  * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property onStart ran when it is applied at any point
  * @property onChange ran when the value changes
