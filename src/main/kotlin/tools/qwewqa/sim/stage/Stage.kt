@@ -14,16 +14,7 @@ import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
 
-class Stage(
-    val abilities: CaseInsensitiveMap<AbilityBehavior> = Abilities.toCaseInsensitiveMap(),
-    val buffs: CaseInsensitiveMap<BuffBehavior<*, *>> = Buffs.toCaseInsensitiveMap(),
-    val debuffs: CaseInsensitiveMap<DebuffBehavior<*, *>> = Debuffs.toCaseInsensitiveMap(),
-    val conditions: CaseInsensitiveMap<Condition> = Conditions.toCaseInsensitiveMap(),
-    val coabilities: CaseInsensitiveMap<Coability> = Coabilities.toCaseInsensitiveMap(),
-    val dragons: CaseInsensitiveMap<Dragon> = Dragons.toCaseInsensitiveMap(),
-    val weapons: CaseInsensitiveMap<Weapon> = Weapons.toCaseInsensitiveMap(),
-    val wyrmprints: CaseInsensitiveMap<Wyrmprint> = Wyrmprints.toCaseInsensitiveMap()
-) {
+class Stage {
     private var started = false
     val timeline = Timeline()
     val logger = Logger(this)

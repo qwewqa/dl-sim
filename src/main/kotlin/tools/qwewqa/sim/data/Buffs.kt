@@ -7,7 +7,7 @@ import tools.qwewqa.sim.stage.Stat
 object Buffs : CaseInsensitiveMap<BuffBehavior<*, *>>()  {
     fun statBuff(name: String, stat: Stat, cap: Int = 20) = BuffBehavior<Double, Double>(
         name = name,
-        initialValue = 0.0,
+        initialValue = { 0.0 },
         onStart = { _, value, stack ->
             stack.value += value
         },

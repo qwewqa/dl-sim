@@ -3,12 +3,12 @@ stage {
         name = "Philia"
         element = WIND
         str = 469
-        weapon = weapons["Stellar Pegasus"]
-        wp = wyrmprints["RR"] + wyrmprints["FoG"]
-        dragon = dragons["Vayu"]
-        ex = coabilities["Bow"]
+        weapon = Weapons["Stellar Pegasus"]
+        wp = Wyrmprints["RR", "FoG"]
+        dragon = Dragons["Vayu"]
+        ex = Coabilities["Bow"]
 
-        a1 = abilities["str"](10.percent, Conditions["hp100"])
+        a1 = Abilities["str"](10.percent, Conditions["hp100"])
 
         s1(2395) {
             val s1bolt = skillAtk(262.percent, "s1")

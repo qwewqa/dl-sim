@@ -3,12 +3,12 @@ stage {
         name = "Victor"
         element = WIND
         str = 494
-        ex = coabilities["Str"]
-        weapon = weapons["Anemone"]
-        dragon = dragons["Vayu"]
-        wp = wyrmprints["RR"] + wyrmprints["BN"]
+        ex = Coabilities["Str"]
+        weapon = Weapons["Anemone"]
+        dragon = Dragons["Vayu"]
+        wp = Wyrmprints["RR", "BN"]
 
-        a1 = abilities["str"](13.percent, conditions["hp70"])
+        a1 = Abilities["str"](13.percent, Conditions["hp70"])
 
         s1(2838) {
             val s1Hit = skillAtk(190.percent, "s1", "hit")
@@ -18,7 +18,7 @@ stage {
             +s1Hit
             +s1Hit
             chance(80.percent) {
-                debuffs["bleed"](skillAtk(146.percent, "s1", "bleed").hit()).apply(30.0)
+                Debuffs["bleed"](skillAtk(146.percent, "s1", "bleed").hit()).apply(30.0)
             }
             wait(2.35)
         }
@@ -30,8 +30,9 @@ stage {
 
         acl {
             +s1 { +"idle" || cancel }
-            +s2 { seq == 5 }
-            +s3 { seq == 5 }
+            +s2 { +"x5" }
+            +s3 { +"x5" }
+            +fsf { +"x5" }
         }
     }
 
@@ -40,5 +41,5 @@ stage {
         element = WATER
     }
 
-    endIn(181.317)
+    endIn(60.0)
 }

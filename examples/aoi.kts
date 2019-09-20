@@ -3,10 +3,10 @@ stage {
         name = "Aoi"
         element = FLAME
         str = 494
-        ex = coabilities["Str"]
-        weapon = weapons["Heaven's Acuity"]
-        dragon = dragons["Sakuya"]
-        wp = wyrmprints["CE"] + wyrmprints["RR"]
+        ex = Coabilities["Str"]
+        weapon = Weapons["Heaven's Acuity"]
+        dragon = Dragons["Sakuya"]
+        wp = Wyrmprints["RR", "CE"]
 
         s1(2630) {
             +skillAtk(878.percent, "s1")

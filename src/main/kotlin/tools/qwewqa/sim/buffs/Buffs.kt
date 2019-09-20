@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 /**
  * Data on an buff without any behavior
  */
-data class BuffInstance<T, U>(
+class BuffInstance<T, U>(
     val name: String,
     val value: T,
     val behavior: BuffBehavior<T, U>
@@ -33,7 +33,7 @@ data class BuffInstance<T, U>(
  * Contains the behavior of a buff
  *
  * @property name the name of this buff for display
- * @property initialValue the initial value for a stack. Should be immutable or bad things can happen
+ * @property initialValue the initial value for a stack
  * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property onStart ran when it is applied at any point
  * @property onChange ran when the value changes
@@ -41,9 +41,9 @@ data class BuffInstance<T, U>(
  * @property onEnd ran when an individual instance ends
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-data class BuffBehavior<T, U>(
+class BuffBehavior<T, U>(
     val name: String,
-    val initialValue: U,
+    val initialValue: () -> U,
     val stackStart: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
     val onStart: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
     val onChange: Adventurer.(old: U, new: U) -> Unit = { _, _ -> },
@@ -70,7 +70,7 @@ data class BuffBehavior<T, U>(
                 }
                 field = value
             }
-        var value: U = initialValue
+        var value: U = initialValue()
             set(value) {
                 update(field, value)
                 field = value
@@ -86,14 +86,6 @@ data class BuffBehavior<T, U>(
      */
     fun getStack(adventurer: Adventurer) =
         adventurer.buffStacks[this] as BuffBehavior<T, U>.Stack? ?: Stack(adventurer).also { adventurer.buffStacks[this] = it }
-
-    /**
-     * Clears all stacks of this for the given [adventurer]
-     */
-    fun clearStack(adventurer: Adventurer) {
-        getStack(adventurer).value = initialValue
-        adventurer.buffStacks.remove(this)
-    }
 
     /**
      * Creates a [BuffInstance] targeting this

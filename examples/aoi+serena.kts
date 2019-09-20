@@ -3,10 +3,10 @@ stage {
         name = "Aoi"
         element = FLAME
         str = 494
-        ex = coabilities["Str"]
-        weapon = weapons["Heaven's Acuity"]
-        dragon = dragons["Sakuya"]
-        wp = wyrmprints["CE"] + wyrmprints["RR"]
+        ex = Coabilities["Str"]
+        weapon = Weapons["Heaven's Acuity"]
+        dragon = Dragons["Sakuya"]
+        wp = Wyrmprints["RR", "CE"]
 
         s1(2630) {
             +skillAtk(878.percent, "s1")
@@ -31,13 +31,13 @@ stage {
         name = "Serena"
         element = FLAME
         str = 443
-        ex = coabilities["Sword"]
-        weapon = weapons["Levatein"]
-        dragon = dragons["Arctos"]
-        wp = wyrmprints["RR"] + wyrmprints["CE"]
+        ex = Coabilities["Sword"]
+        weapon = Weapons["Levatein"]
+        dragon = Dragons["Arctos"]
+        wp = Wyrmprints["RR"] + Wyrmprints["CE"]
 
-        a1 = abilities["barrage obliteration"](6.percent)
-        a3 = abilities["barrage devastation"](3.percent)
+        a1 = Abilities["barrage obliteration"](6.percent)
+        a3 = Abilities["barrage devastation"](3.percent)
 
         s1(2500) {
             buffs["crit rate"](10.percent).selfBuff(5.0)

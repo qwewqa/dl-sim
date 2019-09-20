@@ -8,7 +8,7 @@ import tools.qwewqa.sim.core.getTimer
 /**
  * Data on an buff without any behavior
  */
-data class DebuffInstance<T, U>(
+class DebuffInstance<T, U>(
     val name: String,
     val value: T,
     val behavior: DebuffBehavior<T, U>
@@ -32,7 +32,7 @@ data class DebuffInstance<T, U>(
  * Contains the behavior of a debuff
  *
  * @property name the name of this debuff for display
- * @property initialValue the initial value for a stack. Should be immutable or bad things can happen
+ * @property initialValue the initial value for a stack
  * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property onStart ran when it is applied at any point
  * @property onChange ran when the value changes
@@ -40,9 +40,9 @@ data class DebuffInstance<T, U>(
  * @property onEnd ran when an individual instance ends
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-data class DebuffBehavior<T, U>(
+class DebuffBehavior<T, U>(
     val name: String,
-    val initialValue: U,
+    val initialValue: () -> U,
     val stackStart: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
     val onStart: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
     val onChange: Enemy.(old: U, new: U) -> Unit = { _, _ -> },
@@ -69,7 +69,7 @@ data class DebuffBehavior<T, U>(
                 }
                 field = value
             }
-        var value: U = initialValue
+        var value: U = initialValue()
             set(value) {
                 update(field, value)
                 field = value
@@ -85,14 +85,6 @@ data class DebuffBehavior<T, U>(
      */
     fun getStack(enemy: Enemy) =
         enemy.debuffStacks[this] as DebuffBehavior<T, U>.Stack? ?: Stack(enemy).also { enemy.debuffStacks[this] = it }
-
-    /**
-     * Clears all stacks of this for the given [enemy]
-     */
-    fun clearStack(enemy: Enemy) {
-        getStack(enemy).value = initialValue
-        enemy.debuffStacks.remove(this)
-    }
 
     /**
      * Creates a [DebuffInstance] targeting this

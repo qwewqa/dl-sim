@@ -11,7 +11,7 @@ import kotlin.math.min
 object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
     fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) = DebuffBehavior<Double, Double>(
         name = name,
-        initialValue = 0.0,
+        initialValue = { 0.0 },
         onStart = { _, value, stack ->
             stack.value += value
         },
@@ -28,14 +28,16 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
 
     val def = statDebuff("def", Stat.DEF)
 
-    val bleed = DebuffBehavior<Hit, List<Hit>>(
+    val bleed = DebuffBehavior<Hit, MutableList<Hit>>(
         name = "bleed",
-        initialValue = listOf(),
-        onStart = { _, hit, stack ->
-            stack.value += hit
+        initialValue = { mutableListOf() },
+        onStart = { duration, hit, stack ->
+            stack.value.add(hit)
+            stage.log(Logger.Level.VERBOSE, "Bleed", "start", "start ${hit.amount} damage for $duration from ${hit.name}")
         },
-        onEnd = { _, hit, stack ->
-            stack.value -= hit
+        onEnd = { duration, hit, stack ->
+            stack.value.remove(hit)
+            stage.log(Logger.Level.VERBOSE, "Bleed", "end", "end ${hit.amount} damage for $duration from ${hit.name}")
         },
         stackStart = { stack ->
             timeline.schedule {
@@ -43,7 +45,9 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
                     wait(4.99)
                     val multiplier = 0.5 * (1 + stack.count)
                     stack.value.forEach {
-                        damage(it.copy(amount = it.amount * multiplier))
+                        val amount = it.amount * multiplier
+                        damage(it.copy(amount = amount))
+                        stage.log(Logger.Level.VERBOSE, "Bleed", "damage", "$amount damage by ${it.name}")
                     }
                 }
             }

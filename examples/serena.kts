@@ -3,16 +3,16 @@ stage {
         name = "Serena"
         element = FLAME
         str = 443
-        ex = coabilities["Sword"]
-        weapon = weapons["Levatein"]
-        dragon = dragons["Arctos"]
-        wp = wyrmprints["RR"] + wyrmprints["CE"]
+        ex = Coabilities["Sword"]
+        weapon = Weapons["Levatein"]
+        dragon = Dragons["Arctos"]
+        wp = Wyrmprints["RR"] + Wyrmprints["CE"]
 
-        a1 = abilities["barrage obliteration"](6.percent)
-        a3 = abilities["barrage devastation"](3.percent)
+        a1 = Abilities["barrage obliteration"](6.percent)
+        a3 = Abilities["barrage devastation"](3.percent)
 
         s1(2500) {
-            buffs["crit rate"](10.percent).selfBuff(5.0)
+            Buffs["crit rate"](10.percent).selfBuff(5.0)
             val s1hit = skillAtk(350.percent, "s1")
             +s1hit
             +s1hit
