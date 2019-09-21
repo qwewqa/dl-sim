@@ -83,12 +83,14 @@ class DamageSlice(
     val subslices: MutableMap<String, DamageSlice> = mutableMapOf()
     var damage: Double = 0.0
         private set
+    var count: Int = 0
 
     operator fun plusAssign(value: Double) {
         damage += value
         parent?.apply {
             this += value
         }
+        count++
     }
 
     operator fun get(vararg names: String) = get(names.toList())
@@ -100,19 +102,21 @@ class DamageSlice(
     }
 }
 
+data class DamageSliceData(val damage: Double, val duration: Double, val count: Int)
+
 class DamageSliceLists(
     val name: String
 ) {
     var parent: DamageSliceLists? = null
     val subslices: MutableMap<String, DamageSliceLists> = mutableMapOf()
-    val damage = mutableListOf<Pair<Double, Double>>()
+    val damage = mutableListOf<DamageSliceData>()
 
-    operator fun plusAssign(pair: Pair<Double, Double>) {
-        damage += pair
+    operator fun plusAssign(data: DamageSliceData) {
+        damage += data
     }
 
     fun add(slice: DamageSlice, duration: Double) {
-        this += slice.damage to duration
+        this += DamageSliceData(slice.damage, duration, slice.count)
         slice.subslices.forEach { (name, slice) ->
             this[name].add(slice, duration)
         }
@@ -127,8 +131,8 @@ class DamageSliceLists(
     }
 
     fun display(level: Int = 0) {
-        val avg = damage.map { it.first / it.second }
-        val dmgs = damage.map { it.first }
+        val avg = damage.map { it.damage / it.duration }
+        val dmgs = damage.map { it.damage }
         val dps = avg.average().roundToInt()
         val stdDps = avg.std().roundToInt()
         val dmg = dmgs.average().roundToInt()
@@ -140,8 +144,8 @@ class DamageSliceLists(
     }
 
     fun displayYAML(level: Int = 0) {
-        val avg = damage.map { it.first / it.second }
-        val dmgs = damage.map { it.first }
+        val avg = damage.map { it.damage / it.duration }
+        val dmgs = damage.map { it.damage }
         val dps = avg.average().roundToInt()
         val stdDps = avg.std().roundToInt()
         val dmg = dmgs.average().roundToInt()
