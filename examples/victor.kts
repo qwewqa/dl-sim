@@ -41,5 +41,5 @@ stage {
         element = WATER
     }
 
-    endIn(60.0)
+    endIn(180.0)
 }

@@ -2,27 +2,22 @@ package tools.qwewqa.sim.data
 
 import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.extensions.percent
-import tools.qwewqa.sim.stage.Enemy
-import tools.qwewqa.sim.stage.Hit
-import tools.qwewqa.sim.stage.Logger
-import tools.qwewqa.sim.stage.Stat
+import tools.qwewqa.sim.stage.*
 import kotlin.math.min
 
 object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
-    fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) = DebuffBehavior<Double, Double>(
+    fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) = DebuffBehavior<Double, CappedModifier>(
         name = name,
-        initialValue = { 0.0 },
-        onStart = { _, value, stack ->
-            stack.value += value
+        initialValue = { stats[stat]::buff.newCappedModifier(-valueCap, invert = true) },
+        onStart = { duration, value, stack ->
+            var target: Double by stack.value
+            target = target + value
+            log(Logger.Level.VERBOSER, "debuff", "started: $name debuff value $value for $duration")
         },
-        onEnd = { _, value, stack ->
-            stack.value -= value
-        },
-        onChange = { orig: Double, new: Double ->
-            val vorig = min(valueCap, orig)
-            val vnew = min(valueCap, new)
-            stats[stat].buff += -(vnew - vorig)
-            log(Logger.Level.VERBOSER, "debuff", "$name debuff set from $vorig to $vnew (uncappped $new)")
+        onEnd = { duration, value, stack ->
+            var target: Double by stack.value
+            target = target - value
+            log(Logger.Level.VERBOSER, "debuff", "ended: $name debuff value $value for $duration")
         }
     )
 

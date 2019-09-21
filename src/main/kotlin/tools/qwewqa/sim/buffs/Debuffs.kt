@@ -33,21 +33,19 @@ class DebuffInstance<T, U>(
  *
  * @property name the name of this debuff for display
  * @property initialValue the initial value for a stack
- * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property onStart ran when it is applied at any point
- * @property onChange ran when the value changes
- * @property stackEnd ran when the entire stack end
  * @property onEnd ran when an individual instance ends
+ * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
+ * @property stackEnd ran when the entire stack end
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
 class DebuffBehavior<T, U>(
     val name: String,
-    val initialValue: () -> U,
-    val stackStart: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
+    val initialValue: Enemy.() -> U,
     val onStart: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val onChange: Enemy.(old: U, new: U) -> Unit = { _, _ -> },
-    val stackEnd: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
     val onEnd: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
+    val stackStart: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
+    val stackEnd: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
     val stackCap: Int = 20
 ) {
     /**
@@ -69,15 +67,8 @@ class DebuffBehavior<T, U>(
                 }
                 field = value
             }
-        var value: U = initialValue()
-            set(value) {
-                update(field, value)
-                field = value
-            }
 
-        fun update(old: U, new: U) {
-            enemy.onChange(old, new)
-        }
+        var value = enemy.initialValue()
     }
 
     /**

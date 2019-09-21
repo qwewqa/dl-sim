@@ -45,7 +45,8 @@ class Modifier(
 
 class CappedModifier(
     private val target: KMutableProperty0<Double>,
-    val cap: Double
+    val cap: Double,
+    val invert: Boolean = false
 ) : ReadWriteProperty<Any?, Double> {
     private var value = 0.0
     override fun getValue(thisRef: Any?, property: KProperty<*>): Double {
@@ -53,13 +54,14 @@ class CappedModifier(
     }
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: Double) {
-        target.set(target.get() - this.value + min(value, cap))
+        val change = if (invert) -(min(value, cap) - min(this.value, cap)) else  min(value, cap) - min(this.value, cap)
+        target.set(target.get() + change)
         this.value = value
     }
 }
 
 fun KMutableProperty0<Double>.newModifier() = Modifier(this)
-fun KMutableProperty0<Double>.newCappedModifier(cap: Double) = CappedModifier(this, cap)
+fun KMutableProperty0<Double>.newCappedModifier(cap: Double, invert: Boolean = false) = CappedModifier(this, cap, invert)
 
 enum class StatType {
     FULLY_ADDITIVE, SINGLE_BRACKET, MULTI_BRACKET

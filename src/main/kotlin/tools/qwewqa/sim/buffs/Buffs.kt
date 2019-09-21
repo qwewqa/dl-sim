@@ -34,21 +34,19 @@ class BuffInstance<T, U>(
  *
  * @property name the name of this buff for display
  * @property initialValue the initial value for a stack
- * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property onStart ran when it is applied at any point
- * @property onChange ran when the value changes
- * @property stackEnd ran when the entire stack end
  * @property onEnd ran when an individual instance ends
+ * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
+ * @property stackEnd ran when the entire stack end
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
 class BuffBehavior<T, U>(
     val name: String,
-    val initialValue: () -> U,
-    val stackStart: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
+    val initialValue: Adventurer.() -> U,
     val onStart: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val onChange: Adventurer.(old: U, new: U) -> Unit = { _, _ -> },
-    val stackEnd: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
     val onEnd: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
+    val stackStart: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
+    val stackEnd: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
     val stackCap: Int = 20
 ) {
     /**
@@ -70,15 +68,8 @@ class BuffBehavior<T, U>(
                 }
                 field = value
             }
-        var value: U = initialValue()
-            set(value) {
-                update(field, value)
-                field = value
-            }
 
-        fun update(old: U, new: U) {
-            adventurer.onChange(old, new)
-        }
+        var value: U = adventurer.initialValue()
     }
 
     /**

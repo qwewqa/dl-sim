@@ -1,23 +1,21 @@
 package tools.qwewqa.sim.data
 
 import tools.qwewqa.sim.buffs.BuffBehavior
-import tools.qwewqa.sim.stage.Logger
-import tools.qwewqa.sim.stage.Stat
+import tools.qwewqa.sim.stage.*
 
 object Buffs : CaseInsensitiveMap<BuffBehavior<*, *>>()  {
-    fun statBuff(name: String, stat: Stat, cap: Int = 20) = BuffBehavior<Double, Double>(
+    fun statBuff(name: String, stat: Stat, cap: Int = 20) = BuffBehavior<Double, Modifier>(
         name = name,
-        initialValue = { 0.0 },
-        onStart = { _, value, stack ->
-            stack.value += value
+        initialValue = { stats[stat]::buff.newModifier() },
+        onStart = { duration, value, stack ->
+            var target: Double by stack.value
+            target = target + value
+            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for $duration")
         },
-        onEnd = { _, value, stack ->
-            stack.value -= value
-        },
-        onChange = { orig: Double, new: Double ->
-            stats[stat].buff += new - orig
-            log(Logger.Level.VERBOSER, "buff", "$name buff set from $orig to $new")
-            listeners.raise("$name buff")
+        onEnd = { duration, value, stack ->
+            var target: Double by stack.value
+            target = target - value
+            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for $duration")
         },
         stackCap = cap
     )
