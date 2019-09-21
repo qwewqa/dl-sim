@@ -9,7 +9,7 @@ import kotlin.math.min
 object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
     fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) = DebuffBehavior<Double, CappedModifier>(
         name = name,
-        initialValue = { stats[stat]::buff.newCappedModifier(-valueCap, invert = true) },
+        initialValue = { stats[stat]::buff.newCappedModifier(valueCap, invert = true) },
         onStart = { duration, value, stack ->
             var target: Double by stack.value
             target = target + value
