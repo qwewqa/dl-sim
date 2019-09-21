@@ -121,7 +121,7 @@ class Adventurer(val stage: Stage) : Listenable {
     fun Hit.apply() {
         val actual = enemy.damage(this)
         combo++
-        log(Logger.Level.MORE, "damage", "actual damage by ${this.name} (combo: $combo)")
+        log(Logger.Level.MORE, "damage", "$actual damage by ${this.name} (combo: $combo)")
         if (sp != 0) this@Adventurer.sp(sp, name.toString())
     }
 

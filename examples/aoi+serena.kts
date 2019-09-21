@@ -40,7 +40,7 @@ stage {
         a3 = Abilities["barrage devastation"](3.percent)
 
         s1(2500) {
-            buffs["crit rate"](10.percent).selfBuff(5.0)
+            Buffs["crit rate"](10.percent).selfBuff(5.0)
             val s1hit = skillAtk(350.percent, "s1")
             +s1hit
             +s1hit
