@@ -37,17 +37,19 @@ class Enemy(val stage: Stage) : Listenable {
     val debuffStacks = mutableMapOf<DebuffBehavior<*, *>, DebuffBehavior<*, *>.Stack>()
     val damageSlices = DamageSlice("Damage")
 
-    fun damage(hit: Hit) {
+    fun damage(hit: Hit): Int {
         val hitDamage = floor((0.95 * hit.amount + 0.1 * Random.nextDouble() * hit.amount))
-        totalDamage += hitDamage.toInt()
+        val actual = hitDamage.toInt()
+        totalDamage += actual
         damageSlices.get(hit.name) += hitDamage
         listeners.raise("dmg")
         if (useHp) {
-            hp -= hitDamage.toInt()
+            hp -= actual
             if (hp <= 0) {
                 stage.end()
             }
         }
+        return actual
     }
 }
 

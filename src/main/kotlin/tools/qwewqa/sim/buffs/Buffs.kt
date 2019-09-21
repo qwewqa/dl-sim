@@ -45,7 +45,7 @@ class BuffBehavior<T, U>(
     val initialValue: Adventurer.() -> U,
     val onStart: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
     val onEnd: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val stackStart: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
+    val stackStart: suspend Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
     val stackEnd: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
     val stackCap: Int = 20
 ) {
@@ -53,18 +53,21 @@ class BuffBehavior<T, U>(
      * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps
      */
     inner class Stack(val adventurer: Adventurer) {
+        var on = false
         var startEvent: Timeline.Event? = null
 
         var count: Int = 0
             set(value) {
-                if (field == 0 && value == 1) {
+                if (!on && value > 0) {
                     startEvent = adventurer.timeline.schedule {
                         adventurer.stackStart(this@Stack)
                     }
+                    on = true
                 }
                 if (value == 0) {
-                    startEvent?.cancel()
+                    startEvent!!.cancel()
                     adventurer.stackEnd(this)
+                    on = false
                 }
                 field = value
             }

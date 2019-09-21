@@ -119,10 +119,10 @@ class Adventurer(val stage: Stage) : Listenable {
     operator fun Attack.unaryPlus() = this.apply()
 
     fun Hit.apply() {
-        enemy.damage(this)
+        val actual = enemy.damage(this)
         combo++
-        log(Logger.Level.MORE, "damage", "$amount damage by ${this.name} (combo: $combo)")
-        this@Adventurer.sp(sp, name.toString())
+        log(Logger.Level.MORE, "damage", "actual damage by ${this.name} (combo: $combo)")
+        if (sp != 0) this@Adventurer.sp(sp, name.toString())
     }
 
     fun Attack.apply() = this.hit().apply()

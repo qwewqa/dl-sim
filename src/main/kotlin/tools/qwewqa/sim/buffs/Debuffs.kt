@@ -44,7 +44,7 @@ class DebuffBehavior<T, U>(
     val initialValue: Enemy.() -> U,
     val onStart: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
     val onEnd: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val stackStart: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
+    val stackStart: suspend Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
     val stackEnd: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
     val stackCap: Int = 20
 ) {
@@ -52,18 +52,21 @@ class DebuffBehavior<T, U>(
      * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps
      */
     inner class Stack(val enemy: Enemy) {
+        var on = false
         var startEvent: Timeline.Event? = null
 
         var count: Int = 0
             set(value) {
-                if (field == 0 && value == 1) {
+                if (!on && value > 0) {
                     startEvent = enemy.timeline.schedule {
                         enemy.stackStart(this@Stack)
                     }
+                    on = true
                 }
                 if (value == 0) {
-                    startEvent?.cancel()
+                    startEvent!!.cancel()
                     enemy.stackEnd(this)
+                    on = false
                 }
                 field = value
             }

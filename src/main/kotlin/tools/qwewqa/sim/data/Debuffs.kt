@@ -3,6 +3,7 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.*
+import kotlinx.coroutines.isActive
 import kotlin.math.min
 
 object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
@@ -35,17 +36,19 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
             stage.log(Logger.Level.VERBOSE, "Bleed", "end", "end ${hit.amount} damage for $duration from ${hit.name}")
         },
         stackStart = { stack ->
-            timeline.schedule {
-                while (true) {
-                    wait(4.99)
-                    val multiplier = 0.5 * (1 + stack.count)
-                    stack.value.forEach {
-                        val amount = it.amount * multiplier
-                        damage(it.copy(amount = amount))
-                        stage.log(Logger.Level.VERBOSE, "Bleed", "damage", "$amount damage by ${it.name}")
-                    }
+            stage.log(Logger.Level.VERBOSE, "Bleed", "stack start", "new stack")
+            while (true) {
+                timeline.wait(4.99)
+                val multiplier = 0.5 * (1 + stack.count)
+                stack.value.forEach {
+                    val amount = it.amount * multiplier
+                    val actual = damage(it.copy(amount = amount))
+                    stage.log(Logger.Level.VERBOSE, "Bleed", "damage", "$actual damage by ${it.name}")
                 }
             }
+        },
+        stackEnd = { stack ->
+            stage.log(Logger.Level.VERBOSE, "Bleed", "stack end", "stack has ended")
         },
         stackCap = 3
     )
