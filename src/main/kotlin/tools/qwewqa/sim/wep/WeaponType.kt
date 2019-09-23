@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.wep
 
-import tools.qwewqa.sim.abilities.AbilityInstance
+import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
@@ -13,7 +13,7 @@ data class WeaponType(
     val x: Move,
     val fs: Move,
     val fsf: Move,
-    val abilities: List<AbilityInstance> = listOf(Abilities.critDamage(70.percent), Abilities.critRate(2.percent))
+    val abilities: List<AbilityBehavior<*, *>.AbilityInstance> = listOf(Abilities.critDamage(70.percent), Abilities.critRate(2.percent))
 ) {
     fun initialize(adventurer: Adventurer) {
         abilities.forEach { it.initialize(adventurer) }

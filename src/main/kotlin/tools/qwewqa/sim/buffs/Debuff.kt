@@ -20,7 +20,7 @@ import tools.qwewqa.sim.core.getTimer
  * @property stackEnd ran when the entire stack end
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-class DebuffBehavior<T, U>(
+data class DebuffBehavior<T, U>(
     val name: String,
     val initialValue: Enemy.() -> U,
     val onStart: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
@@ -44,7 +44,7 @@ class DebuffBehavior<T, U>(
                     }
                     on = true
                 }
-                if (value == 0) {
+                if (on && value == 0) {
                     startEvent!!.cancel()
                     enemy.stackEnd(this)
                     on = false

@@ -21,7 +21,7 @@ import kotlin.reflect.KClass
  * @property stackEnd ran when the entire stack end
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-class BuffBehavior<T, U>(
+data class BuffBehavior<T, U>(
     val name: String,
     val initialValue: Adventurer.() -> U,
     val onStart: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
@@ -45,7 +45,7 @@ class BuffBehavior<T, U>(
                     }
                     on = true
                 }
-                if (value == 0) {
+                if (on && value == 0) {
                     startEvent!!.cancel()
                     adventurer.stackEnd(this)
                     on = false

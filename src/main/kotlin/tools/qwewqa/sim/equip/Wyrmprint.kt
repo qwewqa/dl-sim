@@ -6,7 +6,7 @@ import tools.qwewqa.sim.stage.Adventurer
 data class Wyrmprint(
     val name: String,
     val str: Int,
-    val abilities: List<AbilityInstance>
+    val abilities: List<AbilityBehavior<*, *>.AbilityInstance>
 ) : BaseEquip() {
     override fun initialize(adventurer: Adventurer) {
         abilities.forEach { it.initialize(adventurer) }

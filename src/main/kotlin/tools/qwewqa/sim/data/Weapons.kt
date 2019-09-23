@@ -1,64 +1,54 @@
 package tools.qwewqa.sim.data
 
-import tools.qwewqa.sim.abilities.AbilityInstance
 import tools.qwewqa.sim.equip.Weapon
+import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.skill
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.Move
 import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.wep.*
 
 object Weapons : CaseInsensitiveMap<Weapon>() {
-    fun blade(name: String, element: Element, str: Int, skill: Move, abilities: List<AbilityInstance> = emptyList()) =
-        Weapon(name, element, str, skill, tools.qwewqa.sim.wep.blade, abilities)
-
-    fun blade5b1(name: String, element: Element) = blade(name, element, 572,
-        skill("s3", 8030) {
-            +skillAtk(354.percent, "s3")
-            wait(0.0)
-            +skillAtk(354.percent, "s3")
-            wait(0.0)
-            +skillAtk(354.percent, "s3")
+    val blade0 = Weapon("Blade", Element.NEUTRAL, 0, noMove(), blade, emptyList())
+    val blade5b1 = blade0.copy(
+        str = 572,
+        skill = skill("s3", 8030) {
+            val hit = skillAtk(354.percent, "s3")
+            hit()
+            hit()
+            hit()
             wait(2.65)
         }
     )
+    val flameBlade5t3 = blade5b1.copy(name = "Heaven's Acuity", element = Element.FLAME)
+    val windBlade5t3 = blade5b1.copy(name = "Anemone", element = Element.WIND)
 
-    val flameBlade5t3 = blade5b1("Heaven's Acuity", Element.FLAME)
-    val windBlade5t3 = blade5b1("Anemone", Element.WIND)
-
-
-    fun sword(name: String, element: Element, str: Int, skill: Move, abilities: List<AbilityInstance> = emptyList()) =
-        Weapon(name, element, str, skill, tools.qwewqa.sim.wep.sword, abilities)
-
-    fun sword5b1(name: String, element: Element) = sword(name, element, 556,
-        skill("s3", 6847) {
-            +skillAtk(165.percent, "s3")
-            wait(0.0)
-            +skillAtk(165.percent, "s3")
-            wait(0.0)
-            +skillAtk(165.percent, "s3")
-            wait(0.0)
-            +skillAtk(165.percent, "s3")
-            wait(0.0)
-            +skillAtk(165.percent, "s3")
+    val sword0 = Weapon("Sword", Element.NEUTRAL, 0, noMove(), sword, emptyList())
+    val sword5b1 = sword0.copy(
+        str = 556,
+        skill = skill("s3", 6847) {
+            val hit = skillAtk(165.percent, "s3")
+            hit()
+            hit()
+            hit()
+            hit()
+            hit()
             wait(3.1)
         }
     )
+    val flameSword5t3 = sword5b1.copy(name = "Levatein", element = Element.FLAME)
 
-    val flameSword5t3 = sword5b1("Levatein", Element.FLAME)
-
-    fun bow(name: String, element: Element, str: Int, skill: Move, abilities: List<AbilityInstance> = emptyList()) =
-        Weapon(name, element, str, skill, tools.qwewqa.sim.wep.bow, abilities)
-
-    fun bow5b1(name: String, element: Element) = bow(name, element, 518,
-        skill("s3", 7316) {
+    val bow0 = Weapon("Bow", Element.NEUTRAL, 0, noMove(), bow, emptyList())
+    val bow5b1 = bow0.copy(
+        str = 518,
+        skill = skill("s3", 7316) {
             wait(0.15)
             Buffs.critRate(25.percent).selfBuff(10.0)
             wait(0.9)
         }
     )
-
-    val windBow5t3 = bow5b1("Stellar Pegasus", Element.WIND)
+    val windBow5t3 = bow5b1.copy(name = "Stellar Pegasus", element = Element.WIND)
 
     init {
         this["flame 5t3 blade", "Heaven's Acuity"] = flameBlade5t3

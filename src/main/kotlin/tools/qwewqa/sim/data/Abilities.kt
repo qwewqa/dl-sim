@@ -8,20 +8,41 @@ import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.Stat
 import kotlin.math.min
 
-object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
-    fun statAbility(name: String, stat: Stat) = AbilityBehavior(
+object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
+    fun statAbility(name: String, stat: Stat) = AbilityBehavior<Double, Unit>(
         name = name,
-        onChange = { orig: Double, new: Double ->
-            stats[stat].passive += new - orig
+        initialValue = {},
+        onStart = { value, _ ->
+            stats[stat].passive += value
+            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value on")
+        },
+        onStop = { value, _ ->
+            stats[stat].passive -= value
+            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value off")
         }
     )
 
-    fun cappedStatAbility(name: String, stat: Stat, cap: Double) = AbilityBehavior(
+    fun cappedStatAbility(name: String, stat: Stat, cap: Double) = AbilityBehavior<Double, Double>(
         name = name,
-        onChange = { orig: Double, new: Double ->
+        initialValue = { 0.0 },
+        onStart = { value, stack ->
+            val orig = stack.value
+            stack.value += value
+            val new = stack.value
             val vorig = min(orig, cap)
             val vnew = min(new, cap)
             stats[stat].passive += vnew - vorig
+            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) on")
+            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability capped at $vnew")
+        },
+        onStop = { value, stack ->
+            val orig = stack.value
+            stack.value -= value
+            val new = stack.value
+            val vorig = min(orig, cap)
+            val vnew = min(new, cap)
+            stats[stat].passive += vnew - vorig
+            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) off")
             if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability capped at $vnew")
         }
     )
@@ -42,9 +63,10 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
     val wpPunisher = cappedStatAbility("punisher (wp)", Stat.PUNISHER, 30.percent)
 
 
-    fun barrageAbility(name: String, buff: BuffBehavior<Double, *>, interval: Int) = AbilityBehavior(
+    fun barrageAbility(name: String, buff: BuffBehavior<Double, *>, interval: Int) = AbilityBehavior<Double, Double>(
         name = name,
-        onStart = { stack ->
+        initialValue = { 0.0 },
+        stackStart = { stack ->
             var charges = 3
             listen("combo") {
                 if (charges == 0) return@listen
@@ -54,6 +76,12 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior>() {
                     buff(stack.value).selfBuff()
                 }
             }
+        },
+        onStart = { value, stack ->
+            stack.value += value
+        },
+        onStop = { value, stack ->
+            stack.value -= value
         }
     )
 

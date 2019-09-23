@@ -1,7 +1,6 @@
 package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.sim.abilities.AbilityInstance
 import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.buffs.BuffBehavior
@@ -29,9 +28,9 @@ class Adventurer(val stage: Stage) : Listenable {
     var s2: Move? = null
     var s3: Move? = null
     var ex: Coability? = null
-    var a1: AbilityInstance? = null
-    var a2: AbilityInstance? = null
-    var a3: AbilityInstance? = null
+    var a1: AbilityBehavior<*, *>.AbilityInstance? = null
+    var a2: AbilityBehavior<*, *>.AbilityInstance? = null
+    var a3: AbilityBehavior<*, *>.AbilityInstance? = null
     var x: Move? = null
     var fs: Move? = null
     var fsf: Move? = null
@@ -76,7 +75,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var doing: String = "idle"
     var current: Timeline.Event? = null
 
-    val abilityStacks = mutableMapOf<AbilityBehavior, AbilityBehavior.Stack>()
+    val abilityStacks = mutableMapOf<AbilityBehavior<*, *>, AbilityBehavior<*, *>.Stack>()
     val buffStacks = mutableMapOf<BuffBehavior<*, *>, BuffBehavior<*, *>.Stack>()
 
     /**
@@ -114,6 +113,7 @@ class Adventurer(val stage: Stage) : Listenable {
         }
     }
 
+    operator fun Attack.invoke() = this.apply()
     operator fun Attack.unaryPlus() = this.apply()
 
     fun Snapshot.apply() {
@@ -167,7 +167,7 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun BaseEquip?.init() = this?.initialize(this@Adventurer)
     fun Move?.init() = this?.initialize(this@Adventurer)
-    fun AbilityInstance?.init() = this?.initialize(this@Adventurer)
+    fun AbilityBehavior<*, *>.AbilityInstance?.init() = this?.initialize(this@Adventurer)
     fun Coability?.init() = this?.initialize(this@Adventurer)
 
     fun WeaponType?.init() {
