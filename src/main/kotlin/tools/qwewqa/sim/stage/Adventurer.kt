@@ -194,6 +194,8 @@ class Adventurer(val stage: Stage) : Listenable {
         log("buff", "teambuff $name [value: $rdur]")
     }
 
+    val BuffBehavior<*, *>.on get() = this.getStack(this@Adventurer).on
+
     fun DebuffBehavior<*, *>.DebuffInstance.apply() = this.apply(enemy)
     fun DebuffBehavior<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
 
@@ -226,9 +228,9 @@ class Adventurer(val stage: Stage) : Listenable {
             }
         }
 
-        fun charge(fraction: Double) {
+        fun charge(fraction: Double, source: String = doing) {
             charges.keys.forEach {
-                charge(fraction, it)
+                charge(fraction, it, source)
             }
         }
 

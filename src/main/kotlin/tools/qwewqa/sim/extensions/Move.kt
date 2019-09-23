@@ -38,6 +38,7 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
         action()
         skillLock = false
         log(Logger.Level.VERBOSE, "skill", "$name end")
+        think("post-$name")
         schedule(ui.remaining) {
             think(name)
         }

@@ -50,10 +50,78 @@ class AclSelector(val adventurer: Adventurer) {
 }
 
 fun Adventurer.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
-    logic = { AclSelector(this).apply {
+    logic = {
+        AclSelector(this).apply {
             init()
-        if (implicitX) add(x)
-        }.value }
+            if (implicitX) add(x)
+        }.value
+    }
 }
 
-operator fun AdventurerCondition.plus(condition: AdventurerCondition): AdventurerCondition = { this@plus() && condition() }
+class Rotation(val adventurer: Adventurer) {
+    var init: String = ""
+    var loop: String = ""
+
+    private val queue = mutableListOf<RotationData>()
+    private var starting = true
+
+    private fun getMove(name: String) =  when (name) {
+        "c5" -> adventurer.x
+        "c4" -> adventurer.x
+        "c3" -> adventurer.x
+        "c2" -> adventurer.x
+        "c1" -> adventurer.x
+        "s1" -> adventurer.s1
+        "s2" -> adventurer.s2
+        "s3" -> adventurer.s3
+        "fs" -> adventurer.fs
+        "d" -> adventurer.dodge
+        "fsf" -> adventurer.fsf
+        else -> error("Unknown rotation $name")
+    }!!
+
+    private fun parse(string: String) = (listOf("") + string.split(" ", "-")).zipWithNext { a, b ->
+        val trigger = when {
+            a == "c5" && b in listOf("c1", "c2", "c3", "c4", "c5") -> "idle" // consecutive combos don't cancel
+            a == "fs" && b in listOf("s1", "s2", "s3", "d") -> "fs" // skills and dodge can cancel fs
+            // if this isn't a combo and the previous was, convert previous into trigger (e.g. "c4a" -> "x4a"
+            a.getOrNull(0) == 'c' -> "x${a.drop(1)}"
+            else -> "idle" // otherwise wait until idle
+        }
+        RotationData(b, trigger)
+    }
+
+    fun next(trigger: String): Move? {
+        if(queue.isEmpty()) {
+            if (starting && init != "") {
+                starting = false
+                queue += parse(init)
+            } else {
+                queue += parse(loop)
+            }
+        }
+        val next = queue[0]
+        return if (trigger == next.trigger) {
+            val move = getMove(next.name)
+            if (trigger == "idle" && !move.condition(adventurer)) {
+                queue[0] = next.copy(trigger = "ui")
+                return adventurer.x
+            } else {
+                queue.removeAt(0)
+                move
+            }
+        } else null
+    }
+}
+
+data class RotationData(val name: String, val trigger: String)
+
+fun Adventurer.rotation(init: Rotation.() -> Unit) {
+    val rotation = Rotation(this).also(init)
+    logic = {
+        rotation.next(trigger)
+    }
+}
+
+operator fun AdventurerCondition.plus(condition: AdventurerCondition): AdventurerCondition =
+    { this@plus() && condition() }

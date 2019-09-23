@@ -36,6 +36,7 @@ data class BuffBehavior<T, U>(
     inner class Stack(val adventurer: Adventurer) {
         var on = false
         var startEvent: Timeline.Event? = null
+        val stacks = mutableListOf<Timer>()
 
         var count: Int = 0
             set(value) {
@@ -54,6 +55,10 @@ data class BuffBehavior<T, U>(
             }
 
         var value: U = adventurer.initialValue()
+
+        fun clear() {
+            stacks.forEach { it.endNow() }
+        }
     }
 
     /**
@@ -85,8 +90,10 @@ data class BuffBehavior<T, U>(
             val timer = adventurer.timeline.getTimer {
                 stack.count--
                 onEnd(adventurer, duration, value, stack)
+                stack.stacks -= this
             }
             timer.set(duration)
+            stack.stacks += timer
             return timer
         }
     }

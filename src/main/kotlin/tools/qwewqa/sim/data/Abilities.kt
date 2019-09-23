@@ -3,9 +3,12 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.buffs.BuffBehavior
 import tools.qwewqa.sim.core.listen
+import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Logger
+import tools.qwewqa.sim.stage.Move
 import tools.qwewqa.sim.stage.Stat
+import tools.qwewqa.sim.wep.forcestrike
 import kotlin.math.min
 
 object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
@@ -62,6 +65,8 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
     val punisher = statAbility("punisher", Stat.PUNISHER)
     val wpPunisher = cappedStatAbility("punisher (wp)", Stat.PUNISHER, 30.percent)
 
+    val skillHaste = statAbility("skill haste", Stat.SKILL_HASTE)
+    val wpSkillHaste = cappedStatAbility("skill haste (wp)", Stat.SKILL_HASTE, 15.percent)
 
     fun barrageAbility(name: String, buff: BuffBehavior<Double, *>, interval: Int) = AbilityBehavior<Double, Double>(
         name = name,
@@ -88,6 +93,46 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
     val barrageObliteration = barrageAbility("barrage obliteration", Buffs.critDamage, 20)
     val barrageDevastation = barrageAbility("barrage devastation", Buffs.critRate, 30)
 
+
+    val skillPrep = AbilityBehavior<Double, Unit>(
+        name = "Skill Prep",
+        initialValue = {},
+        onStart = { value, _ ->
+            sp.charge(fraction = value, source = "prep")
+        }
+    )
+
+    data class MagicalModificationData(var value: Double, val defaultFs: Move?)
+    val magicalModification = AbilityBehavior<Double, MagicalModificationData>(
+        name = "Magical Modification",
+        initialValue = { MagicalModificationData(0.0, fs) },
+        stackStart = { stack ->
+            listen("post-s1") { _ ->
+                Buffs.magicalModification(stack.value.value).selfBuff()
+                fs = forcestrike {
+                    val buff = Buffs.magicalModification.getStack(this)
+                    when (trigger) {
+                        "x5" -> wait(57.frames)
+                        else -> wait(43.frames)
+                    }
+                    stage.adventurers.forEach { adv ->
+                        Buffs.str(buff.value).apply(adv, 10.0)
+                    }
+                    buff.clear()
+                    think("fs")
+                    wait(67.frames)
+                    fs = stack.value.defaultFs
+                }
+            }
+        },
+        onStart = { value, stack ->
+            stack.value.value += value
+        },
+        onStop = { value, stack ->
+            stack.value.value -= value
+        }
+    )
+
     init {
         this["strength", "str"] = strength
         this["strength (wp)", "str (wp)"] = wpStr
@@ -101,5 +146,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
         this["punisher (wp)", "k (wp)"] = wpPunisher
         this["barrage obliteration"] = barrageObliteration
         this["barrage devastation"] = barrageDevastation
+        this["skill prep", "prep"] = skillPrep
+        this["magical modification"] = magicalModification
     }
 }

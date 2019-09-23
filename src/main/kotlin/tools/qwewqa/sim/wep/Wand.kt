@@ -24,8 +24,8 @@ private val combo = combo {
     doing = "x2"
     wait(33.frames)
     hit("x2") {
-        doAutoAtk(53.percent, 200, "x2", "a1")
-        doAutoAtk(53.percent, "x2", "a2")
+        doAutoAtk(53.percent, 200, "x2", "a")
+        doAutoAtk(53.percent, "x2", "b")
     }
 
     doing = "x3"
@@ -39,8 +39,8 @@ private val combo = combo {
     doing = "x4"
     wait(53.frames)
     hit("x4") {
-        doAutoAtk(78.percent, 430, "x4", "a1")
-        doAutoAtk(78.percent, "x4", "a2")
+        doAutoAtk(78.percent, 430, "x4", "a")
+        doAutoAtk(78.percent, "x4", "b")
     }
 
     doing = "x5"

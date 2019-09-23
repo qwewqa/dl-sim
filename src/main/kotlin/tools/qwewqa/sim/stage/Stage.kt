@@ -58,15 +58,21 @@ fun stage(
     init: Stage.() -> Unit
 ) = runBlocking {
     val slices = DamageSliceLists("Damage")
-    (1..mass).map {
+    if (mass > 1) (1..mass).map {
         async {
             Stage().apply(init).also {
-                if (mass <= 1) it.logger.filterLevel = logLevel else it.logger.filterLevel = Logger.Level.NONE
+                it.logger.filterLevel = Logger.Level.NONE
             }.awaitResults().apply {
                 slices.add(slice, duration)
             }
         }
-    }.awaitAll()
+    }.awaitAll() else {
+        Stage().apply(init).also {
+            it.logger.filterLevel = logLevel
+        }.awaitResults().apply {
+            slices.add(slice, duration)
+        }
+    }
     if (yaml) slices.displayYAML() else slices.display()
 }
 

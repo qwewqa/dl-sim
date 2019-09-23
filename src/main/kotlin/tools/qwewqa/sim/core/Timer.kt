@@ -4,7 +4,7 @@ package tools.qwewqa.sim.core
  * A timer that runs the action after set for a certain duration
  * Can be paused and started
  */
-class Timer(private val timeline: Timeline, val action: () -> Unit) {
+class Timer(private val timeline: Timeline, val action: Timer.() -> Unit) {
     var event: Timeline.Event? = null
     var running = false
         private set
@@ -27,6 +27,8 @@ class Timer(private val timeline: Timeline, val action: () -> Unit) {
         running = false
     }
 
+    fun endNow() = set(0.0)
+
     /**
      * Sets the duration of the timer and starts it (if not already started)
      */
@@ -42,8 +44,8 @@ class Timer(private val timeline: Timeline, val action: () -> Unit) {
     }
 }
 
-fun Timeline.getTimer(action: () -> Unit) = Timer(this, action)
-fun Timeline.getTimer(time: Double, action: () -> Unit) = getTimer(action).apply {
+fun Timeline.getTimer(action: Timer.() -> Unit) = Timer(this, action)
+fun Timeline.getTimer(time: Double, action: Timer.() -> Unit) = getTimer(action).apply {
     set(time)
     start()
 }

@@ -48,11 +48,21 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         )
     )
 
+    val jots = Wyrmprint(
+        name = "Jewels of the Sun",
+        str = 64,
+        abilities = listOf(
+            Abilities.wpStr(10.percent, Conditions.hp70),
+            Abilities.wpSkillHaste(8.percent)
+        )
+    )
+
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
         this["BN", "Beautiful Nothingness"] = bn
 //        this["EE", "Elegant Escort"] = ee
         this["FoG", "Flash of Genius"] = fog
+        this["JotS", "Jewels of the Sun"] = jots
     }
 }
