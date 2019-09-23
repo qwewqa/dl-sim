@@ -23,9 +23,7 @@ private val fs = forcestrike {
 private val combo = combo {
     doing = "x1"
     wait(16.frames)
-    think("pre-x1")
     doAutoAtk(114.percent, 200, "x1")
-    think("x1")
 
     doing = "x2"
     wait(46.frames)

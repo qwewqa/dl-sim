@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.abilities.Condition
+import tools.qwewqa.sim.adventurers.AdventurerSetup
 import tools.qwewqa.sim.buffs.BuffBehavior
 import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.core.Timeline
@@ -36,6 +37,9 @@ class Stage {
         timeline.end()
         onEnd()
     }
+
+    operator fun AdventurerSetup.invoke() = Adventurer(this@Stage).apply(init).also { adventurers += it }
+    operator fun AdventurerSetup.invoke(init2: Adventurer.() -> Unit) = Adventurer(this@Stage).apply(init).apply(init2).also { adventurers += it }
 
     suspend fun awaitResults(): StageResults {
         if (!started) run()
