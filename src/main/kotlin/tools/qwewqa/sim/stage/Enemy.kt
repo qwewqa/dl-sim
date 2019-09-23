@@ -3,8 +3,6 @@ package tools.qwewqa.sim.stage
 import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
-import tools.qwewqa.sim.core.Timeline
-import tools.qwewqa.sim.extensions.percent
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -37,11 +35,11 @@ class Enemy(val stage: Stage) : Listenable {
     val debuffStacks = mutableMapOf<DebuffBehavior<*, *>, DebuffBehavior<*, *>.Stack>()
     val damageSlices = DamageSlice("Damage")
 
-    fun damage(hit: Hit): Int {
-        val hitDamage = floor((0.95 * hit.amount + 0.1 * Random.nextDouble() * hit.amount))
+    fun damage(snapshot: Snapshot): Int {
+        val hitDamage = floor((0.95 * snapshot.amount + 0.1 * Random.nextDouble() * snapshot.amount))
         val actual = hitDamage.toInt()
         totalDamage += actual
-        damageSlices.get(hit.name) += hitDamage
+        damageSlices.get(snapshot.name) += hitDamage
         listeners.raise("dmg")
         if (useHp) {
             hp -= actual

@@ -5,8 +5,7 @@ import tools.qwewqa.sim.abilities.AbilityInstance
 import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.abilities.Coability
 import tools.qwewqa.sim.buffs.BuffBehavior
-import tools.qwewqa.sim.buffs.BuffInstance
-import tools.qwewqa.sim.buffs.DebuffInstance
+import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -20,7 +19,6 @@ import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.random.Random
 
 class Adventurer(val stage: Stage) : Listenable {
@@ -118,16 +116,16 @@ class Adventurer(val stage: Stage) : Listenable {
 
     operator fun Attack.unaryPlus() = this.apply()
 
-    fun Hit.apply() {
+    fun Snapshot.apply() {
         val actual = enemy.damage(this)
         combo++
         log(Logger.Level.MORE, "damage", "$actual damage by ${this.name} (combo: $combo)")
         if (sp != 0) this@Adventurer.sp(sp, name.toString())
     }
 
-    fun Attack.apply() = this.hit().apply()
+    fun Attack.apply() = this.snapshot().apply()
 
-    fun Attack.hit() = Hit(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), name = name)
+    fun Attack.snapshot() = Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), name = name)
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
@@ -177,18 +175,18 @@ class Adventurer(val stage: Stage) : Listenable {
         this.initialize(this@Adventurer)
     }
 
-    fun BuffInstance<*, *>.selfBuff() {
+    fun BuffBehavior<*, *>.BuffInstance.selfBuff() {
         this.apply(this@Adventurer)
         log("buff", "selfbuff $name [value: $value]")
     }
 
-    fun BuffInstance<*, *>.selfBuff(duration: Double) {
+    fun BuffBehavior<*, *>.BuffInstance.selfBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         this.apply(this@Adventurer, rdur)
         log("buff", "selfbuff $name for duration $rdur [value: $value]")
     }
 
-    fun BuffInstance<*, *>.teamBuff(duration: Double) {
+    fun BuffBehavior<*, *>.BuffInstance.teamBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         stage.adventurers.forEach {
             this.apply(it, rdur)
@@ -196,8 +194,8 @@ class Adventurer(val stage: Stage) : Listenable {
         log("buff", "teambuff $name [value: $rdur]")
     }
 
-    fun DebuffInstance<*, *>.apply() = this.apply(enemy)
-    fun DebuffInstance<*, *>.apply(duration: Double) = this.apply(enemy, duration)
+    fun DebuffBehavior<*, *>.DebuffInstance.apply() = this.apply(enemy)
+    fun DebuffBehavior<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
 
     inner class SP {
         private val charges = mutableMapOf<String, Int>()

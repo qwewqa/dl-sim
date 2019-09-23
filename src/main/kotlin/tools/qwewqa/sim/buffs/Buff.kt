@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package tools.qwewqa.sim.buffs
 
 import tools.qwewqa.sim.core.Timeline
@@ -7,31 +9,10 @@ import tools.qwewqa.sim.stage.Adventurer
 import kotlin.reflect.KClass
 
 /**
- * Data on an buff without any behavior
- */
-class BuffInstance<T, U>(
-    val name: String,
-    val value: T,
-    val behavior: BuffBehavior<T, U>
-) {
-    fun apply(adventurer: Adventurer, duration: Double? = null) : Timer? {
-        val stack = behavior.getStack(adventurer)
-        if (stack.count >= behavior.stackCap) return null
-        behavior.onStart(adventurer, duration, value, stack)
-        stack.count++
-        if (duration == null) return null
-        val timer = adventurer.timeline.getTimer {
-            stack.count--
-            behavior.onEnd(adventurer, duration, value, stack)
-        }
-        timer.set(duration)
-        return timer
-    }
-}
-
-/**
  * Contains the behavior of a buff
  *
+ * @param T The type for the value of a single instance
+ * @param U The type for data stored in the full "stack"
  * @property name the name of this buff for display
  * @property initialValue the initial value for a stack
  * @property onStart ran when it is applied at any point
@@ -89,5 +70,24 @@ class BuffBehavior<T, U>(
     /**
      * Creates a [BuffInstance] targeting this
      */
-    fun getInstance(value: T) = BuffInstance(name, value, this)
+    fun getInstance(value: T) = BuffInstance(name, value)
+
+    inner class BuffInstance(
+        val name: String,
+        val value: T
+    ) {
+        fun apply(adventurer: Adventurer, duration: Double? = null) : Timer? {
+            val stack = getStack(adventurer)
+            if (stack.count >= stackCap) return null
+            onStart(adventurer, duration, value, stack)
+            stack.count++
+            if (duration == null) return null
+            val timer = adventurer.timeline.getTimer {
+                stack.count--
+                onEnd(adventurer, duration, value, stack)
+            }
+            timer.set(duration)
+            return timer
+        }
+    }
 }

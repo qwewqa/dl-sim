@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package tools.qwewqa.sim.buffs
 
 import tools.qwewqa.sim.core.Timeline
@@ -6,31 +8,10 @@ import tools.qwewqa.sim.core.Timer
 import tools.qwewqa.sim.core.getTimer
 
 /**
- * Data on an buff without any behavior
- */
-class DebuffInstance<T, U>(
-    val name: String,
-    val value: T,
-    val behavior: DebuffBehavior<T, U>
-) {
-    fun apply(enemy: Enemy, duration: Double? = null) : Timer? {
-        val stack = behavior.getStack(enemy)
-        if (stack.count >= behavior.stackCap) return null
-        behavior.onStart(enemy, duration, value, stack)
-        stack.count++
-        if (duration == null) return null
-        val timer = enemy.timeline.getTimer {
-            stack.count--
-            behavior.onEnd(enemy, duration, value, stack)
-        }
-        timer.set(duration)
-        return timer
-    }
-}
-
-/**
  * Contains the behavior of a debuff
  *
+ * @param T The type for the value of a single instance
+ * @param U The type for data stored in the full "stack"
  * @property name the name of this debuff for display
  * @property initialValue the initial value for a stack
  * @property onStart ran when it is applied at any point
@@ -88,5 +69,25 @@ class DebuffBehavior<T, U>(
     /**
      * Creates a [DebuffInstance] targeting this
      */
-    fun getInstance(value: T) = DebuffInstance(name, value, this)
+    fun getInstance(value: T) = DebuffInstance(name, value)
+
+
+    inner class DebuffInstance(
+        val name: String,
+        val value: T
+    ) {
+        fun apply(enemy: Enemy, duration: Double? = null) : Timer? {
+            val stack = getStack(enemy)
+            if (stack.count >= stackCap) return null
+            onStart(enemy, duration, value, stack)
+            stack.count++
+            if (duration == null) return null
+            val timer = enemy.timeline.getTimer {
+                stack.count--
+                onEnd(enemy, duration, value, stack)
+            }
+            timer.set(duration)
+            return timer
+        }
+    }
 }

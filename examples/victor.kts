@@ -18,7 +18,7 @@ stage {
             +s1Hit
             +s1Hit
             chance(80.percent) {
-                Debuffs["bleed"](skillAtk(146.percent, "s1", "bleed").hit()).apply(30.0)
+                Debuffs["bleed"](skillAtk(146.percent, "s1", "bleed").snapshot()).apply(30.0)
             }
             wait(2.35)
         }

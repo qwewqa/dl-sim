@@ -3,8 +3,6 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.*
-import kotlinx.coroutines.isActive
-import kotlin.math.min
 
 object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
     fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) = DebuffBehavior<Double, CappedModifier>(
@@ -24,7 +22,7 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
 
     val def = statDebuff("def", Stat.DEF)
 
-    val bleed = DebuffBehavior<Hit, MutableList<Hit>>(
+    val bleed = DebuffBehavior<Snapshot, MutableList<Snapshot>>(
         name = "bleed",
         initialValue = { mutableListOf() },
         onStart = { duration, hit, stack ->
@@ -47,7 +45,7 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
                 }
             }
         },
-        stackEnd = { stack ->
+        stackEnd = {
             stage.log(Logger.Level.VERBOSE, "Bleed", "stack end", "stack has ended")
         },
         stackCap = 3

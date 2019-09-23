@@ -70,7 +70,7 @@ fun Adventurer.skillAtk(
     vararg name: String
 ) = attack(mod = mod, names = *arrayOf("skill") + name, skill = true)
 
-data class Hit(
+data class Snapshot(
     val amount: Double,
     val sp: Int,
     val name: List<String>
