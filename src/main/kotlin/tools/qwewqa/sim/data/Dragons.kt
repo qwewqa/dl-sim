@@ -34,6 +34,37 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
         )
     )
 
+
+    val leviathan = Dragon(
+        name = "Leviathan",
+        element = Element.WATER,
+        str = 125,
+        abilities = listOf(
+            Abilities.strength(60.percent, Conditions.water)
+        )
+    )
+
+    val siren = Dragon(
+        name = "Siren",
+        element = Element.WATER,
+        str = 125,
+        abilities = listOf(
+            Abilities.strength(20.percent, Conditions.water),
+            Abilities.skillDamage(90.percent, Conditions.water)
+        )
+    )
+
+    val dragonyuleJeanne = Dragon(
+        name = "Dragonyule Jeanne",
+        element = Element.WATER,
+        str = 125,
+        abilities = listOf(
+            Abilities.strength(45.percent, Conditions.water),
+            Abilities.critRate(20.percent, Conditions.water)
+        )
+    )
+
+
     val vayu = Dragon(
         name = "Vayu",
         element = Element.WIND,
@@ -44,10 +75,67 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
         )
     )
 
+    val zephyr = Dragon(
+        name = "Zephyr",
+        element = Element.WIND,
+        str = 127,
+        abilities = listOf(
+            Abilities.strength(60.percent, Conditions.wind)
+        )
+    )
+
+    val longLong = Dragon(
+        name = "Long Long",
+        element = Element.WIND,
+        str = 127,
+        abilities = listOf(
+            Abilities.strength(45.percent, Conditions.wind),
+            Abilities.critDamage(55.percent, Conditions.wind)
+        )
+    )
+
+
+    val cupid = Dragon(
+        name = "Cupid",
+        element = Element.LIGHT,
+        str = 119,
+        abilities = listOf(
+            Abilities.strength(60.percent, Conditions.light)
+        )
+    )
+
+
+    val shinobi = Dragon(
+        name = "Shinobi",
+        element = Element.SHADOW,
+        str = 128,
+        abilities = listOf(
+            Abilities.strength(20.percent, Conditions.shadow),
+            Abilities.skillDamage(90.percent, Conditions.shadow)
+        )
+    )
+
+    val marishiten = Dragon(
+        name = "Marishiten",
+        element = Element.SHADOW,
+        str = 121,
+        abilities = listOf(
+            Abilities.strength(60.percent, Conditions.shadow)
+        )
+    )
+
     init {
-        this["Cerberus", "Agni", "Flame STR"] = cerberus
-        this["Sakuya", "Konohana", "Konohana Sakuya", "Flame SD"] = sakuya
-        this["Arctos", "Flame CD"] = arctos
+        this["Cerberus", "Agni", "Flame STR", "Fire STR"] = cerberus
+        this["Sakuya", "Konohana", "Konohana Sakuya", "Flame SD", "Fire SD"] = sakuya
+        this["Arctos", "Flame CD", "Fire CD"] = arctos
+        this["Siren", "Water SD"] = siren
+        this["Leviathan", "Water STR"] = leviathan
+        this["Dragonyule Jeanne", "DYJ", "DYJeanne", "DJeanne", "Water CR"] = dragonyuleJeanne
+        this["Zephyr", "Wind STR"] = zephyr
+        this["Long Long", "Wind CD"] = longLong
         this["Vayu", "Wind SD"] = vayu
+        this["Cupid", "Light STR"] = cupid
+        this["Shinobi", "Shadow SD", "Dark SD"] = shinobi
+        this["Marishiten", "Shadow STR", "Dark STR"] = marishiten
     }
 }
