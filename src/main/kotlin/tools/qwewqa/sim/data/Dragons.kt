@@ -7,7 +7,7 @@ import tools.qwewqa.sim.stage.Element
 object Dragons : CaseInsensitiveMap<Dragon>() {
     val cerberus = Dragon(
         name = "Cerberus",
-        element = Element.FLAME,
+        element = Element.Flame,
         str = 127,
         abilities = listOf(
             Abilities.strength(60.percent, Conditions.flame)
@@ -16,7 +16,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val sakuya = Dragon(
         name = "Sakuya",
-        element = Element.FLAME,
+        element = Element.Flame,
         str = 121,
         abilities = listOf(
             Abilities.strength(20.percent, Conditions.flame),
@@ -26,7 +26,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val arctos = Dragon(
         name = "Arctos",
-        element = Element.FLAME,
+        element = Element.Flame,
         str = 121,
         abilities = listOf(
             Abilities.strength(45.percent, Conditions.flame),
@@ -37,7 +37,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val leviathan = Dragon(
         name = "Leviathan",
-        element = Element.WATER,
+        element = Element.Water,
         str = 125,
         abilities = listOf(
             Abilities.strength(60.percent, Conditions.water)
@@ -46,7 +46,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val siren = Dragon(
         name = "Siren",
-        element = Element.WATER,
+        element = Element.Water,
         str = 125,
         abilities = listOf(
             Abilities.strength(20.percent, Conditions.water),
@@ -56,7 +56,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val dragonyuleJeanne = Dragon(
         name = "Dragonyule Jeanne",
-        element = Element.WATER,
+        element = Element.Water,
         str = 125,
         abilities = listOf(
             Abilities.strength(45.percent, Conditions.water),
@@ -67,7 +67,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val vayu = Dragon(
         name = "Vayu",
-        element = Element.WIND,
+        element = Element.Wind,
         str = 127,
         abilities = listOf(
             Abilities.strength(20.percent, Conditions.wind),
@@ -77,7 +77,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val zephyr = Dragon(
         name = "Zephyr",
-        element = Element.WIND,
+        element = Element.Wind,
         str = 127,
         abilities = listOf(
             Abilities.strength(60.percent, Conditions.wind)
@@ -86,7 +86,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val longLong = Dragon(
         name = "Long Long",
-        element = Element.WIND,
+        element = Element.Wind,
         str = 127,
         abilities = listOf(
             Abilities.strength(45.percent, Conditions.wind),
@@ -97,7 +97,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val cupid = Dragon(
         name = "Cupid",
-        element = Element.LIGHT,
+        element = Element.Light,
         str = 119,
         abilities = listOf(
             Abilities.strength(60.percent, Conditions.light)
@@ -107,7 +107,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val shinobi = Dragon(
         name = "Shinobi",
-        element = Element.SHADOW,
+        element = Element.Shadow,
         str = 128,
         abilities = listOf(
             Abilities.strength(20.percent, Conditions.shadow),
@@ -117,7 +117,7 @@ object Dragons : CaseInsensitiveMap<Dragon>() {
 
     val marishiten = Dragon(
         name = "Marishiten",
-        element = Element.SHADOW,
+        element = Element.Shadow,
         str = 121,
         abilities = listOf(
             Abilities.strength(60.percent, Conditions.shadow)

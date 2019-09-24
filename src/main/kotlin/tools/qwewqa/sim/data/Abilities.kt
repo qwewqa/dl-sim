@@ -35,7 +35,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
             val vorig = min(orig, cap)
             val vnew = min(new, cap)
             stats[stat].passive += vnew - vorig
-            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) on")
+            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) on")
             if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability capped at $vnew")
         },
         onStop = { value, stack ->
@@ -45,7 +45,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
             val vorig = min(orig, cap)
             val vnew = min(new, cap)
             stats[stat].passive += vnew - vorig
-            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) off")
+            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) off")
             if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability capped at $vnew")
         }
     )

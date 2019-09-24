@@ -11,23 +11,26 @@ class Enemy(val stage: Stage) : Listenable {
     var name: String = "Enemy"
     val stats = StatMap()
     val timeline = stage.timeline
-    var element = Element.NEUTRAL
+    var element = Element.Weak
 
     fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
     fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category, message)
 
-    var hp: Int = -1
-        set(value) {
-            field = value
-            useHp = true
-        }
+    var hp: Int? = null
+    var toOd: Int? = null
+    var toBreak: Int? = null
+    var breakDuration = 10.0
+    var odDef = 1.0
+    var breakDef = 0.6
+    var gauge = 0
+    var phase = Phase.Normal
+    val odRemaining = if (phase == Phase.Overdrive) toBreak?.minus(gauge) ?: Int.MAX_VALUE else Int.MAX_VALUE
+
     var def: Double by stats["def"]::base.newModifier()
 
     var debuffCount = 0
 
-    var useHp = false
-
-    var totalDamage = 1
+    var totalDamage = 0
         private set
 
     val dps get() = totalDamage / stage.timeline.time
@@ -41,16 +44,46 @@ class Enemy(val stage: Stage) : Listenable {
         totalDamage += actual
         damageSlices.get(snapshot.name) += hitDamage
         listeners.raise("dmg")
-        if (useHp) {
-            hp -= actual
-            if (hp <= 0) {
+        hp?.let {
+            hp = it - actual
+            if (it <= 0) {
                 stage.end()
             }
+        }
+        when (phase) {
+            Phase.Normal -> toOd?.let {
+                gauge += actual
+                if (gauge > it) {
+                    gauge = 0
+                    phase = Phase.Overdrive
+                    def *= odDef
+                    log("phase", "od")
+                }
+                listeners.raise("phase")
+            }
+            Phase.Overdrive -> toBreak?.let {
+                gauge += floor(actual * snapshot.od).toInt()
+                if (gauge > it) {
+                    phase = Phase.Break
+                    def /= odDef
+                    def *= breakDef
+                    gauge = 0
+                    log("phase", "break")
+                    listeners.raise("phase")
+                    timeline.schedule(breakDuration) {
+                        def /= breakDef
+                        phase = Phase.Normal
+                        log("phase", "normal")
+                        listeners.raise("phase")
+                    }
+                }
+            }
+            else -> {}
         }
         return actual
     }
 }
 
-fun Stage.defaultEnemy() = Enemy(this).apply {
-    def = 10.0
+enum class Phase {
+    Normal, Overdrive, Break
 }

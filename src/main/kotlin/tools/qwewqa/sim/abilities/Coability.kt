@@ -12,8 +12,10 @@ class Coability(
 ) {
     fun initialize(adventurer: Adventurer) {
         adventurer.stage.adventurers.forEach {
-            it.stats[type].coability = max(it.stats[type].coability, value)
-            it.log(Logger.Level.VERBOSE, "coability", "${type.names[0]} coability [$value] activated")
+            if (value > it.stats[type].coability) {
+                it.stats[type].coability = value
+                it.log(Logger.Level.VERBOSE, "coability", "${type.names[0]} coability [$value] set")
+            }
         }
     }
 }

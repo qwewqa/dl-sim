@@ -6,7 +6,7 @@ import tools.qwewqa.sim.stage.Element
 
 data class Dragon(
     val name: String,
-    val element: Element = Element.NEUTRAL,
+    val element: Element = Element.Neutral,
     val str: Int,
     val abilities: List<AbilityBehavior<*, *>.AbilityInstance> = emptyList()
 ) : BaseEquip() {

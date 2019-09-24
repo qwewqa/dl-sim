@@ -10,9 +10,13 @@ import tools.qwewqa.sim.stage.Logger
 /**
  * Contains the behavior of an ability. Instantiated on the first use of the ability on an adventurer
  *
+ * @param T type stored in an instance
+ * @param U type for stack data
  * @property name the name of this ability for display
- * @property onStart ran when this ability is first created
- * @property onChange ran when the value changes
+ * @property initialValue the initial value of stack data
+ * @property onStart ran whenever an instance becomes active
+ * @property onStop ran whenever an instance stops being active
+ * @property stackStart ran when it first becomes active
  */
 data class AbilityBehavior<T, U>(
     val name: String,

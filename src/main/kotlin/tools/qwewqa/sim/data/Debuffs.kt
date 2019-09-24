@@ -3,24 +3,36 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.*
+import kotlin.math.min
 
 object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
-    fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) = DebuffBehavior<Double, CappedModifier>(
+    fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) = DebuffBehavior<Double, Double>(
         name = name,
-        initialValue = { stats[stat]::buff.newCappedModifier(valueCap, invert = true) },
+        initialValue = { 0.0 },
         onStart = { duration, value, stack ->
-            var target: Double by stack.value
-            target = target + value
-            log(Logger.Level.VERBOSER, "debuff", "started: $name debuff value $value for $duration")
+            debuffCount++
+            val orig = stack.value
+            stack.value += value
+            val new = stack.value
+            val vorig = min(orig, valueCap)
+            val vnew = min(new, valueCap)
+            stats[stat].passive -= vnew - vorig
+            log(Logger.Level.VERBOSER, "debuff", "$name debuff with value $value on for $duration")
         },
         onEnd = { duration, value, stack ->
-            var target: Double by stack.value
-            target = target - value
-            log(Logger.Level.VERBOSER, "debuff", "ended: $name debuff value $value for $duration")
+            debuffCount--
+            val orig = stack.value
+            stack.value -= value
+            val new = stack.value
+            val vorig = min(orig, valueCap)
+            val vnew = min(new, valueCap)
+            stats[stat].passive -= vnew - vorig
+            log(Logger.Level.VERBOSER, "debuff", "$name debuff with value $value off after $duration")
         }
     )
 
     val def = statDebuff("def", Stat.DEF)
+    val str = statDebuff("str", Stat.STR)
 
     val bleed = DebuffBehavior<Snapshot, MutableList<Snapshot>>(
         name = "bleed",
@@ -53,6 +65,7 @@ object Debuffs : CaseInsensitiveMap<DebuffBehavior<*, *>>() {
 
     init {
         this["def", "defense"] = def
+        this["str", "strength"] = str
         this["bleed"] = bleed
     }
 }

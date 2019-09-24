@@ -1,7 +1,7 @@
 stage {
     adventurer {
         name = "Victor"
-        element = WIND
+        element = Wind
         str = 494
         ex = Coabilities["Str"]
         weapon = Weapons["Anemone"]
@@ -34,11 +34,6 @@ stage {
             +s3 { +"x5" }
             +fsf { +"x5" }
         }
-    }
-
-    enemy {
-        def = 10.0
-        element = WATER
     }
 
     endIn(180.0)

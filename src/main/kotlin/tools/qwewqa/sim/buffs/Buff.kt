@@ -28,7 +28,7 @@ data class BuffBehavior<T, U>(
     val onEnd: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
     val stackStart: suspend Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
     val stackEnd: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
-    val stackCap: Int = 20
+    val stackCap: Int? = null
 ) {
     /**
      * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps
@@ -83,7 +83,7 @@ data class BuffBehavior<T, U>(
     ) {
         fun apply(adventurer: Adventurer, duration: Double? = null) : Timer? {
             val stack = getStack(adventurer)
-            if (stack.count >= stackCap) return null
+            if (stackCap != null && stack.count >= stackCap) return null
             onStart(adventurer, duration, value, stack)
             stack.count++
             if (duration == null) return null

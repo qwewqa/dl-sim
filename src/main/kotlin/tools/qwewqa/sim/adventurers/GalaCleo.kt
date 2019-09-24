@@ -9,7 +9,7 @@ import tools.qwewqa.sim.extensions.*
 
 val galaCleo = AdventurerSetup {
     name = "Gala Cleo"
-    element = Element.SHADOW
+    element = Element.Shadow
     str = 489
     ex = Coabilities["Wand"]
     weapon = Weapons.shadowWand5t3
@@ -19,7 +19,6 @@ val galaCleo = AdventurerSetup {
     a1 = Abilities.magicalModification(25.percent)
     a3 = Abilities.skillPrep(100.percent)
 
-    var s1phase = 1
     s1(2814) {
         val hits = s1phase + 2
         schedule {
@@ -30,8 +29,7 @@ val galaCleo = AdventurerSetup {
                 +skillAtk(265.percent, "s1", "explosion")
             }
         }
-        s1phase++
-        if (s1phase > 3) s1phase = 1
+        shiftS1()
         wait(1.45)
     }
 

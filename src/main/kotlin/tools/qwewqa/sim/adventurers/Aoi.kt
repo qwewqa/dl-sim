@@ -12,7 +12,7 @@ import tools.qwewqa.sim.extensions.*
 
 val aoi = AdventurerSetup {
     name = "Aoi"
-    element = Element.FLAME
+    element = Element.Flame
     str = 494
     ex = Coabilities["Str"]
     weapon = Weapons["Heaven's Acuity"]

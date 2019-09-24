@@ -3,24 +3,18 @@ package tools.qwewqa.sim.stage
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import tools.qwewqa.sim.abilities.AbilityBehavior
-import tools.qwewqa.sim.abilities.Coability
-import tools.qwewqa.sim.abilities.Condition
 import tools.qwewqa.sim.adventurers.AdventurerSetup
-import tools.qwewqa.sim.buffs.BuffBehavior
-import tools.qwewqa.sim.buffs.DebuffBehavior
 import tools.qwewqa.sim.core.Timeline
-import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.equip.Dragon
-import tools.qwewqa.sim.equip.Weapon
-import tools.qwewqa.sim.equip.Wyrmprint
 
 class Stage {
     private var started = false
     val timeline = Timeline()
     val logger = Logger(this)
     val adventurers = mutableListOf<Adventurer>()
-    var enemy = defaultEnemy()
+    var enemy = Enemy(this).apply {
+        def = 10.0
+        element = Element.Weak
+    }
     var onEnd: Stage.() -> Unit = {}
 
     val log = logger::log

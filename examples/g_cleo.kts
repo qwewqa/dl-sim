@@ -6,10 +6,5 @@ stage {
         }
     }
 
-    enemy {
-        def = 10.0
-        element = Element.LIGHT
-    }
-
     endIn(180.0)
 }

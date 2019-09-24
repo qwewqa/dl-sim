@@ -9,7 +9,7 @@ import tools.qwewqa.sim.wep.WeaponType
 
 data class Weapon(
     val name: String,
-    val element: Element = Element.NEUTRAL,
+    val element: Element = Element.Neutral,
     val str: Int,
     val skill: Move = noMove(),
     val type: WeaponType,
@@ -20,6 +20,6 @@ data class Weapon(
         adventurer.stats["str"].base += str * if(element == adventurer.element) 1.5 else 1.0
         check(adventurer.weaponType == null || adventurer.weaponType == type)
         adventurer.weaponType = type
-        if (element == Element.NEUTRAL || element == adventurer.element) adventurer.s3 = skill
+        if (element == Element.Neutral || element == adventurer.element) adventurer.s3 = skill
     }
 }

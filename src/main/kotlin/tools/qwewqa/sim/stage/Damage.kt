@@ -73,6 +73,7 @@ fun Adventurer.skillAtk(
 data class Snapshot(
     val amount: Double,
     val sp: Int,
+    val od: Double,
     val name: List<String>
 )
 

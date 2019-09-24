@@ -9,7 +9,7 @@ import tools.qwewqa.sim.extensions.*
 
 val victor = AdventurerSetup {
     name = "Victor"
-    element = Element.WIND
+    element = Element.Wind
     str = 494
     ex = Coabilities["Str"]
     weapon = Weapons["Anemone"]

@@ -1,7 +1,7 @@
 stage {
     adventurer {
         name = "Serena"
-        element = FLAME
+        element = Flame
         str = 443
         ex = Coabilities["Sword"]
         weapon = Weapons["Levatein"]
@@ -37,9 +37,9 @@ stage {
     }
 
     enemy {
+        hp = 700_000
         def = 10.0
-        element = WIND
+        toOd = 95_000
+        toBreak = 250_000
     }
-
-    endIn(180.0)
 }

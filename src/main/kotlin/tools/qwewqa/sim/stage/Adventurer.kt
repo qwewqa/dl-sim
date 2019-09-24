@@ -22,7 +22,7 @@ import kotlin.random.Random
 
 class Adventurer(val stage: Stage) : Listenable {
     var name: String = "unnamed"
-    var element = Element.NEUTRAL
+    var element = Element.Neutral
     var str: Int = 0
     var s1: Move? = null
     var s2: Move? = null
@@ -125,7 +125,8 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun Attack.apply() = this.snapshot().apply()
 
-    fun Attack.snapshot() = Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), name = name)
+    // snapshots damage based on current stats including crit but not damage variance
+    fun Attack.snapshot() = Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = this.od,name = name)
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
@@ -195,6 +196,9 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     val BuffBehavior<*, *>.on get() = this.getStack(this@Adventurer).on
+    var <T> BuffBehavior<*, T>.value: T
+        get() = this.getStack(this@Adventurer).value
+        set(value) { this.getStack(this@Adventurer).value = value }
 
     fun DebuffBehavior<*, *>.DebuffInstance.apply() = this.apply(enemy)
     fun DebuffBehavior<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
@@ -265,32 +269,34 @@ class Adventurer(val stage: Stage) : Listenable {
 }
 
 enum class Element {
-    NEUTRAL,
-    FLAME,
-    WATER,
-    WIND,
-    LIGHT,
-    SHADOW;
+    Neutral,
+    Flame,
+    Water,
+    Wind,
+    Light,
+    Shadow,
+    Weak; // used for default enemy which is weak to everything
 
-    fun multiplier(other: Element) = when (this) {
-        NEUTRAL -> 1.0
-        LIGHT -> if (other == SHADOW) 1.5 else 1.0
-        SHADOW -> if (other == LIGHT) 1.5 else 1.0
-        FLAME -> when (other) {
-            WATER -> 0.5
-            WIND -> 1.5
+    fun multiplier(other: Element) = if (other == Weak) 1.5 else when (this) {
+        Neutral -> 1.0
+        Light -> if (other == Shadow) 1.5 else 1.0
+        Shadow -> if (other == Light) 1.5 else 1.0
+        Flame -> when (other) {
+            Water -> 0.5
+            Wind -> 1.5
             else -> 1.0
         }
-        WATER -> when (other) {
-            WIND -> 0.5
-            FLAME -> 1.5
+        Water -> when (other) {
+            Wind -> 0.5
+            Flame -> 1.5
             else -> 1.0
         }
-        WIND -> when (other) {
-            FLAME -> 0.5
-            WATER -> 1.5
+        Wind -> when (other) {
+            Flame -> 0.5
+            Water -> 1.5
             else -> 1.0
         }
+        Weak -> 0.5
     }
 }
 

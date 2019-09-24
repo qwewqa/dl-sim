@@ -1,7 +1,7 @@
 stage {
     adventurer {
         name = "Aoi"
-        element = FLAME
+        element = Flame
         str = 494
         ex = Coabilities["Str"]
         weapon = Weapons["Heaven's Acuity"]
@@ -24,11 +24,6 @@ stage {
             +s3 { +"x5" }
             +fsf { +"x5" }
         }
-    }
-
-    enemy {
-        def = 10.0
-        element = WIND
     }
 
     endIn(180.0)
