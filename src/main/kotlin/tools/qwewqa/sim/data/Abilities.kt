@@ -4,6 +4,7 @@ import tools.qwewqa.sim.abilities.AbilityBehavior
 import tools.qwewqa.sim.buffs.BuffBehavior
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.extensions.frames
+import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.Move
@@ -102,34 +103,37 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
         }
     )
 
-    data class MagicalModificationData(var value: Double, val defaultFs: Move?)
-    val magicalModification = AbilityBehavior<Double, MagicalModificationData>(
+    val magicalModification = AbilityBehavior<Double, Double>(
         name = "Magical Modification",
-        initialValue = { MagicalModificationData(0.0, fs) },
+        initialValue = { 0.0 },
         stackStart = { stack ->
             listen("post-s1") { _ ->
-                Buffs.magicalModification(stack.value.value).selfBuff()
-                fs = forcestrike {
+                Buffs.magicalModification(stack.value).selfBuff()
+                fs = (fs ?: noMove).copy(action = {
                     val buff = Buffs.magicalModification.getStack(this)
-                    when (trigger) {
-                        "x5" -> wait(57.frames)
-                        else -> wait(43.frames)
+                    if (buff.on) {
+                        when (trigger) {
+                            "x5" -> wait(57.frames)
+                            else -> wait(43.frames)
+                        }
+                        stage.adventurers.forEach { adv ->
+                            Buffs.str(buff.value).apply(adv, 10.0)
+                        }
+                        buff.clear()
+                        think("fs")
+                        wait(67.frames)
+                    } else {
+                        fs?.action?.invoke(this)
                     }
-                    stage.adventurers.forEach { adv ->
-                        Buffs.str(buff.value).apply(adv, 10.0)
-                    }
-                    buff.clear()
-                    think("fs")
-                    wait(67.frames)
-                    fs = stack.value.defaultFs
                 }
+                )
             }
         },
         onStart = { value, stack ->
-            stack.value.value += value
+            stack.value += value
         },
         onStop = { value, stack ->
-            stack.value.value -= value
+            stack.value -= value
         }
     )
 

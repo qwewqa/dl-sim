@@ -6,7 +6,6 @@ import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.data.Abilities
 import tools.qwewqa.sim.stage.Move
-import tools.qwewqa.sim.stage.move
 
 open class WeaponType(
     val name: String,
@@ -23,26 +22,26 @@ open class WeaponType(
     }
 }
 
-val genericDodge = move {
-    name = "dodge"
-    condition { !skillLock }
-    action { wait(43.frames) }
-}
+val genericDodge = Move(
+    name = "dodge",
+    condition = { !skillLock },
+    action = { wait(43.frames) }
+)
 
-fun forcestrike(action: Action) = move {
-    name = "fs"
-    condition { !skillLock }
-    this.action = action
-}
+fun forcestrike(action: Action) = Move(
+    name = "fs",
+    condition = { !skillLock },
+    action = action
+)
 
-fun combo(action: Action) = move {
-    name = "combo"
-    condition { doing == "idle" }
-    this.action = action
-}
+fun combo(action: Action) = Move(
+    name = "combo",
+    condition = { doing == "idle" },
+    action = action
+)
 
-fun fsf(duration: Double) = move {
-    name = "fsf"
-    condition { !skillLock }
-    action { wait(duration) }
-}
+fun fsf(duration: Double) = Move(
+    name = "fsf",
+    condition = { !skillLock },
+    action = { wait(duration) }
+)

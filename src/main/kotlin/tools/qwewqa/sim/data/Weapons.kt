@@ -9,7 +9,7 @@ import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.wep.*
 
 object Weapons : CaseInsensitiveMap<Weapon>() {
-    val blade0 = Weapon("Blade", Element.Neutral, 0, noMove(), blade, emptyList())
+    val blade0 = Weapon("Blade", Element.Neutral, 0, noMove, blade, emptyList())
     val blade5b1 = blade0.copy(
         str = 572,
         skill = skill("s3", 8030) {
@@ -23,7 +23,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
     val flameBlade5t3 = blade5b1.copy(name = "Heaven's Acuity", element = Element.Flame)
     val windBlade5t3 = blade5b1.copy(name = "Anemone", element = Element.Wind)
 
-    val sword0 = Weapon("Sword", Element.Neutral, 0, noMove(), sword, emptyList())
+    val sword0 = Weapon("Sword", Element.Neutral, 0, noMove, sword, emptyList())
     val sword5b1 = sword0.copy(
         str = 556,
         skill = skill("s3", 6847) {
@@ -38,7 +38,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
     )
     val flameSword5t3 = sword5b1.copy(name = "Levatein", element = Element.Flame)
 
-    val bow0 = Weapon("Bow", Element.Neutral, 0, noMove(), bow, emptyList())
+    val bow0 = Weapon("Bow", Element.Neutral, 0, noMove, bow, emptyList())
     val bow5b1 = bow0.copy(
         str = 518,
         skill = skill("s3", 7316) {
@@ -49,7 +49,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
     )
     val windBow5t3 = bow5b1.copy(name = "Stellar Pegasus", element = Element.Wind)
 
-    val wand0 = Weapon("Wand", Element.Neutral, 0, noMove(), wand, emptyList())
+    val wand0 = Weapon("Wand", Element.Neutral, 0, noMove, wand, emptyList())
     val wand5b1 = wand0.copy(
         str = 528,
         skill = skill("s3", 12668) {

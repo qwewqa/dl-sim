@@ -54,7 +54,7 @@ private val combo = combo {
     wait(40.frames)
 }
 
-private val fsf = noMove()
+private val fsf = noMove
 
 val dagger = WeaponType(
     name = "dagger",

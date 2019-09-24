@@ -167,7 +167,7 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     fun BaseEquip?.init() = this?.initialize(this@Adventurer)
-    fun Move?.init() = this?.initialize(this@Adventurer)
+    fun Move?.init() = this?.prerun?.invoke(this@Adventurer)
     fun AbilityBehavior<*, *>.AbilityInstance?.init() = this?.initialize(this@Adventurer)
     fun Coability?.init() = this?.initialize(this@Adventurer)
 
@@ -261,7 +261,7 @@ class Adventurer(val stage: Stage) : Listenable {
             charges[name] = 0
         }
 
-        fun register(name: String, max: Int) {
+        fun setCost(name: String, max: Int) {
             charges[name] = 0
             maximums[name] = max
         }

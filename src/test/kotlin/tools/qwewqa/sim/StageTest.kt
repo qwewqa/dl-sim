@@ -4,12 +4,12 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import tools.qwewqa.sim.extensions.*
-import tools.qwewqa.sim.stage.move
+import tools.qwewqa.sim.stage.Move
 import tools.qwewqa.sim.stage.stage
 import tools.qwewqa.sim.wep.WeaponType
 
 internal class StageTest {
-    private fun noWeapon() = WeaponType("unknown", noMove(), noMove(), noMove())
+    private fun noWeapon() = WeaponType("unknown", noMove, noMove, noMove)
 
     @Test
     fun `Simple Move`() = runBlocking {
@@ -19,13 +19,13 @@ internal class StageTest {
                 weaponType = noWeapon()
 
                 acl {
-                    +move {
-                        action {
+                    +Move(
+                        action = {
                             assertEquals(0.0, timeline.time)
                             run = true
                             stage.end()
                         }
-                    }
+                    )
                 }
             }
         }
@@ -39,13 +39,13 @@ internal class StageTest {
             adventurer {
                 weaponType = noWeapon()
 
-                val skill = move {
-                    condition { time < 10.0 }
-                    action {
+                val skill = Move(
+                    condition = { time < 10.0 },
+                    action = {
                         runs++
                         wait(1.0)
                     }
-                }
+                )
                 logic = { skill }
             }
 
@@ -69,14 +69,14 @@ internal class StageTest {
                     runs++
                 }
                 acl {
-                    +move {
-                        action {
+                    +Move(
+                        action = {
                             assertEquals(0.0, time)
                             assertEquals(1, runs)
                             runs++
                             stage.end()
                         }
-                    }
+                    )
                 }
             }
         }
@@ -91,24 +91,24 @@ internal class StageTest {
             adventurer {
                 weaponType = noWeapon()
 
-                val foo = move {
-                    condition { trigger == "idle" }
-                    action {
+                val foo = Move(
+                    condition = { trigger == "idle" },
+                    action = {
                         assertEquals(false, didFoo)
                         assertEquals(false, didBar)
                         didFoo = true
                         think("foo")
                     }
-                }
-                val bar = move {
-                    condition { trigger == "foo" }
-                    action {
+                )
+                val bar = Move(
+                    condition = { trigger == "foo" },
+                    action = {
                         assertEquals(true, didFoo)
                         assertEquals(false, didBar)
                         didBar = true
                         end()
                     }
-                }
+                )
 
                 acl {
                     +foo

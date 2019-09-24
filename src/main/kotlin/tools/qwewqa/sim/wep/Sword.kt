@@ -39,7 +39,7 @@ private val combo = combo {
     wait(42.frames)
 }
 
-private val fsf = noMove()
+private val fsf = noMove
 
 val sword = WeaponType(
     name = "sword",

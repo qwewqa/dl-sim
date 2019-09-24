@@ -11,7 +11,7 @@ data class Weapon(
     val name: String,
     val element: Element = Element.Neutral,
     val str: Int,
-    val skill: Move = noMove(),
+    val skill: Move = noMove,
     val type: WeaponType,
     val abilities: List<AbilityBehavior<*, *>.AbilityInstance> = emptyList()
 ) : BaseEquip() {
