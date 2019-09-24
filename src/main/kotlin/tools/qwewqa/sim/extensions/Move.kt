@@ -47,6 +47,7 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
 }
 
 fun noMove() = move { condition { false } }
+val cancel = move {}
 
 fun Adventurer.s1(cost: Int, name: String = "s1", includeUILatency: Boolean = true, action: Action) { s1 = skill(name, cost, includeUILatency, action) }
 fun Adventurer.s2(cost: Int, name: String = "s2", includeUILatency: Boolean = true, action: Action) { s2 = skill(name, cost, includeUILatency, action) }

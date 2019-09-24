@@ -8,7 +8,7 @@ import tools.qwewqa.sim.data.Abilities
 import tools.qwewqa.sim.stage.Move
 import tools.qwewqa.sim.stage.move
 
-data class WeaponType(
+open class WeaponType(
     val name: String,
     val x: Move,
     val fs: Move,
