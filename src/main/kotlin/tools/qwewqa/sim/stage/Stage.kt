@@ -33,7 +33,7 @@ class Stage {
     }
 
     operator fun AdventurerSetup.invoke() = Adventurer(this@Stage).apply(init).also { adventurers += it }
-    operator fun AdventurerSetup.invoke(init2: Adventurer.() -> Unit) = Adventurer(this@Stage).apply(init).apply(init2).also { adventurers += it }
+    inline operator fun AdventurerSetup.invoke(init2: Adventurer.() -> Unit) = Adventurer(this@Stage).apply(init).apply(init2).also { adventurers += it }
 
     suspend fun awaitResults(): StageResults {
         if (!started) run()
@@ -45,11 +45,11 @@ class Stage {
     }
 }
 
-fun stage(
+inline fun stage(
     mass: Int = 2500,
     logLevel: Logger.Level = Logger.Level.VERBOSER,
     yaml: Boolean = false,
-    init: Stage.() -> Unit
+    crossinline init: Stage.() -> Unit
 ) = runBlocking {
     val slices = DamageSliceLists("Damage")
     if (mass > 1) (1..mass).map {

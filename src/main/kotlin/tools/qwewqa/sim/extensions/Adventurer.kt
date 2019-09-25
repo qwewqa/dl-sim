@@ -53,7 +53,7 @@ class AclSelector(val adventurer: Adventurer) {
     operator fun String.unaryMinus() = !+this
 }
 
-fun Adventurer.acl(implicitX: Boolean = true, init: AclSelector.() -> Unit) {
+inline fun Adventurer.acl(implicitX: Boolean = true, crossinline init: AclSelector.() -> Unit) {
     logic = {
         AclSelector(this).apply {
             init()
@@ -147,7 +147,7 @@ class Rotation(val adventurer: Adventurer) {
 
 data class RotationData(val name: String, val trigger: String = "idle")
 
-fun Adventurer.rotation(init: Rotation.() -> Unit) {
+inline fun Adventurer.rotation(init: Rotation.() -> Unit) {
     val rotation = Rotation(this).also(init)
     logic = {
         rotation.next(trigger)

@@ -31,7 +31,6 @@ class Adventurer(val stage: Stage) : Listenable {
     var a1: AbilityBehavior<*, *>.AbilityInstance? = null
     var a2: AbilityBehavior<*, *>.AbilityInstance? = null
     var a3: AbilityBehavior<*, *>.AbilityInstance? = null
-    var x: Move? = null
     var fs: Move? = null
     var fsf: Move? = null
     var dodge: Move? = genericDodge
@@ -41,6 +40,23 @@ class Adventurer(val stage: Stage) : Listenable {
     var weaponType: WeaponType? = null
     val timeline get() = stage.timeline
     val enemy get() = stage.enemy
+
+    var x1: Action = {}
+    var x2: Action = {}
+    var x3: Action = {}
+    var x4: Action = {}
+    var x5: Action = {}
+    var x = Move(
+        name = "c5",
+        condition = { doing == "idle" },
+        action = {
+            x1()
+            x2()
+            x3()
+            x4()
+            x5()
+        }
+    )
 
     suspend fun wait(time: Double) = timeline.wait(time / stats[ATTACK_SPEED].value)
 
@@ -148,9 +164,9 @@ class Adventurer(val stage: Stage) : Listenable {
         stats["str"].base = str.toDouble()
         weapon.init()
         weaponType.init()
-        x.init()
         fsf.init()
         fs.init()
+        x.init()
         dodge.init()
         s1.init()
         s2.init()
@@ -172,8 +188,7 @@ class Adventurer(val stage: Stage) : Listenable {
     fun Coability?.init() = this?.initialize(this@Adventurer)
 
     fun WeaponType?.init() {
-        check(this != null) { "no weapon type specified" }
-        this.initialize(this@Adventurer)
+        this?.initialize(this@Adventurer)
     }
 
     fun BuffBehavior<*, *>.BuffInstance.selfBuff() {

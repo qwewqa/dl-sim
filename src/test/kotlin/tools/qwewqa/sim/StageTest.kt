@@ -9,15 +9,11 @@ import tools.qwewqa.sim.stage.stage
 import tools.qwewqa.sim.wep.WeaponType
 
 internal class StageTest {
-    private fun noWeapon() = WeaponType("unknown", noMove, noMove, noMove)
-
     @Test
     fun `Simple Move`() = runBlocking {
         var run = false
         stage {
             adventurer {
-                weaponType = noWeapon()
-
                 acl {
                     +Move(
                         action = {
@@ -37,8 +33,6 @@ internal class StageTest {
         var runs = 0
         stage {
             adventurer {
-                weaponType = noWeapon()
-
                 val skill = Move(
                     condition = { time < 10.0 },
                     action = {
@@ -61,8 +55,6 @@ internal class StageTest {
         var runs = 0
         stage {
             adventurer {
-                weaponType = noWeapon()
-
                 prerun {
                     assertEquals(0.0, time)
                     assertEquals(0, runs)
@@ -89,8 +81,6 @@ internal class StageTest {
         var didBar = false
         stage {
             adventurer {
-                weaponType = noWeapon()
-
                 val foo = Move(
                     condition = { trigger == "idle" },
                     action = {
