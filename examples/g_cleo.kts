@@ -1,5 +1,5 @@
 stage {
-    galaCleo {
+    Adventurers["G!Cleo"] {
         rotation {
             init = "s2 s1 c5 c4fs s1"
             loop = "c5 c4fs s1 c5 s2 c5fs s1"

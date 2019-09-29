@@ -28,7 +28,7 @@ fun Adventurer.doFsAtk(
     vararg name: String
 ) {
     val n = name.joinToString("-")
-    think("pre-$n")
+    listeners.raise("pre-$n")
     +attack(mod = mod, od = od, sp = sp, names = *name, fs = true)
     think(n)
 }
@@ -50,7 +50,7 @@ fun Adventurer.doAutoAtk(
     vararg name: String
 ) {
     val n = name.joinToString("-")
-    think("pre-$n")
+    listeners.raise("pre-$n")
     +attack(mod = mod, sp = sp, names = *arrayOf("attack") + name)
     think(n)
 }
@@ -60,7 +60,7 @@ fun Adventurer.doAutoAtk(
     vararg name: String
 ) {
     val n = name.joinToString("-")
-    think("pre-$n")
+    listeners.raise("pre-$n")
     +attack(mod = mod, names = *arrayOf("attack") + name)
     think(n)
 }

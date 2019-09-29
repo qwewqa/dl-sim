@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.stage
 
-import tools.qwewqa.sim.buffs.DebuffBehavior
+import tools.qwewqa.sim.buffs.Debuff
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import kotlin.math.floor
@@ -35,7 +35,7 @@ class Enemy(val stage: Stage) : Listenable {
 
     val dps get() = totalDamage / stage.timeline.time
 
-    val debuffStacks = mutableMapOf<DebuffBehavior<*, *>, DebuffBehavior<*, *>.Stack>()
+    val debuffStacks = mutableMapOf<Debuff<*, *>, Debuff<*, *>.Stack>()
     val damageSlices = DamageSlice("Damage")
 
     fun damage(snapshot: Snapshot): Int {

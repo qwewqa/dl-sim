@@ -154,10 +154,5 @@ inline fun Adventurer.rotation(init: Rotation.() -> Unit) {
     }
 }
 
-val Adventurer.s1phase get() = Buffs.s1SkillShift.getStack(this).value
-fun Adventurer.shiftS1() { Buffs.s1SkillShift(1).apply(this) }
-val Adventurer.s2phase get() = Buffs.s2SkillShift.getStack(this).value
-fun Adventurer.shiftS2() { Buffs.s2SkillShift(1).apply(this) }
-
 operator fun AdventurerCondition.plus(condition: AdventurerCondition): AdventurerCondition =
     { this@plus() && condition() }

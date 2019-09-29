@@ -4,8 +4,6 @@ package tools.qwewqa.sim.abilities
 
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.stage.Adventurer
-import tools.qwewqa.sim.data.Abilities
-import tools.qwewqa.sim.stage.Logger
 
 /**
  * Contains the behavior of an ability. Instantiated on the first use of the ability on an adventurer
@@ -18,12 +16,12 @@ import tools.qwewqa.sim.stage.Logger
  * @property onStop ran whenever an instance stops being active
  * @property stackStart ran when it first becomes active
  */
-data class AbilityBehavior<T, U>(
+data class Ability<T, U>(
     val name: String,
     val initialValue: Adventurer.() -> U,
-    val onStart: Adventurer.(value: T, stack: AbilityBehavior<T, U>.Stack) -> Unit = { _, _ -> },
-    val onStop: Adventurer.(value: T, stack: AbilityBehavior<T, U>.Stack) -> Unit = { _, _ -> },
-    val stackStart: Adventurer.(stack: AbilityBehavior<T, U>.Stack) -> Unit = {}
+    val onStart: Adventurer.(value: T, stack: Ability<T, U>.Stack) -> Unit = { _, _ -> },
+    val onStop: Adventurer.(value: T, stack: Ability<T, U>.Stack) -> Unit = { _, _ -> },
+    val stackStart: Adventurer.(stack: Ability<T, U>.Stack) -> Unit = {}
 ) {
     /**
      * An ability "stack", similar to buff stacks. Necessitated for implementation of wyrmprint caps
@@ -40,7 +38,7 @@ data class AbilityBehavior<T, U>(
      * Get the stack of this for the given [adventurer], creating a new one first if needed
      */
     fun getStack(adventurer: Adventurer) =
-        adventurer.abilityStacks[this] as AbilityBehavior<T, U>.Stack? ?: Stack(adventurer).also { adventurer.abilityStacks[this] = it }
+        adventurer.abilityStacks[this] as Ability<T, U>.Stack? ?: Stack(adventurer).also { adventurer.abilityStacks[this] = it }
 
     /**
      * Creates an [AbilityInstance] targeting this
@@ -68,7 +66,7 @@ data class AbilityBehavior<T, U>(
         val adventurer: Adventurer,
         val condition: Condition,
         val value: T,
-        val stack: AbilityBehavior<T, U>.Stack
+        val stack: Ability<T, U>.Stack
     ) {
         var active = false
             private set

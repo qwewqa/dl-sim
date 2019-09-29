@@ -29,7 +29,7 @@ val galaCleo = AdventurerSetup {
                 +skillAtk(265.percent, "s1", "explosion")
             }
         }
-        shiftS1()
+        s1phase++
         wait(1.45)
     }
 

@@ -1,19 +1,17 @@
 package tools.qwewqa.sim.data
 
-import tools.qwewqa.sim.abilities.AbilityBehavior
-import tools.qwewqa.sim.buffs.BuffBehavior
+import tools.qwewqa.sim.abilities.Ability
+import tools.qwewqa.sim.buffs.Buff
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Logger
-import tools.qwewqa.sim.stage.Move
 import tools.qwewqa.sim.stage.Stat
-import tools.qwewqa.sim.wep.forcestrike
 import kotlin.math.min
 
-object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
-    fun statAbility(name: String, stat: Stat) = AbilityBehavior<Double, Unit>(
+object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
+    fun statAbility(name: String, stat: Stat) = Ability<Double, Unit>(
         name = name,
         initialValue = {},
         onStart = { value, _ ->
@@ -26,7 +24,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
         }
     )
 
-    fun cappedStatAbility(name: String, stat: Stat, cap: Double) = AbilityBehavior<Double, Double>(
+    fun cappedStatAbility(name: String, stat: Stat, cap: Double) = Ability<Double, Double>(
         name = name,
         initialValue = { 0.0 },
         onStart = { value, stack ->
@@ -69,7 +67,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
     val skillHaste = statAbility("skill haste", Stat.SKILL_HASTE)
     val wpSkillHaste = cappedStatAbility("skill haste (wp)", Stat.SKILL_HASTE, 15.percent)
 
-    fun barrageAbility(name: String, buff: BuffBehavior<Double, *>, interval: Int) = AbilityBehavior<Double, Double>(
+    fun barrageAbility(name: String, buff: Buff<Double, *>, interval: Int) = Ability<Double, Double>(
         name = name,
         initialValue = { 0.0 },
         stackStart = { stack ->
@@ -95,7 +93,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
     val barrageDevastation = barrageAbility("barrage devastation", Buffs.critRate, 30)
 
 
-    val skillPrep = AbilityBehavior<Double, Unit>(
+    val skillPrep = Ability<Double, Unit>(
         name = "Skill Prep",
         initialValue = {},
         onStart = { value, _ ->
@@ -103,7 +101,7 @@ object Abilities : CaseInsensitiveMap<AbilityBehavior<*, *>>() {
         }
     )
 
-    val magicalModification = AbilityBehavior<Double, Double>(
+    val magicalModification = Ability<Double, Double>(
         name = "Magical Modification",
         initialValue = { 0.0 },
         stackStart = { stack ->

@@ -20,13 +20,13 @@ import tools.qwewqa.sim.core.getTimer
  * @property stackEnd ran when the entire stack end
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-data class DebuffBehavior<T, U>(
+data class Debuff<T, U>(
     val name: String,
     val initialValue: Enemy.() -> U,
-    val onStart: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val onEnd: Enemy.(duration: Double?, value: T, stack: DebuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val stackStart: suspend Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
-    val stackEnd: Enemy.(DebuffBehavior<T, U>.Stack) -> Unit = {},
+    val onStart: Enemy.(duration: Double?, value: T, stack: Debuff<T, U>.Stack) -> Unit = { _, _, _ -> },
+    val onEnd: Enemy.(duration: Double?, value: T, stack: Debuff<T, U>.Stack) -> Unit = { _, _, _ -> },
+    val stackStart: suspend Enemy.(Debuff<T, U>.Stack) -> Unit = {},
+    val stackEnd: Enemy.(Debuff<T, U>.Stack) -> Unit = {},
     val stackCap: Int = 20
 ) {
     /**
@@ -59,7 +59,7 @@ data class DebuffBehavior<T, U>(
      * Get the stack of this for the given [enemy], creating a new one first if needed
      */
     fun getStack(enemy: Enemy) =
-        enemy.debuffStacks[this] as DebuffBehavior<T, U>.Stack? ?: Stack(enemy).also { enemy.debuffStacks[this] = it }
+        enemy.debuffStacks[this] as Debuff<T, U>.Stack? ?: Stack(enemy).also { enemy.debuffStacks[this] = it }
 
     /**
      * Creates a [DebuffInstance] targeting this

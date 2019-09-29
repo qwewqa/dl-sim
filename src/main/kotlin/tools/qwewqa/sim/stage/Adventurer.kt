@@ -1,10 +1,10 @@
 package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.sim.abilities.AbilityBehavior
+import tools.qwewqa.sim.abilities.Ability
 import tools.qwewqa.sim.abilities.Coability
-import tools.qwewqa.sim.buffs.BuffBehavior
-import tools.qwewqa.sim.buffs.DebuffBehavior
+import tools.qwewqa.sim.buffs.Buff
+import tools.qwewqa.sim.buffs.Debuff
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -28,9 +28,9 @@ class Adventurer(val stage: Stage) : Listenable {
     var s2: Move? = null
     var s3: Move? = null
     var ex: Coability? = null
-    var a1: AbilityBehavior<*, *>.AbilityInstance? = null
-    var a2: AbilityBehavior<*, *>.AbilityInstance? = null
-    var a3: AbilityBehavior<*, *>.AbilityInstance? = null
+    var a1: Ability<*, *>.AbilityInstance? = null
+    var a2: Ability<*, *>.AbilityInstance? = null
+    var a3: Ability<*, *>.AbilityInstance? = null
     var fs: Move? = null
     var fsf: Move? = null
     var dodge: Move? = genericDodge
@@ -40,6 +40,16 @@ class Adventurer(val stage: Stage) : Listenable {
     var weaponType: WeaponType? = null
     val timeline get() = stage.timeline
     val enemy get() = stage.enemy
+
+    var s1phase = 1
+        set(value) {
+            field = if (value > 3) 1 else value
+        }
+
+    var s2phase = 1
+        set(value) {
+            field = if (value > 3) 1 else value
+        }
 
     var x1: Action = {}
     var x2: Action = {}
@@ -91,8 +101,8 @@ class Adventurer(val stage: Stage) : Listenable {
     var doing: String = "idle"
     var current: Timeline.Event? = null
 
-    val abilityStacks = mutableMapOf<AbilityBehavior<*, *>, AbilityBehavior<*, *>.Stack>()
-    val buffStacks = mutableMapOf<BuffBehavior<*, *>, BuffBehavior<*, *>.Stack>()
+    val abilityStacks = mutableMapOf<Ability<*, *>, Ability<*, *>.Stack>()
+    val buffStacks = mutableMapOf<Buff<*, *>, Buff<*, *>.Stack>()
 
     /**
      * Ran before everything else at the start of the stage run
@@ -119,6 +129,7 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     fun act(move: Move) {
+        check(move.condition(this)) { "${move.name} is not available" }
         current?.cancel()
         current = stage.timeline.schedule {
             move.action(this@Adventurer)
@@ -184,25 +195,25 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun BaseEquip?.init() = this?.initialize(this@Adventurer)
     fun Move?.init() = this?.prerun?.invoke(this@Adventurer)
-    fun AbilityBehavior<*, *>.AbilityInstance?.init() = this?.initialize(this@Adventurer)
+    fun Ability<*, *>.AbilityInstance?.init() = this?.initialize(this@Adventurer)
     fun Coability?.init() = this?.initialize(this@Adventurer)
 
     fun WeaponType?.init() {
         this?.initialize(this@Adventurer)
     }
 
-    fun BuffBehavior<*, *>.BuffInstance.selfBuff() {
+    fun Buff<*, *>.BuffInstance.selfBuff() {
         this.apply(this@Adventurer)
         log("buff", "selfbuff $name [value: $value]")
     }
 
-    fun BuffBehavior<*, *>.BuffInstance.selfBuff(duration: Double) {
+    fun Buff<*, *>.BuffInstance.selfBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         this.apply(this@Adventurer, rdur)
         log("buff", "selfbuff $name for duration $rdur [value: $value]")
     }
 
-    fun BuffBehavior<*, *>.BuffInstance.teamBuff(duration: Double) {
+    fun Buff<*, *>.BuffInstance.teamBuff(duration: Double) {
         val rdur = duration * stats[BUFF_TIME].value
         stage.adventurers.forEach {
             this.apply(it, rdur)
@@ -210,13 +221,13 @@ class Adventurer(val stage: Stage) : Listenable {
         log("buff", "teambuff $name [value: $rdur]")
     }
 
-    val BuffBehavior<*, *>.on get() = this.getStack(this@Adventurer).on
-    var <T> BuffBehavior<*, T>.value: T
+    val Buff<*, *>.on get() = this.getStack(this@Adventurer).on
+    var <T> Buff<*, T>.value: T
         get() = this.getStack(this@Adventurer).value
         set(value) { this.getStack(this@Adventurer).value = value }
 
-    fun DebuffBehavior<*, *>.DebuffInstance.apply() = this.apply(enemy)
-    fun DebuffBehavior<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
+    fun Debuff<*, *>.DebuffInstance.apply() = this.apply(enemy)
+    fun Debuff<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
 
     inner class SP {
         private val charges = mutableMapOf<String, Int>()

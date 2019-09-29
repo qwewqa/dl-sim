@@ -6,7 +6,6 @@ import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.Timer
 import tools.qwewqa.sim.core.getTimer
 import tools.qwewqa.sim.stage.Adventurer
-import kotlin.reflect.KClass
 
 /**
  * Contains the behavior of a buff
@@ -21,13 +20,13 @@ import kotlin.reflect.KClass
  * @property stackEnd ran when the entire stack end
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
-data class BuffBehavior<T, U>(
+data class Buff<T, U>(
     val name: String,
     val initialValue: Adventurer.() -> U,
-    val onStart: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val onEnd: Adventurer.(duration: Double?, value: T, stack: BuffBehavior<T, U>.Stack) -> Unit = { _, _, _ -> },
-    val stackStart: suspend Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
-    val stackEnd: Adventurer.(BuffBehavior<T, U>.Stack) -> Unit = {},
+    val onStart: Adventurer.(duration: Double?, value: T, stack: Buff<T, U>.Stack) -> Unit = { _, _, _ -> },
+    val onEnd: Adventurer.(duration: Double?, value: T, stack: Buff<T, U>.Stack) -> Unit = { _, _, _ -> },
+    val stackStart: suspend Adventurer.(Buff<T, U>.Stack) -> Unit = {},
+    val stackEnd: Adventurer.(Buff<T, U>.Stack) -> Unit = {},
     val stackCap: Int? = null
 ) {
     /**
@@ -65,7 +64,7 @@ data class BuffBehavior<T, U>(
      * Get the stack of this for the given [adventurer], creating a new one first if needed
      */
     fun getStack(adventurer: Adventurer) =
-        adventurer.buffStacks[this] as BuffBehavior<T, U>.Stack? ?: Stack(adventurer).also { adventurer.buffStacks[this] = it }
+        adventurer.buffStacks[this] as Buff<T, U>.Stack? ?: Stack(adventurer).also { adventurer.buffStacks[this] = it }
 
     /**
      * Creates a [BuffInstance] targeting this
