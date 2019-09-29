@@ -22,11 +22,17 @@ class WeaponType(
         abilities.forEach { it.initialize(adventurer) }
         adventurer.fs = adventurer.fs ?: fs
         adventurer.fsf = adventurer.fsf ?: fsf
-        adventurer.x1 = x1
-        adventurer.x2 = x2
-        adventurer.x3 = x3
-        adventurer.x4 = x4
-        adventurer.x5 = x5
+        adventurer.x = Move(
+            name = "c5",
+            condition = { doing == "idle" },
+            action = {
+                x1()
+                x2()
+                x3()
+                x4()
+                x5()
+            }
+        )
     }
 }
 

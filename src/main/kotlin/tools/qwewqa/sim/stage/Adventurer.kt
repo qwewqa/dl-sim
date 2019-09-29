@@ -31,6 +31,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var a1: Ability<*, *>.AbilityInstance? = null
     var a2: Ability<*, *>.AbilityInstance? = null
     var a3: Ability<*, *>.AbilityInstance? = null
+    var x: Move? = null
     var fs: Move? = null
     var fsf: Move? = null
     var dodge: Move? = genericDodge
@@ -51,22 +52,7 @@ class Adventurer(val stage: Stage) : Listenable {
             field = if (value > 3) 1 else value
         }
 
-    var x1: Action = {}
-    var x2: Action = {}
-    var x3: Action = {}
-    var x4: Action = {}
-    var x5: Action = {}
-    var x = Move(
-        name = "c5",
-        condition = { doing == "idle" },
-        action = {
-            x1()
-            x2()
-            x3()
-            x4()
-            x5()
-        }
-    )
+    var altFs = 0
 
     suspend fun wait(time: Double) = timeline.wait(time / stats[ATTACK_SPEED].value)
 

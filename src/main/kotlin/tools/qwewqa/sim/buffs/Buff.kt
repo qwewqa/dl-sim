@@ -18,6 +18,7 @@ import tools.qwewqa.sim.stage.Adventurer
  * @property onEnd ran when an individual instance ends
  * @property stackStart ran when the number of stacks changes from 0 to 1. canceled when stack ends
  * @property stackEnd ran when the entire stack end
+ * @property firstStart only ran the first time the stack starts
  * @property stackCap maximum number of stacks after which further stacks will bounce
  */
 data class Buff<T, U>(
@@ -27,6 +28,7 @@ data class Buff<T, U>(
     val onEnd: Adventurer.(duration: Double?, value: T, stack: Buff<T, U>.Stack) -> Unit = { _, _, _ -> },
     val stackStart: suspend Adventurer.(Buff<T, U>.Stack) -> Unit = {},
     val stackEnd: Adventurer.(Buff<T, U>.Stack) -> Unit = {},
+    val firstStart: Adventurer.(Buff<T, U>.Stack) -> Unit = {},
     val stackCap: Int? = null
 ) {
     /**
@@ -57,6 +59,10 @@ data class Buff<T, U>(
 
         fun clear() {
             stacks.forEach { it.endNow() }
+        }
+
+        init {
+            adventurer.firstStart(this)
         }
     }
 

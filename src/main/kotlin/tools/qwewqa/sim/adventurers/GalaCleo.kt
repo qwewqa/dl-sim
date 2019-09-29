@@ -40,7 +40,7 @@ val galaCleo = AdventurerSetup {
     }
 
     acl {
-        +fs { Buffs.magicalModification.on && +"x5" }
+        +fs { altFs > 0 && +"x5" }
         +s2
         +s1
     }

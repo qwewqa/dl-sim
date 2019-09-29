@@ -106,18 +106,17 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
         initialValue = { 0.0 },
         stackStart = { stack ->
             listen("post-s1") { _ ->
-                Buffs.magicalModification(stack.value).selfBuff()
+                altFs = 1
                 fs = (fs ?: noMove).copy(action = {
-                    val buff = Buffs.magicalModification.getStack(this)
-                    if (buff.on) {
+                    if (altFs > 0) {
                         when (trigger) {
                             "x5" -> wait(57.frames)
                             else -> wait(43.frames)
                         }
                         stage.adventurers.forEach { adv ->
-                            Buffs.str(buff.value).apply(adv, 10.0)
+                            Buffs.str(stack.value).apply(adv, 10.0)
                         }
-                        buff.clear()
+                        altFs--
                         think("fs")
                         wait(67.frames)
                     } else {
