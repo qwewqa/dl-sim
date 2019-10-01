@@ -75,6 +75,24 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         )
     )
 
+    val tb = Wyrmprint(
+        name = "Twinfold Bonds",
+        str = 65,
+        abilities = listOf(
+            Abilities.wpSkillDamage(40.percent, Conditions.dagger),
+            Abilities.wpStr(15.percent, Conditions.combo15)
+        )
+    )
+
+    val lc = Wyrmprint(
+        name = "Levin's Champion",
+        str = 64,
+        abilities = listOf(
+            Abilities.wpCritRate(10.percent, Conditions.hp70),
+            Abilities.wpCritDamage(15.percent)
+        )
+    )
+
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
@@ -83,6 +101,8 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         this["FoG", "Flash of Genius"] = fog
         this["JotS", "Jewels of the Sun"] = jots
         this["BB", "Beach Battle"] = bb
-        this["HG", "Halidom Grooms"] = bb
+        this["HG", "Halidom Grooms"] = hg
+        this["TB", "TFB", "Twinfold Bonds"] = tb
+        this["LC", "Levin's Champion"] = lc
     }
 }

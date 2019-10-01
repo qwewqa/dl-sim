@@ -61,6 +61,17 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
     )
     val windBow5t3 = bow5b1.copy(name = "Stellar Pegasus", element = Element.Wind)
 
+    val dagger0 = Weapon("Dagger", Element.Neutral, 0, noMove, dagger, emptyList())
+    val dagger5b2 = dagger0.copy(
+        str = 529,
+        skill = skill("s3", 7103) {
+            wait(0.15)
+            Buffs.str(40.percent).selfBuff(5.0)
+            wait(0.9)
+        }
+    )
+    val lightDagger5t3 = dagger5b2.copy(name = "Thunderblade Sugaar", element = Element.Light)
+
     val wand0 = Weapon("Wand", Element.Neutral, 0, noMove, wand, emptyList())
     val wand5b1 = wand0.copy(
         str = 528,
@@ -76,6 +87,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
         this["flame 5t3 sword", "Levatein"] = flameSword5t3
         this["flame 5t3 lance", "Calamity Trigger"] = flameBlade5t3
         this["wind 5t3 bow", "Stellar Pegasus"] = windBow5t3
+        this["light 5t3 dagger", "Tunderblade Sugaar"] = lightDagger5t3
         this["shadow 5t3 wand", "Underworld Despair"] = shadowWand5t3
     }
 }

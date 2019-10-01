@@ -35,6 +35,11 @@ class Cooldown(
             onAvailable()
         }
     }
+
+    suspend fun makeAvailable() {
+        if (available) return
+        nextEvent?.invokeNow()
+    }
 }
 
 fun Timeline.getCooldown(interval: Double, startsAvailable: Boolean = true, onAvailable: suspend () -> Unit = {}) =

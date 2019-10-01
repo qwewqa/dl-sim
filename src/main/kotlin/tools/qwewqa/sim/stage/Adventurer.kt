@@ -1,10 +1,6 @@
 package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.sim.status.Ability
-import tools.qwewqa.sim.status.Coability
-import tools.qwewqa.sim.status.Buff
-import tools.qwewqa.sim.status.Debuff
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -14,6 +10,7 @@ import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
 import tools.qwewqa.sim.stage.Stat.*
+import tools.qwewqa.sim.status.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
@@ -216,6 +213,8 @@ class Adventurer(val stage: Stage) : Listenable {
     val Debuff<*, *>.on get() = this.getStack(enemy).on
     fun Debuff<*, *>.DebuffInstance.apply() = this.apply(enemy)
     fun Debuff<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
+
+    operator fun Condition.invoke() = condition()
 }
 
 enum class Element {

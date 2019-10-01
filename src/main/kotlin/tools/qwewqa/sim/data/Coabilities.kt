@@ -19,7 +19,7 @@ object Coabilities : CaseInsensitiveMap<Coability>() {
         this["axe", "def"] = def(15.percent)
         this["blade", "str"] = str(10.percent)
         this["bow", "haste"] = skillHaste(15.percent)
-        this["dagger", "crit"] = critRate(10.percent)
+        this["dagger", "crit", "crit rate"] = critRate(10.percent)
         this["lance", "hp"] = hp(15.percent)
         this["staff", "potency"] = healingPotency(15.percent)
         this["sword", "dragon"] = dragonHaste(10.percent)

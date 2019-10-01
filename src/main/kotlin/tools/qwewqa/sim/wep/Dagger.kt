@@ -56,7 +56,7 @@ val dagger = WeaponType(
             doFsAtk(47.percent, 8.4, "fs", "b")
             doFsAtk(47.percent, 4.2, "fs", "c")
         }
-        wait(34.frames)
+        wait(14.frames)
     },
     fsf = noMove
 )

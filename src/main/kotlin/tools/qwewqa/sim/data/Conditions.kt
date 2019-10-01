@@ -3,6 +3,7 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.status.Condition
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
+import tools.qwewqa.sim.stage.Phase
 
 object Conditions : CaseInsensitiveMap<Condition>() {
     operator fun get(vararg names: String) = names.map { this[it] }.reduce { a, v -> a + v }
@@ -17,6 +18,15 @@ object Conditions : CaseInsensitiveMap<Condition>() {
     val light = Condition("light") { element == Element.Light }
     val shadow = Condition("shadow") { element == Element.Shadow }
 
+    val axe = Condition("axe") { weaponType == tools.qwewqa.sim.wep.axe }
+    val blade = Condition("blade") { weaponType == tools.qwewqa.sim.wep.blade }
+    val bow = Condition("bow") { weaponType == tools.qwewqa.sim.wep.bow }
+    val dagger = Condition("dagger") { weaponType == tools.qwewqa.sim.wep.dagger }
+    val lance = Condition("lance") { weaponType == tools.qwewqa.sim.wep.lance }
+    val staff = Condition("staff") { weaponType == tools.qwewqa.sim.wep.staff }
+    val sword = Condition("sword") { weaponType == tools.qwewqa.sim.wep.sword }
+    val wand = Condition("wand") { weaponType == tools.qwewqa.sim.wep.wand }
+
     fun combo(count: Int) = Condition("combo $count", "combo") { combo >= count }
     val combo15 = combo(15)
     fun everyCombo(count: Int) = Condition("combo $count", "combo") { combo >= count }
@@ -24,6 +34,9 @@ object Conditions : CaseInsensitiveMap<Condition>() {
     val every20 = everyCombo(20)
     val every25 = everyCombo(25)
     val every30 = everyCombo(30)
+
+    val overdrive = Condition("overdrive") { enemy.phase == Phase.Overdrive }
+    val broken = Condition("overdrive") { enemy.phase == Phase.Break }
 
     val bleeding = Condition("bleeding", "bleeding") { Debuffs.bleed.on }
     val burning = Condition("burning", "burn-start", "burn-end") { Debuffs.burn.on }
@@ -43,11 +56,21 @@ object Conditions : CaseInsensitiveMap<Condition>() {
         this["wind"] = wind
         this["light"] = light
         this["shadow"] = shadow
+        this["axe"] = axe
+        this["blade"] = blade
+        this["bow"] = bow
+        this["dagger"] = dagger
+        this["lance"] = lance
+        this["staff"] = staff
+        this["sword"] = sword
+        this["wand"] = wand
         this["combo15", "hit15"] = combo15
         this["every15"] = every15
         this["every20"] = every20
         this["every25"] = every25
         this["every30"] = every30
+        this["overdrive", "od"] = overdrive
+        this["broken", "break", "bk"] = broken
         this["bleeding"] = bleeding
         this["burning"] = burning
         this["poisoned"] = poisoned

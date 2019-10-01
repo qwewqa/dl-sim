@@ -25,6 +25,7 @@ fun skill(name: String, cost: Int, includeUILatency: Boolean = true, action: Act
         skillLock = false
         think("post-$name")
         schedule(ui.remaining) {
+            ui.makeAvailable()
             think(name)
         }
     },

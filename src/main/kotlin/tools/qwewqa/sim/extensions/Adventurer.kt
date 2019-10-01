@@ -49,6 +49,8 @@ class AclSelector(val adventurer: Adventurer) {
 
     val cancel = adventurer.trigger in listOf("x1", "x2", "x3", "x4", "x5", "fs")
 
+    val default = +"ui" || +"idle" || cancel
+
     operator fun String.unaryPlus() = adventurer.trigger == this
     operator fun String.unaryMinus() = !+this
 }
