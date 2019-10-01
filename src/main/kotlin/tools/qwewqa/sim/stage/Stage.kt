@@ -5,6 +5,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import tools.qwewqa.sim.adventurers.AdventurerSetup
 import tools.qwewqa.sim.core.Timeline
+import tools.qwewqa.sim.extensions.plus
 
 class Stage {
     private var started = false
@@ -24,12 +25,12 @@ class Stage {
         adventurers.forEach {
             it.initialize()
         }
+        timeline.onEnd = { onEnd() }
         timeline.start()
     }
 
     fun end() {
         timeline.end()
-        onEnd()
     }
 
     operator fun AdventurerSetup.invoke() = Adventurer(this@Stage).apply(init).also { adventurers += it }
@@ -74,5 +75,5 @@ data class StageResults(val duration: Double, val slice: DamageSlice)
 
 fun Stage.endIn(time: Double) = timeline.schedule(time) { end() }
 fun Stage.onEnd(action: Stage.() -> Unit) {
-    this.onEnd = action
+    this.onEnd += action
 }

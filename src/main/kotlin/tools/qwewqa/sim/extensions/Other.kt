@@ -1,5 +1,7 @@
 package tools.qwewqa.sim.extensions
 
+import tools.qwewqa.sim.stage.Adventurer
+import tools.qwewqa.sim.stage.Stage
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -19,4 +21,9 @@ fun Collection<Number>.std(): Double {
     val d = this.map { it.toDouble() }
     val average = d.average()
     return sqrt(d.map { (average - it) * (average - it) }.average())
+}
+
+operator fun <T> (T.() -> Unit).plus(other: T.() -> Unit): T.() -> Unit = {
+    other()
+    this@plus()
 }

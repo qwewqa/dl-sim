@@ -9,7 +9,7 @@ import tools.qwewqa.sim.wep.lance
 import tools.qwewqa.sim.wep.wand
 
 fun Adventurer.prerun(prerun: Adventurer.() -> Unit) {
-    this.prerun = prerun
+    this.prerun += prerun
 }
 
 fun Stage.adventurer(init: Adventurer.() -> Unit) {

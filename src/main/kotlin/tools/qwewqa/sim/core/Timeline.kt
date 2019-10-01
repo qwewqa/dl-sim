@@ -28,12 +28,15 @@ class Timeline {
         if (active == 0) run()
     }
 
+    var onEnd: () -> Unit = {}
+
     /**
      * Stops running events and ends execution irreversibly
      */
     fun end() {
         running = false
         job.cancel()
+        onEnd()
     }
 
     suspend fun startAndJoin() {
