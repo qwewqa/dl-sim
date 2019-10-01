@@ -1,10 +1,10 @@
 package tools.qwewqa.sim.stage
 
 import kotlinx.coroutines.isActive
-import tools.qwewqa.sim.abilities.Ability
-import tools.qwewqa.sim.abilities.Coability
-import tools.qwewqa.sim.buffs.Buff
-import tools.qwewqa.sim.buffs.Debuff
+import tools.qwewqa.sim.status.Ability
+import tools.qwewqa.sim.status.Coability
+import tools.qwewqa.sim.status.Buff
+import tools.qwewqa.sim.status.Debuff
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
@@ -75,7 +75,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var buffCount = 0
     val ui = timeline.getCooldown(1.9) { think("ui") }
     var skillLock = false
-    val sp = SP()
+    val sp = SP(this)
 
     val time: Double
         get() {
@@ -208,76 +208,14 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     val Buff<*, *>.on get() = this.getStack(this@Adventurer).on
+
     var <T> Buff<*, T>.value: T
         get() = this.getStack(this@Adventurer).value
         set(value) { this.getStack(this@Adventurer).value = value }
 
+    val Debuff<*, *>.on get() = this.getStack(enemy).on
     fun Debuff<*, *>.DebuffInstance.apply() = this.apply(enemy)
     fun Debuff<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
-
-    inner class SP {
-        private val charges = mutableMapOf<String, Int>()
-        private val maximums = mutableMapOf<String, Int>()
-
-        /**
-         * Increases the sp accounting for haste on all skills
-         */
-        operator fun invoke(amount: Int, source: String = doing) {
-            log(Logger.Level.MORE, "sp", "charged $amount sp by $source")
-            charge(amount, source)
-            logCharges()
-        }
-
-        operator fun get(name: String) = charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")
-
-        fun remaining(name: String) = -this[name] + maximums[name]!!
-
-        fun ready(name: String) =
-            (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= maximums[name]!!
-
-        fun logCharges() =
-            log(Logger.Level.VERBOSE, "sp", charges.keys.map { "$it: ${charges[it]}/${maximums[it]}" }.toString())
-
-        fun charge(amount: Int, source: String = doing) {
-            charges.keys.forEach {
-                charge(amount, it, source)
-            }
-        }
-
-        fun charge(fraction: Double, source: String = doing) {
-            charges.keys.forEach {
-                charge(fraction, it, source)
-            }
-        }
-
-        fun charge(fraction: Double, name: String, source: String = doing) {
-            charge(ceil(fraction * maximums[name]!!).toInt(), name, source)
-        }
-
-        fun charge(amount: Int, name: String, source: String = doing) {
-            require(charges[name] != null) { "Unknown skill [$name]" }
-            if (charges[name] == maximums[name]) return
-            charges[name] = charges[name]!! + amount
-            if (charges[name]!! >= maximums[name]!!) {
-                charges[name] = maximums[name]!!
-                listeners.raise("$name-charged")
-            }
-            log(
-                Logger.Level.VERBOSIEST,
-                "sp",
-                "$name charged $amount sp by $source (${charges[name]}/${maximums[name]})"
-            )
-        }
-
-        fun use(name: String) {
-            charges[name] = 0
-        }
-
-        fun setCost(name: String, max: Int) {
-            charges[name] = 0
-            maximums[name] = max
-        }
-    }
 }
 
 enum class Element {

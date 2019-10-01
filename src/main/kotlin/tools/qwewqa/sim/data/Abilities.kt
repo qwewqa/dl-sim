@@ -1,7 +1,7 @@
 package tools.qwewqa.sim.data
 
-import tools.qwewqa.sim.abilities.Ability
-import tools.qwewqa.sim.buffs.Buff
+import tools.qwewqa.sim.status.Ability
+import tools.qwewqa.sim.status.Buff
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.noMove

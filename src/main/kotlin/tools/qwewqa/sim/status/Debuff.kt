@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package tools.qwewqa.sim.buffs
+package tools.qwewqa.sim.status
 
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.stage.Enemy
@@ -38,18 +38,18 @@ data class Debuff<T, U>(
 
         var count: Int = 0
             set(value) {
+                field = value
                 if (!on && value > 0) {
+                    on = true
                     startEvent = enemy.timeline.schedule {
                         enemy.stackStart(this@Stack)
                     }
-                    on = true
                 }
                 if (on && value == 0) {
+                    on = false
                     startEvent!!.cancel()
                     enemy.stackEnd(this)
-                    on = false
                 }
-                field = value
             }
 
         var value = enemy.initialValue()
@@ -83,8 +83,8 @@ data class Debuff<T, U>(
             stack.count++
             if (duration == null) return null
             val timer = enemy.timeline.getTimer {
-                stack.count--
                 onEnd(enemy, duration, value, stack)
+                stack.count--
             }
             timer.set(duration)
             return timer

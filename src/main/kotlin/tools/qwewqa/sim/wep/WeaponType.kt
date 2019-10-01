@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.wep
 
-import tools.qwewqa.sim.abilities.Ability
+import tools.qwewqa.sim.status.Ability
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Action
 import tools.qwewqa.sim.stage.Adventurer

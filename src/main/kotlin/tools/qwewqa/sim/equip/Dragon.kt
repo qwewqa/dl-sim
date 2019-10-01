@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.equip
 
-import tools.qwewqa.sim.abilities.Ability
+import tools.qwewqa.sim.status.Ability
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Element
 

@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.data
 
-import tools.qwewqa.sim.buffs.Buff
+import tools.qwewqa.sim.status.Buff
 import tools.qwewqa.sim.stage.*
 
 object Buffs : CaseInsensitiveMap<Buff<*, *>>()  {

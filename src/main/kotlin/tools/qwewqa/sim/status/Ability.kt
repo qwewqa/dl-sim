@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package tools.qwewqa.sim.abilities
+package tools.qwewqa.sim.status
 
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.stage.Adventurer

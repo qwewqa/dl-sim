@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package tools.qwewqa.sim.buffs
+package tools.qwewqa.sim.status
 
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.Timer
@@ -41,18 +41,18 @@ data class Buff<T, U>(
 
         var count: Int = 0
             set(value) {
+                field = value
                 if (!on && value > 0) {
+                    on = true
                     startEvent = adventurer.timeline.schedule {
                         adventurer.stackStart(this@Stack)
                     }
-                    on = true
                 }
                 if (on && value == 0) {
+                    on = false
                     startEvent!!.cancel()
                     adventurer.stackEnd(this)
-                    on = false
                 }
-                field = value
             }
 
         var value: U = adventurer.initialValue()
@@ -93,9 +93,9 @@ data class Buff<T, U>(
             stack.count++
             if (duration == null) return null
             val timer = adventurer.timeline.getTimer {
-                stack.count--
                 onEnd(adventurer, duration, value, stack)
                 stack.stacks -= this
+                stack.count--
             }
             timer.set(duration)
             stack.stacks += timer

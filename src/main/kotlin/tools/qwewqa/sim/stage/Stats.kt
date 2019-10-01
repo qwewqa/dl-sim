@@ -81,7 +81,15 @@ enum class Stat(val type: StatType, vararg val names: String, val default: Doubl
     STRIKING_HASTE(SINGLE_BRACKET, "striking haste", "fs haste", "fsh"),
     FORCESTRIKE_DAMAGE(FULLY_ADDITIVE, "forcestrike damage", "forcestrike", "fs", "fs dmg", default = 100.percent),
     HEALING_POTENCY(FULLY_ADDITIVE, "healing potency", "healing", "potency", default = 100.percent),
-    PUNISHER(FULLY_ADDITIVE, "punisher", "bane", "killer", "k", default = 100.percent)
+    PUNISHER(FULLY_ADDITIVE, "punisher", "bane", "killer", "k", default = 100.percent),
+    BURN_CHANCE(FULLY_ADDITIVE, "burn"),
+    PARALYSIS_CHANCE(FULLY_ADDITIVE, "paralysis"),
+    POISON_CHANCE(FULLY_ADDITIVE, "poison"),
+    BLIND_CHANCE(FULLY_ADDITIVE, "blind"),
+    BOG_CHANCE(FULLY_ADDITIVE, "bog"),
+    SLEEP_CHANCE(FULLY_ADDITIVE, "sleep"),
+    STUN_CHANCE(FULLY_ADDITIVE, "stun"),
+    FREEZE_CHANCE(FULLY_ADDITIVE, "freeze"),
 }
 
 val statNames = enumValues<Stat>().map { stat -> stat.names.map { name -> name to stat }.toMap() }.fold(emptyMap<String, Stat>()) { a, v -> a + v }.withDefault { error("Unknown stat $it") }

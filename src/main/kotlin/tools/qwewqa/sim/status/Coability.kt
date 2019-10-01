@@ -1,10 +1,9 @@
-package tools.qwewqa.sim.abilities
+package tools.qwewqa.sim.status
 
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.Stat
 import tools.qwewqa.sim.stage.statNames
-import kotlin.math.max
 
 class Coability(
     val type: Stat,

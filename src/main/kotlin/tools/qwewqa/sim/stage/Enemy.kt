@@ -1,8 +1,9 @@
 package tools.qwewqa.sim.stage
 
-import tools.qwewqa.sim.buffs.Debuff
+import tools.qwewqa.sim.status.Debuff
 import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
+import tools.qwewqa.sim.status.Afflictions
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -37,6 +38,8 @@ class Enemy(val stage: Stage) : Listenable {
 
     val debuffStacks = mutableMapOf<Debuff<*, *>, Debuff<*, *>.Stack>()
     val damageSlices = DamageSlice("Damage")
+
+    val afflictions = Afflictions()
 
     fun damage(snapshot: Snapshot): Int {
         val hitDamage = floor((0.95 * snapshot.amount + 0.1 * Random.nextDouble() * snapshot.amount))

@@ -1,8 +1,7 @@
-package tools.qwewqa.sim.abilities
+package tools.qwewqa.sim.status
 
 import tools.qwewqa.sim.extensions.plus
 import tools.qwewqa.sim.stage.AdventurerCondition
-import tools.qwewqa.sim.stage.Enemy
 
 /**
  * Contains information about a condition and necessary listeners

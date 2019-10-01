@@ -1,6 +1,6 @@
 package tools.qwewqa.sim.equip
 
-import tools.qwewqa.sim.abilities.*
+import tools.qwewqa.sim.status.*
 import tools.qwewqa.sim.stage.Adventurer
 
 data class Wyrmprint(
