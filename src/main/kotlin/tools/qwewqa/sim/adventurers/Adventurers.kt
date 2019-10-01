@@ -6,6 +6,7 @@ import tools.qwewqa.sim.stage.Adventurer
 object Adventurers : CaseInsensitiveMap<AdventurerSetup>() {
     init {
         this["aoi"] = aoi
+        this["emma"] = emma
         this["gala cleo", "g!cleo", "gleo", "gcleo", "galacleo", "powercreep", "gala best girl"] = galaCleo
         this["rena"] = rena
         this["serena"] = serena

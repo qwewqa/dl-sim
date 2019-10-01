@@ -1,5 +1,7 @@
 package tools.qwewqa.sim.data
 
+import tools.qwewqa.sim.core.Cooldown
+import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.status.Ability
 import tools.qwewqa.sim.status.Buff
 import tools.qwewqa.sim.core.listen
@@ -67,6 +69,9 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
     val skillHaste = statAbility("skill haste", Stat.SKILL_HASTE)
     val wpSkillHaste = cappedStatAbility("skill haste (wp)", Stat.SKILL_HASTE, 15.percent)
 
+    val buffTime = statAbility("buff time", Stat.BUFF_TIME)
+    val wpBuffTime = cappedStatAbility("buff time (wp)", Stat.BUFF_TIME, 30.percent)
+
     fun barrageAbility(name: String, buff: Buff<Double, *>, interval: Int) = Ability<Double, Double>(
         name = name,
         initialValue = { 0.0 },
@@ -91,6 +96,29 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
 
     val barrageObliteration = barrageAbility("barrage obliteration", Buffs.critDamage, 20)
     val barrageDevastation = barrageAbility("barrage devastation", Buffs.critRate, 30)
+
+
+    fun primedAbility(name: String, duration: Double, buff: Buff<Double, *>) = Ability<Double, Double>(
+        name = name,
+        initialValue = { 0.0 },
+        stackStart = { stack ->
+            val cd = timeline.getCooldown(15.0) { listeners.raise("primed") }
+            listen("s1-charged") {
+                cd.ifAvailable {
+                    log(Logger.Level.VERBOSER, "ability", "$name ability proc)")
+                    buff(stack.value).selfBuff(duration)
+                }
+            }
+        },
+        onStart = { value, stack ->
+            stack.value += value
+        },
+        onStop = { value, stack ->
+            stack.value -= value
+        }
+    )
+
+    val primedStr = primedAbility("primed str", 10.0, Buffs.str)
 
 
     val skillPrep = Ability<Double, Unit>(
@@ -143,11 +171,14 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
         this["crit rate (wp)", "crit-rate (wp)", "cr (wp)"] = wpCritRate
         this["crit damage", "crit-damage", "cd"] = critDamage
         this["crit damage (wp)", "crit-damage (wp)", "cd (wp)"] = wpCritDamage
+        this["buff time", "buff-time", "bt"] = buffTime
+        this["buff time (wp)", "buff-time (wp)", "bt (wp)"] = wpBuffTime
         this["punisher", "k"] = punisher
         this["punisher (wp)", "k (wp)"] = wpPunisher
         this["barrage obliteration"] = barrageObliteration
         this["barrage devastation"] = barrageDevastation
         this["skill prep", "prep"] = skillPrep
+        this["primed str"] = primedStr
         this["magical modification"] = magicalModification
     }
 }

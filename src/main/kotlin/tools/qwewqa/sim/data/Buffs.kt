@@ -10,21 +10,36 @@ object Buffs : CaseInsensitiveMap<Buff<*, *>>()  {
         onStart = { duration, value, _ ->
             stats[stat].buff += value
             buffCount++
-            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for ${duration ?: "...ever"}")
+            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for ${duration ?: "indef"}")
         },
         onEnd = { duration, value, _ ->
             stats[stat].buff -= value
             buffCount--
-            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for ${duration ?: "...ever"}")
+            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for ${duration ?: "indef"}")
         },
         stackCap = cap
     )
 
-    val str = statBuff("str", Stat.STR)
+    val str = statBuff("str", Stat.STR, 10)
     val critRate = statBuff("crit rate", Stat.CRIT_RATE)
     val critDamage = statBuff("crit damage", Stat.CRIT_DAMAGE)
     val skillHaste = statBuff("skill haste", Stat.SKILL_HASTE)
-    val def = statBuff("def", Stat.DEF)
+    val def = Buff<Double, Unit>(
+        name = "def",
+        initialValue = {},
+        onStart = { duration, value, _ ->
+            stats[Stat.DEF].buff += value
+            buffCount++
+            listeners.raise("doublebuff")
+            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for ${duration ?: "indef"}")
+        },
+        onEnd = { duration, value, _ ->
+            stats[Stat.DEF].buff -= value
+            buffCount--
+            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for ${duration ?: "indef"}")
+        },
+        stackCap = 10
+    )
 
     init {
         this["str", "strength"] = str

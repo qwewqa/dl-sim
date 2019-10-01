@@ -199,10 +199,10 @@ class Adventurer(val stage: Stage) : Listenable {
         log("buff", "selfbuff $name for duration $rdur [value: $value]")
     }
 
-    fun Buff<*, *>.BuffInstance.teamBuff(duration: Double) {
+    fun Buff<*, *>.BuffInstance.teamBuff(duration: Double, condition: AdventurerCondition = { true }) {
         val rdur = duration * stats[BUFF_TIME].value
         stage.adventurers.forEach {
-            this.apply(it, rdur)
+            if (it.condition()) this.apply(it, rdur)
         }
         log("buff", "teambuff $name [value: $rdur]")
     }
