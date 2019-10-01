@@ -68,6 +68,7 @@ inline fun stage(
             slices.add(slice, duration)
         }
     }
+    if (logLevel > Logger.Level.NONE && mass == 1) println()
     if (yaml) slices.displayYAML() else slices.display()
 }
 

@@ -5,7 +5,6 @@ class Logger(val stage: Stage) {
     enum class Level {
         NONE,
         BASIC,
-        MORE,
         VERBOSE,
         VERBOSER,
         VERBOSIEST

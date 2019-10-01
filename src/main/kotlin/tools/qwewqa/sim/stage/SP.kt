@@ -10,7 +10,7 @@ class SP(val adventurer: Adventurer) {
      * Increases the sp accounting for haste on all skills
      */
     operator fun invoke(amount: Int, source: String = adventurer.doing) {
-        adventurer.log(Logger.Level.MORE, "sp", "charged $amount sp by $source")
+        adventurer.log(Logger.Level.BASIC, "sp", "charged $amount sp by $source")
         charge(amount, source)
         logCharges()
     }

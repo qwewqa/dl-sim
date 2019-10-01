@@ -44,7 +44,7 @@ val fleur = AdventurerSetup {
     acl {
         +s2 { +"s1" }
         +s3 { +"s2" }
-        +s1 { +"idle" || cancel }
+        +s1 { default }
         +fs { +"x4" }
     }
 }

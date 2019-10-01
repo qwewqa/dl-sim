@@ -39,9 +39,12 @@ val galaCleo = AdventurerSetup {
         wait(1.45)
     }
 
-    acl {
-        +fs { altFs > 0 && +"x5" }
-        +s2
-        +s1
+    prerun {
+        if (logic == null) {
+            rotation {
+                init = "s2 s1 c5 c4fs s1"
+                loop = "c5 c4fs s1 c5 s2 c5fs s1"
+            }
+        }
     }
 }

@@ -96,7 +96,7 @@ class Adventurer(val stage: Stage) : Listenable {
      * Decides what moves to make
      * null is a noop
      */
-    var logic: Adventurer.(String) -> Move? = { null }
+    var logic: (Adventurer.(String) -> Move?)? = null
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -107,7 +107,7 @@ class Adventurer(val stage: Stage) : Listenable {
     fun think(trigger: String = "idle") {
         this.trigger = trigger
         listeners.raise(trigger)
-        val move = logic(trigger) ?: return
+        val move = logic?.invoke(this, trigger) ?: return
         act(move)
     }
 
@@ -129,7 +129,7 @@ class Adventurer(val stage: Stage) : Listenable {
     fun Snapshot.apply() {
         val actual = enemy.damage(this)
         combo++
-        log(Logger.Level.MORE, "damage", "$actual damage by ${this.name} (combo: $combo)")
+        log(Logger.Level.BASIC, "damage", "$actual damage by ${this.name} (combo: $combo)")
         if (sp != 0) this@Adventurer.sp(sp, name.toString())
     }
 
