@@ -13,7 +13,7 @@ val empiricalTeambuff = AdventurerSetup {
 
     val freq = 2
 
-    str = 6000
+    str = 100
 
     prerun {
         val mod = str / (5.0 / 3.0 * stats[Stat.STR].value / (enemy.stats[Stat.DEF].value) *
@@ -35,7 +35,7 @@ val empiricalTeambuff = AdventurerSetup {
 val teambuff = AdventurerSetup {
     name = "Teambuff"
     element = Element.Neutral
-    str = 6000
+    str = 100
 
     var total = 0.0
     var lastCount = 0.0
@@ -46,12 +46,14 @@ val teambuff = AdventurerSetup {
 
     var defaultStr = 0.0
     var defaultCrit = 0.0
+    var defaultDef = 0.0
 
-    listen("buff", "buff-end") {
+    listen("buff", "buff-end", "debuff", "debuff-end") {
         total += str * lastCount * (time - lastTime)
         val strMod = stats[Stat.STR].value / defaultStr
         val critMod = (1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value) / defaultCrit
-        lastCount = (strMod * critMod) - 1.0
+        val defMod = defaultDef / enemy.stats[Stat.DEF].value
+        lastCount = (defMod * strMod * critMod) - 1.0
         lastTime = time
         log(Logger.Level.VERBOSER, "buff", "now buffed $lastCount")
     }
@@ -59,6 +61,7 @@ val teambuff = AdventurerSetup {
     prerun {
         defaultStr = stats[Stat.STR].value
         defaultCrit = 1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value
+        defaultDef = enemy.stats[Stat.DEF].value
     }
 
     stage.onEnd {

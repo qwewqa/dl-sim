@@ -80,10 +80,12 @@ data class Debuff<T, U>(
             val stack = getStack(enemy)
             if (stack.count >= stackCap) return null
             onStart(enemy, duration, value, stack)
+            enemy.listeners.raise("debuff")
             stack.count++
             if (duration == null) return null
             val timer = enemy.timeline.getTimer {
                 onEnd(enemy, duration, value, stack)
+                enemy.listeners.raise("debuff-end")
                 stack.count--
             }
             timer.set(duration)
