@@ -45,6 +45,8 @@ object Buffs : DataMap<Buff<*, *>>()  {
 
     val dignifiedSoul = statBuff("dignified soul", Stat.STR)
 
+    val infernoMode = statBuff("inferno mode", Stat.STR)
+
     val energy = Buff<Int, Int>(
         name = "energy",
         initialValue = { 0 },
@@ -96,6 +98,7 @@ object Buffs : DataMap<Buff<*, *>>()  {
         this["skill haste", "haste", "sp"] = skillHaste
         this["def", "defense"] = def
         this["dignified soul"] = dignifiedSoul
+        this["inferno mode"] = infernoMode
         this["energy"] = energy
     }
 }

@@ -236,7 +236,7 @@ class Adventurer(val stage: Stage) : Listenable {
     fun Debuff<*, *>.DebuffInstance.apply() = this.apply(enemy)
     fun Debuff<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
     fun Debuff<*, *>.DebuffInstance.apply(duration: Double, chance: Double = 100.percent) {
-        if (Random.nextDouble() < chance) this.apply(enemy, duration)
+        if (Random.nextDouble() < chance + stats[DEBUFF_CHANCE].value) this.apply(enemy, duration)
     }
 
     operator fun Condition.invoke() = condition()

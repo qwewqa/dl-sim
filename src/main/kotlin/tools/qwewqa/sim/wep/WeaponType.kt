@@ -23,7 +23,7 @@ class WeaponType(
         adventurer.fs = adventurer.fs ?: fs
         adventurer.fsf = adventurer.fsf ?: fsf
         adventurer.x = Move(
-            name = "c5",
+            name = "x",
             condition = { doing == "idle" },
             action = {
                 x1()

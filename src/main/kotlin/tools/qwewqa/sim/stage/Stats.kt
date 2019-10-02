@@ -91,6 +91,7 @@ enum class Stat(val type: StatType, vararg val names: String, val default: Doubl
     SLEEP_CHANCE(FULLY_ADDITIVE, "sleep"),
     STUN_CHANCE(FULLY_ADDITIVE, "stun"),
     FREEZE_CHANCE(FULLY_ADDITIVE, "freeze"),
+    DEBUFF_CHANCE(FULLY_ADDITIVE, "debuff", "debuff chance"),
 }
 
 val statNames = enumValues<Stat>().map { stat -> stat.names.map { name -> name to stat }.toMap() }.fold(emptyMap<String, Stat>()) { a, v -> a + v }.withDefault { error("Unknown stat $it") }

@@ -7,6 +7,7 @@ object Adventurers : DataMap<AdventurerSetup>() {
         this["aoi"] = aoi
         this["addis"] = addis
         this["emma"] = emma
+        this["ezelith", "daggers sux"] = ezelith
         this["fleur"] = fleur
         this["gala cleo", "g!cleo", "gleo", "gcleo", "galacleo", "powercreep", "gala best girl"] = galaCleo
         this["noelle"] = noelle

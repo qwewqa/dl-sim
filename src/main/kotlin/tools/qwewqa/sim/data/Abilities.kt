@@ -75,6 +75,8 @@ object Abilities : DataMap<Ability<*, *>>() {
     val brokenPunisher = statAbility("broken punisher", Stat.BROKEN_PUNISHER)
     val wpBrokenPunisher = cappedStatAbility("broken punisher (wp)", Stat.BROKEN_PUNISHER, 30.percent)
 
+    val debuffChance = statAbility("debuff chance", Stat.DEBUFF_CHANCE)
+
     fun barrageAbility(name: String, buff: Buff<Double, *>, interval: Int) = Ability<Double, Double>(
         name = name,
         initialValue = { 0.0 },
@@ -213,6 +215,7 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["crit damage (wp)", "crit-damage (wp)", "cd (wp)"] = wpCritDamage
         this["buff time", "buff-time", "bt"] = buffTime
         this["buff time (wp)", "buff-time (wp)", "bt (wp)"] = wpBuffTime
+        this["debuff chance", "debuff", "debilitator"] = debuffChance
         this["punisher", "k"] = punisher
         this["punisher (wp)", "k (wp)"] = wpPunisher
         this["broken punisher", "bp", "bk"] = brokenPunisher

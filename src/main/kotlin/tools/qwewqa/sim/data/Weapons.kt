@@ -37,6 +37,7 @@ object Weapons : DataMap<Weapon>() {
         }
     )
     val flameSword5t3 = sword5b1.copy(name = "Levatein", element = Element.Flame)
+    val lightSword5t3 = sword5b1.copy(name = "Zex's End", element = Element.Light)
 
     val lance0 = Weapon("Lance", Element.Neutral, 0, noMove, lance, emptyList())
     val lance5b1 = lance0.copy(
@@ -62,6 +63,18 @@ object Weapons : DataMap<Weapon>() {
     val windBow5t3 = bow5b1.copy(name = "Stellar Pegasus", element = Element.Wind)
 
     val dagger0 = Weapon("Dagger", Element.Neutral, 0, noMove, dagger, emptyList())
+    val dagger5b1 = dagger0.copy(
+        str = 545,
+        skill = skill("s3", 7323) {
+            val hit = skillAtk(164.percent, "s3")
+            +hit
+            +hit
+            +hit
+            +hit
+            +hit
+            wait(2.5)
+        }
+    )
     val dagger5b2 = dagger0.copy(
         str = 529,
         skill = skill("s3", 7103, false) {
@@ -70,6 +83,7 @@ object Weapons : DataMap<Weapon>() {
             wait(0.9)
         }
     )
+    val flameDagger5t3 = dagger5b1.copy(name = "Aeternal Flame", element = Element.Flame)
     val lightDagger5t3 = dagger5b2.copy(name = "Thunderblade Sugaar", element = Element.Light)
 
     val wand0 = Weapon("Wand", Element.Neutral, 0, noMove, wand, emptyList())
@@ -86,8 +100,10 @@ object Weapons : DataMap<Weapon>() {
         this["flame 5t3 blade", "Heaven's Acuity"] = flameBlade5t3
         this["wind 5t3 blade", "Anemone"] = windBlade5t3
         this["flame 5t3 sword", "Levatein"] = flameSword5t3
+        this["light 5t3 sword", "Zex's End"] = lightSword5t3
         this["flame 5t3 lance", "Calamity Trigger"] = flameBlade5t3
         this["wind 5t3 bow", "Stellar Pegasus"] = windBow5t3
+        this["flame 5t3 dagger", "Aeternal Flame"] = flameDagger5t3
         this["light 5t3 dagger", "Tunderblade Sugaar"] = lightDagger5t3
         this["wind 5t3 wand", "Phytalmios"] = windWand5t3
         this["shadow 5t3 wand", "Underworld Despair"] = shadowWand5t3
