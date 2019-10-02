@@ -5,11 +5,16 @@ import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.counted
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.double
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import tools.qwewqa.sim.adventurers.Adventurers
+import tools.qwewqa.sim.adventurers.teambuff
+import tools.qwewqa.sim.data.Coabilities
+import tools.qwewqa.sim.extensions.percent
+import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.endIn
 import tools.qwewqa.sim.stage.stage
@@ -53,12 +58,17 @@ class Run : CliktCommand(
     val name by argument(help = "name of adventurer")
     val duration by option("-t", "--time", help = "sim duration in seconds").double().default(180.0)
     val mass by option("-m", "--mass", help = "number of mass sims").int().default(2500)
+    val teamDps by option("--team", help = "team dps, defaulting to 6000").int()
     val verbose by option("-v", help = "verbosity (use 0-4 times), ignored if mass isn't 1").counted()
+    val blade by option("-k", help = "blade coab").flag(default = false)
+    val wand by option("-r", help = "wand coab").flag(default = false)
+    val dagger by option("-d", help = "dagger coab").flag(default = false)
+    val bow by option("-b", help = "bow coab").flag(default = false)
 
     override fun run() {
         stage(
             mass = if (mass > 0) mass else 1,
-            logLevel = when(verbose) {
+            logLevel = when (verbose) {
                 0 -> Logger.Level.NONE
                 1 -> Logger.Level.BASIC
                 2 -> Logger.Level.VERBOSE
@@ -66,8 +76,36 @@ class Run : CliktCommand(
                 else -> Logger.Level.VERBOSIEST
             }
         ) {
-            Adventurers[name].defaultEnv(this)
-            Adventurers[name]()
+            val adv = Adventurers[name] {
+                prerun {
+                    if (blade) {
+                        Coabilities.str(10.percent).initialize(this)
+                    }
+                    if (wand) {
+                        Coabilities.skillDamage(15.percent).initialize(this)
+                    }
+                    if (dagger) {
+                        Coabilities.critRate(10.percent).initialize(this)
+                    }
+                    if (bow) {
+                        Coabilities.skillHaste(15.percent).initialize(this)
+                    }
+                }
+            }
+            teambuff {
+                adv.element
+                str = teamDps ?: 6000
+                prerun {
+                    if (teamDps != null) return@prerun
+                    var multiplier = 1.0
+                    if (blade) multiplier *= 1.1
+                    if (wand) multiplier *= 1.08
+                    if (dagger) multiplier *= 1.07
+                    if (bow) multiplier *= 1.05
+                    str = (str * multiplier).toInt()
+                }
+            }
+
             endIn(duration)
         }
     }

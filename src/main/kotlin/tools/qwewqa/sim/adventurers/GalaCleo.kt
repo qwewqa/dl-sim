@@ -7,7 +7,7 @@ import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
 
-val galaCleo = AdventurerSetup(defaultEnv = { teambuff() }) {
+val galaCleo = AdventurerSetup {
     name = "Gala Cleo"
     element = Element.Shadow
     str = 489

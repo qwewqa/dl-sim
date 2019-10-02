@@ -62,11 +62,6 @@ val teambuff = AdventurerSetup {
         defaultStr = stats[Stat.STR].value
         defaultCrit = 1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value
         defaultDef = enemy.stats[Stat.DEF].value
-        if (str == 6000) str =
-            (str * (1.0 + stats[Stat.STR].coability) *
-                    (1.0 + stats[Stat.SKILL_DAMAGE].coability * 8 / 15) *
-                    (1.0 + stats[Stat.CRIT_RATE].coability * 7 / 10) *
-                    (1.0 + stats[Stat.SKILL_HASTE].coability * 5 / 15)).toInt()
     }
 
     stage.onEnd {
