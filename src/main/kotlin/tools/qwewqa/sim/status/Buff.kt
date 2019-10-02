@@ -75,7 +75,7 @@ data class Buff<T, U>(
     /**
      * Creates a [BuffInstance] targeting this
      */
-    operator fun invoke(value: T) = getInstance(value)
+    operator fun invoke(value: Any?) = getInstance(value as T)
 
     /**
      * Creates a [BuffInstance] targeting this

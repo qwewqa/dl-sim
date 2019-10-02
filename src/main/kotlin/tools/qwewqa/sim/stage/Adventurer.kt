@@ -5,6 +5,7 @@ import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
+import tools.qwewqa.sim.data.Facilities
 import tools.qwewqa.sim.equip.BaseEquip
 import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
@@ -158,9 +159,9 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun initialize() {
         listeners.listenTo(enemy.listeners)
-        stats["str"].base = str.toDouble()
         weapon.init()
         weaponType.init()
+        stats["str"].base += str.toDouble() * Facilities[this]
         fsf.init()
         fs.init()
         x.init()

@@ -64,7 +64,7 @@ data class Debuff<T, U>(
     /**
      * Creates a [DebuffInstance] targeting this
      */
-    operator fun invoke(value: T) = getInstance(value)
+    operator fun invoke(value: Any?) = getInstance(value as T)
 
     /**
      * Creates a [DebuffInstance] targeting this

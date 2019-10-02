@@ -71,7 +71,7 @@ object Conditions : CaseInsensitiveMap<Condition>() {
         this["every30"] = every30
         this["overdrive", "od"] = overdrive
         this["broken", "break", "bk"] = broken
-        this["bleeding"] = bleeding
+        this["bleeding", "bleed"] = bleeding
         this["burning"] = burning
         this["poisoned"] = poisoned
         this["paralyzed"] = paralyzed

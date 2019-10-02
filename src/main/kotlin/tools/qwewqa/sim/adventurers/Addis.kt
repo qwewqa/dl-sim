@@ -29,7 +29,7 @@ val addis = AdventurerSetup {
         +s1hit
         +s1hit
         if (Buffs.dignifiedSoul.on) {
-           Debuffs.bleed(skillAtk(132.percent, "s1", "bleed").snapshot()).apply(duration = 30.0, chance = 80.percent)
+            Debuffs.bleed(skillAtk(132.percent, "s1", "bleed").snapshot()).apply(duration = 30.0, chance = 80.percent)
         } else {
             poison(skillAtk(53.percent, "s1", "poison").snapshot(), duration = 15.0, chance = 100.percent)
         }

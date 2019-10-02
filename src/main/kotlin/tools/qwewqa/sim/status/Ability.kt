@@ -43,7 +43,7 @@ data class Ability<T, U>(
     /**
      * Creates an [AbilityInstance] targeting this
      */
-    operator fun invoke(value: T, condition: Condition = noCondition) = getInstance(value, condition)
+    operator fun invoke(value: Any?, condition: Condition = noCondition) = getInstance(value as T, condition)
 
     /**
      * Creates an [AbilityInstance] targeting this
