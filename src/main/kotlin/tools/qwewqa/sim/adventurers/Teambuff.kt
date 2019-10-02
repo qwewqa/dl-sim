@@ -13,7 +13,7 @@ val empiricalTeambuff = AdventurerSetup {
 
     val freq = 2
 
-    str = 100
+    str = 6000
 
     prerun {
         val mod = str / (5.0 / 3.0 * stats[Stat.STR].value / (enemy.stats[Stat.DEF].value) *
@@ -24,7 +24,7 @@ val empiricalTeambuff = AdventurerSetup {
         schedule {
             while (true) {
                 val snapshot = hit.snapshot()
-                val actual  = enemy.damage(snapshot.copy(amount = snapshot.amount - str.toDouble() / freq))
+                val actual = enemy.damage(snapshot.copy(amount = snapshot.amount - str.toDouble() / freq))
                 log("damage", "hit for $actual (freq $freq, str $str)")
                 wait(1.0 / freq)
             }
@@ -35,7 +35,7 @@ val empiricalTeambuff = AdventurerSetup {
 val teambuff = AdventurerSetup {
     name = "Teambuff"
     element = Element.Neutral
-    str = 100
+    str = 6000
 
     var total = 0.0
     var lastCount = 0.0
@@ -62,6 +62,11 @@ val teambuff = AdventurerSetup {
         defaultStr = stats[Stat.STR].value
         defaultCrit = 1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value
         defaultDef = enemy.stats[Stat.DEF].value
+        if (str == 6000) str =
+            (str * (1.0 + stats[Stat.STR].coability) *
+                    (1.0 + stats[Stat.SKILL_DAMAGE].coability * 8 / 15) *
+                    (1.0 + stats[Stat.CRIT_RATE].coability * 7 / 10) *
+                    (1.0 + stats[Stat.SKILL_HASTE].coability * 5 / 15)).toInt()
     }
 
     stage.onEnd {
