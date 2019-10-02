@@ -8,7 +8,7 @@ import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.wep.*
 
-object Weapons : CaseInsensitiveMap<Weapon>() {
+object Weapons : DataMap<Weapon>() {
     val blade0 = Weapon("Blade", Element.Neutral, 0, noMove, blade, emptyList())
     val blade5b1 = blade0.copy(
         str = 572,
@@ -79,6 +79,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
             wait(1.05)
         }
     )
+    val windWand5t3 = wand5b1.copy(name = "Phytalmios", element = Element.Wind)
     val shadowWand5t3 = wand5b1.copy(name = "Underworld Despair", element = Element.Shadow)
 
     init {
@@ -88,6 +89,7 @@ object Weapons : CaseInsensitiveMap<Weapon>() {
         this["flame 5t3 lance", "Calamity Trigger"] = flameBlade5t3
         this["wind 5t3 bow", "Stellar Pegasus"] = windBow5t3
         this["light 5t3 dagger", "Tunderblade Sugaar"] = lightDagger5t3
+        this["wind 5t3 wand", "Phytalmios"] = windWand5t3
         this["shadow 5t3 wand", "Underworld Despair"] = shadowWand5t3
     }
 }

@@ -5,7 +5,7 @@ import tools.qwewqa.sim.status.coability
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Stat
 
-object Coabilities : CaseInsensitiveMap<Coability>() {
+object Coabilities : DataMap<Coability>() {
     fun def(value: Double) = coability(Stat.DEF, value)
     fun str(value: Double) = coability(Stat.STR, value)
     fun skillHaste(value: Double) = coability(Stat.SKILL_HASTE, value)
@@ -23,6 +23,6 @@ object Coabilities : CaseInsensitiveMap<Coability>() {
         this["lance", "hp"] = hp(15.percent)
         this["staff", "potency"] = healingPotency(15.percent)
         this["sword", "dragon"] = dragonHaste(10.percent)
-        this["wand", "skill"] = skillDamage(15.percent)
+        this["wand", "skill", "skill damage"] = skillDamage(15.percent)
     }
 }

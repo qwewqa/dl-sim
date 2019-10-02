@@ -4,7 +4,7 @@ import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 
-object Dragons : CaseInsensitiveMap<Dragon>() {
+object Dragons : DataMap<Dragon>() {
     val cerberus = Dragon(
         name = "Cerberus",
         element = Element.Flame,

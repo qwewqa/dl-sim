@@ -7,7 +7,7 @@ import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.double
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
-import tools.qwewqa.sim.adventurers.Adventurers
+import tools.qwewqa.sim.data.Adventurers
 import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.Coabilities
 import tools.qwewqa.sim.extensions.percent
@@ -92,7 +92,7 @@ class Run : CliktCommand(
                     }
                 }
                 teambuff {
-                    adv.element
+                    element = adv.element
                     str = teamDps ?: 6000
                     prerun {
                         if (teamDps != null) return@prerun

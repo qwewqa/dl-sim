@@ -5,7 +5,7 @@ import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.Phase
 
-object Conditions : CaseInsensitiveMap<Condition>() {
+object Conditions : DataMap<Condition>() {
     operator fun get(vararg names: String) = names.map { this[it] }.reduce { a, v -> a + v }
 
     fun hp(amount: Double) = Condition("hp $amount", setOf("hp")) { hp >= amount }

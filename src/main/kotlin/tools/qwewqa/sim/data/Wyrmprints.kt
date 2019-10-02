@@ -3,7 +3,7 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.equip.Wyrmprint
 import tools.qwewqa.sim.extensions.percent
 
-object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
+object Wyrmprints : DataMap<Wyrmprint>() {
     operator fun get(vararg names: String) = names.map { this[it] }.reduce { a, v -> a + v }
 
     val ce = Wyrmprint(
@@ -20,6 +20,15 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
         abilities = listOf(
             Abilities.wpSkillDamage(30.percent),
             Abilities.wpCritRate(8.percent, Conditions.hp70)
+        )
+    )
+
+    val hoh = Wyrmprint(
+        name = "Heralds of Hinomoto",
+        str = 64,
+        abilities = listOf(
+            Abilities.wpSkillDamage(30.percent),
+            Abilities.wpSkillHaste(6.percent)
         )
     )
 
@@ -96,6 +105,7 @@ object Wyrmprints : CaseInsensitiveMap<Wyrmprint>() {
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
+        this["HoH", "Heralds of Hinomoto"] = rr
         this["BN", "Beautiful Nothingness"] = bn
         this["EE", "Elegant Escort"] = ee
         this["FoG", "Flash of Genius"] = fog

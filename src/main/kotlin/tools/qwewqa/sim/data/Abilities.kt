@@ -1,6 +1,5 @@
 package tools.qwewqa.sim.data
 
-import tools.qwewqa.sim.core.Cooldown
 import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.status.Ability
 import tools.qwewqa.sim.status.Buff
@@ -12,7 +11,7 @@ import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.Stat
 import kotlin.math.min
 
-object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
+object Abilities : DataMap<Ability<*, *>>() {
     fun statAbility(name: String, stat: Stat) = Ability<Double, Unit>(
         name = name,
         initialValue = {},
@@ -122,6 +121,7 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
     )
 
     val primedStr = primedAbility("primed str", 10.0, Buffs.str)
+    val primedDef = primedAbility("primed def", 10.0, Buffs.def)
 
 
     val skillPrep = Ability<Double, Unit>(
@@ -184,6 +184,7 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
         this["barrage devastation"] = barrageDevastation
         this["skill prep", "prep"] = skillPrep
         this["primed str"] = primedStr
+        this["primed def"] = primedDef
         this["magical modification"] = magicalModification
     }
 }

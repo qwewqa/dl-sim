@@ -3,7 +3,7 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.status.Buff
 import tools.qwewqa.sim.stage.*
 
-object Buffs : CaseInsensitiveMap<Buff<*, *>>()  {
+object Buffs : DataMap<Buff<*, *>>()  {
     fun statBuff(name: String, stat: Stat, cap: Int = 20) = Buff<Double, Unit>(
         name = name,
         initialValue = {},

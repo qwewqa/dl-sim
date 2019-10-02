@@ -5,7 +5,7 @@ import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.*
 import kotlin.math.min
 
-object Debuffs : CaseInsensitiveMap<Debuff<*, *>>() {
+object Debuffs : DataMap<Debuff<*, *>>() {
     fun statDebuff(name: String, stat: Stat, valueCap: Double = 50.percent) =
         Debuff<Double, Double>(
             name = name,
