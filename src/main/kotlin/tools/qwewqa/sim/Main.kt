@@ -7,9 +7,8 @@ import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.double
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
-import tools.qwewqa.sim.data.Adventurers
 import tools.qwewqa.sim.adventurers.teambuff
-import tools.qwewqa.sim.data.Coabilities
+import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.stage.Logger
@@ -52,7 +51,7 @@ class Run : CliktCommand(
     name = "run",
     help = "Runs a time based sim for the given adventurer"
 ) {
-    val names by option("-a", "--adventurer", help = "name of adventurer").multiple(required = true)
+    val name by argument("name", help = "name of adventurer")
     val duration by option("-t", "--time", help = "sim duration in seconds").double().default(180.0)
     val mass by option("-m", "--mass", help = "number of mass sims").int().default(2500)
     val teamDps by option("--team", help = "team dps, defaulting to 6000").int()
@@ -61,6 +60,9 @@ class Run : CliktCommand(
     val wand by option("-r", help = "wand coab").flag(default = false)
     val dagger by option("-d", help = "dagger coab").flag(default = false)
     val bow by option("-b", help = "bow coab").flag(default = false)
+    val prints by option("--wp", "--wyrmprint").multiple()
+    val wep by option("--weap", "--weapon")
+    val drag by option("--drag", "--dragon")
 
     override fun run() {
         stage(
@@ -73,43 +75,43 @@ class Run : CliktCommand(
                 else -> Logger.Level.VERBOSIEST
             }
         ) {
-            if (names.size == 1) {
-                val name = names.first()
-                val adv = Adventurers[name] {
-                    prerun {
-                        if (blade) {
-                            Coabilities.str(10.percent).initialize(this)
-                        }
-                        if (wand) {
-                            Coabilities.skillDamage(15.percent).initialize(this)
-                        }
-                        if (dagger) {
-                            Coabilities.critRate(10.percent).initialize(this)
-                        }
-                        if (bow) {
-                            Coabilities.skillHaste(15.percent).initialize(this)
-                        }
-                    }
+            val adv = Adventurers[name] {
+                if (prints.isNotEmpty()) {
+                    wp = prints.map { Wyrmprints[it] }.reduce { a, b -> a + b }
                 }
-                teambuff {
-                    element = adv.element
-                    str = teamDps ?: 6000
-                    prerun {
-                        if (teamDps != null) return@prerun
-                        var multiplier = 1.0
-                        if (blade) multiplier *= 1.1
-                        if (wand) multiplier *= 1.08
-                        if (dagger) multiplier *= 1.07
-                        if (bow) multiplier *= 1.05
-                        str = (str * multiplier).toInt()
-                    }
 
-                }
-            } else {
-                names.forEach {
-                    Adventurers[it]()
+                wep?.let { weapon = Weapons[it] }
+                drag?. let { dragon = Dragons[it] }
+
+                prerun {
+                    if (blade) {
+                        Coabilities.str(10.percent).initialize(this)
+                    }
+                    if (wand) {
+                        Coabilities.skillDamage(15.percent).initialize(this)
+                    }
+                    if (dagger) {
+                        Coabilities.critRate(10.percent).initialize(this)
+                    }
+                    if (bow) {
+                        Coabilities.skillHaste(15.percent).initialize(this)
+                    }
                 }
             }
+            teambuff {
+                element = adv.element
+                str = teamDps ?: 6000
+                prerun {
+                    if (teamDps != null) return@prerun
+                    var multiplier = 1.0
+                    if (blade) multiplier *= 1.1
+                    if (wand) multiplier *= 1.08
+                    if (dagger) multiplier *= 1.07
+                    if (bow) multiplier *= 1.05
+                    str = (str * multiplier).toInt()
+                }
+            }
+
             endIn(duration)
         }
     }
