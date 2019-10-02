@@ -6,6 +6,7 @@ import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.Stat
 
 val galaCleo = AdventurerSetup {
     name = "Gala Cleo"
@@ -39,12 +40,8 @@ val galaCleo = AdventurerSetup {
         wait(1.45)
     }
 
-    prerun {
-        if (logic == null) {
-            rotation {
-                init = "s2 s1 c5 c4fs s1"
-                loop = "c5 c4fs s1 c5 s2 c5fs s1"
-            }
-        }
+    rotation {
+        init = "s2 s1 c5 c4fs s1"
+        loop = "c5 c4fs s1 c5 s2 c5fs s1"
     }
 }

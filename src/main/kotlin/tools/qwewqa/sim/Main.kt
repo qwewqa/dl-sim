@@ -3,10 +3,7 @@ package tools.qwewqa.sim
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.counted
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.flag
-import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.clikt.parameters.types.double
 import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
@@ -55,7 +52,7 @@ class Run : CliktCommand(
     name = "run",
     help = "Runs a time based sim for the given adventurer"
 ) {
-    val name by argument(help = "name of adventurer")
+    val names by option("-a", "--adventurer", help = "name of adventurer").multiple(required = true)
     val duration by option("-t", "--time", help = "sim duration in seconds").double().default(180.0)
     val mass by option("-m", "--mass", help = "number of mass sims").int().default(2500)
     val teamDps by option("--team", help = "team dps, defaulting to 6000").int()
@@ -76,36 +73,43 @@ class Run : CliktCommand(
                 else -> Logger.Level.VERBOSIEST
             }
         ) {
-            val adv = Adventurers[name] {
-                prerun {
-                    if (blade) {
-                        Coabilities.str(10.percent).initialize(this)
-                    }
-                    if (wand) {
-                        Coabilities.skillDamage(15.percent).initialize(this)
-                    }
-                    if (dagger) {
-                        Coabilities.critRate(10.percent).initialize(this)
-                    }
-                    if (bow) {
-                        Coabilities.skillHaste(15.percent).initialize(this)
+            if (names.size == 1) {
+                val name = names.first()
+                val adv = Adventurers[name] {
+                    prerun {
+                        if (blade) {
+                            Coabilities.str(10.percent).initialize(this)
+                        }
+                        if (wand) {
+                            Coabilities.skillDamage(15.percent).initialize(this)
+                        }
+                        if (dagger) {
+                            Coabilities.critRate(10.percent).initialize(this)
+                        }
+                        if (bow) {
+                            Coabilities.skillHaste(15.percent).initialize(this)
+                        }
                     }
                 }
-            }
-            teambuff {
-                adv.element
-                str = teamDps ?: 6000
-                prerun {
-                    if (teamDps != null) return@prerun
-                    var multiplier = 1.0
-                    if (blade) multiplier *= 1.1
-                    if (wand) multiplier *= 1.08
-                    if (dagger) multiplier *= 1.07
-                    if (bow) multiplier *= 1.05
-                    str = (str * multiplier).toInt()
-                }
-            }
+                teambuff {
+                    adv.element
+                    str = teamDps ?: 6000
+                    prerun {
+                        if (teamDps != null) return@prerun
+                        var multiplier = 1.0
+                        if (blade) multiplier *= 1.1
+                        if (wand) multiplier *= 1.08
+                        if (dagger) multiplier *= 1.07
+                        if (bow) multiplier *= 1.05
+                        str = (str * multiplier).toInt()
+                    }
 
+                }
+            } else {
+                names.forEach {
+                    Adventurers[it]()
+                }
+            }
             endIn(duration)
         }
     }
