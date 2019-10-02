@@ -20,14 +20,14 @@ val noelle = AdventurerSetup {
     a1 = Abilities.buffTime(25.percent)
     a3 = Abilities.primedDef(8.percent)
 
-    s1(3817) {
+    s1(3817, false) {
         wait(0.15)
         Buffs.str(25.percent).teamBuff(15.0) { element == Element.Wind }
         wait(0.9)
     }
 
     s2(6237) {
-        val s2hit = skillAtk(492.percent, "s2") // note: matches sim but not wiki
+        val s2hit = skillAtk(492.percent, "s2") // note: matches b1ues sim but not wiki
         +s2hit
         +s2hit
         wait(1.3)

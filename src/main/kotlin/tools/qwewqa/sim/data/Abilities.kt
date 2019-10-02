@@ -7,6 +7,7 @@ import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
+import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.stage.Stat
 import kotlin.math.min
@@ -165,6 +166,42 @@ object Abilities : DataMap<Ability<*, *>>() {
         }
     )
 
+    fun doublebuff(name: String, action: Adventurer.(value: Double) -> Unit) = Ability<Double, Double>(
+        name = name,
+        initialValue = { 0.0 },
+        onStart = { value, stack ->
+            stack.value += value
+        },
+        onStop = { value, stack ->
+            stack.value -= value
+        },
+        stackStart = { stack ->
+            listen("doublebuff") {
+                action(stack.value)
+                log(Logger.Level.VERBOSE, "doublebuff", "$name (value: ${stack.value}) triggered")
+            }
+        }
+    )
+    fun cappedDoublebuff(name: String, cap: Double, action: Adventurer.(value: Double) -> Unit) = Ability<Double, Double>(
+        name = name,
+        initialValue = { 0.0 },
+        onStart = { value, stack ->
+            stack.value += value
+        },
+        onStop = { value, stack ->
+            stack.value -= value
+        },
+        stackStart = { stack ->
+            listen("doublebuff") {
+                action(min(stack.value, cap))
+                log(Logger.Level.VERBOSE, "doublebuff", "$name (value: ${min(stack.value, cap)}) triggered")
+            }
+        }
+    )
+
+    val energyDoublebuff = doublebuff("energy doublebuff") { energize(it.toInt()) }
+    val wpEnergyDoublebuff = cappedDoublebuff("energy doublebuff (wp)", 1.0) { energize(it.toInt()) }
+
     init {
         this["strength", "str"] = strength
         this["strength (wp)", "str (wp)"] = wpStr
@@ -186,5 +223,7 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["primed str"] = primedStr
         this["primed def"] = primedDef
         this["magical modification"] = magicalModification
+        this["energy doublebuff"] = energyDoublebuff
+        this["energy doublebuff (wp)"] = wpEnergyDoublebuff
     }
 }

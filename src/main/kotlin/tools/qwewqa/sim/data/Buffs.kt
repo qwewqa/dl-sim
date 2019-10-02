@@ -1,5 +1,7 @@
 package tools.qwewqa.sim.data
 
+import tools.qwewqa.sim.core.listen
+import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.status.Buff
 import tools.qwewqa.sim.stage.*
 
@@ -10,12 +12,12 @@ object Buffs : DataMap<Buff<*, *>>()  {
         onStart = { duration, value, _ ->
             stats[stat].buff += value
             buffCount++
-            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "started: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
         },
         onEnd = { duration, value, _ ->
             stats[stat].buff -= value
             buffCount--
-            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "ended: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
         },
         stackCap = cap
     )
@@ -31,17 +33,61 @@ object Buffs : DataMap<Buff<*, *>>()  {
             stats[Stat.DEF].buff += value
             buffCount++
             listeners.raise("doublebuff")
-            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "started: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
         },
         onEnd = { duration, value, _ ->
             stats[Stat.DEF].buff -= value
             buffCount--
-            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "ended: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
         },
         stackCap = 10
     )
 
     val dignifiedSoul = statBuff("dignified soul", Stat.STR)
+
+    val energy = Buff<Int, Int>(
+        name = "energy",
+        initialValue = { 0 },
+        onStart = { _, value, stack ->
+            if (stack.value < 5) {
+                stack.value += value
+                log(Logger.Level.VERBOSE, "energy", "level: ${stack.value}")
+                if (stack.value >= 5) {
+                    listeners.raise("energized")
+                    log(Logger.Level.VERBOSE, "energy", "reached energized")
+                    stack.value = 5
+                }
+            }
+        },
+        stackStart = {
+            buffCount++
+        },
+        stackEnd = {
+            buffCount--
+        },
+        firstStart = { stack ->
+            listen("pre-skill-energy") {
+                energized.stack.clear()
+                if (stack.value == 5) {
+                    stack.value = 0
+                    stack.stacks.clear()
+                    energized(Unit).selfBuff()
+                    log(Logger.Level.VERBOSE, "energy", "skill energized")
+                }
+            }
+        }
+    )
+
+    val energized = Buff<Unit, Unit>(
+        name = "energized",
+        initialValue = {},
+        onStart = { _, _, _ ->
+            stats[Stat.SKILL_DAMAGE].passive += 50.percent
+        },
+        onEnd = { _, _, _ ->
+            stats[Stat.SKILL_DAMAGE].passive -= 50.percent
+        }
+    )
 
     init {
         this["str", "strength"] = str
@@ -50,5 +96,6 @@ object Buffs : DataMap<Buff<*, *>>()  {
         this["skill haste", "haste", "sp"] = skillHaste
         this["def", "defense"] = def
         this["dignified soul"] = dignifiedSoul
+        this["energy"] = energy
     }
 }

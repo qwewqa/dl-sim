@@ -5,6 +5,7 @@ import tools.qwewqa.sim.core.Listenable
 import tools.qwewqa.sim.core.ListenerMap
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.core.getCooldown
+import tools.qwewqa.sim.data.Buffs
 import tools.qwewqa.sim.data.Facilities
 import tools.qwewqa.sim.equip.BaseEquip
 import tools.qwewqa.sim.equip.Dragon
@@ -217,12 +218,17 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     val Buff<*, *>.on get() = this.getStack(this@Adventurer).on
-
+    val Buff<*, *>.stack get() = this.getStack(this@Adventurer)
     var <T> Buff<*, T>.value: T
         get() = this.getStack(this@Adventurer).value
         set(value) {
             this.getStack(this@Adventurer).value = value
         }
+
+    val energy = Buffs.energy.value
+    fun energize(times: Int = 1) {
+        Buffs.energy(times).selfBuff()
+    }
 
     val Debuff<*, *>.on get() = this.getStack(enemy).on
     val Debuff<*, *>.count get() = this.getStack(enemy).count

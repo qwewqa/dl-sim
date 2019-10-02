@@ -79,8 +79,8 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         name = "Halidom Grooms",
         str = 50,
         abilities = listOf(
-            Abilities.wpBuffTime(20.percent)
-            // TODO: Energy
+            Abilities.wpBuffTime(20.percent),
+            Abilities.wpEnergyDoublebuff(1.0)
         )
     )
 

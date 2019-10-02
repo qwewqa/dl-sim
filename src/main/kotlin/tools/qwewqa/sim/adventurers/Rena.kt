@@ -33,7 +33,7 @@ val rena = AdventurerSetup {
         wait(2.45)
     }
 
-    s2(6582) {
+    s2(6582, false) {
         wait(0.15)
         Buffs.critDamage(50.percent).selfBuff(20.0)
         sp.charge(100.percent, name = "s1", source = "s2")

@@ -20,12 +20,12 @@ val emma = AdventurerSetup {
     a1 = Abilities.buffTime(25.percent)
     a3 = Abilities.primedStr(5.percent)
 
-    s1(3817) {
+    s1(3817, false) {
         Buffs.str(25.percent).teamBuff(15.0) { element == Element.Flame }
         wait(1.75)
     }
 
-    s2(9154) {
+    s2(9154, false) {
         Buffs.def(15.percent).teamBuff(15.0) { element == Element.Flame }
         wait(1.75)
     }

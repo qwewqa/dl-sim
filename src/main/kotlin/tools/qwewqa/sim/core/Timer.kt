@@ -14,7 +14,7 @@ class Timer(private val timeline: Timeline, val action: Timer.() -> Unit) {
 
     fun start() {
         if (running) return
-        if (duration <= 0.0) return
+        if (duration < 0.0) return
         event = timeline.schedule(duration) {
             action()
         }

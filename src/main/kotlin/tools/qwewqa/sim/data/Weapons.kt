@@ -53,7 +53,7 @@ object Weapons : DataMap<Weapon>() {
     val bow0 = Weapon("Bow", Element.Neutral, 0, noMove, bow, emptyList())
     val bow5b1 = bow0.copy(
         str = 518,
-        skill = skill("s3", 7316) {
+        skill = skill("s3", 7316, false) {
             wait(0.15)
             Buffs.critRate(25.percent).selfBuff(10.0)
             wait(0.9)
@@ -64,7 +64,7 @@ object Weapons : DataMap<Weapon>() {
     val dagger0 = Weapon("Dagger", Element.Neutral, 0, noMove, dagger, emptyList())
     val dagger5b2 = dagger0.copy(
         str = 529,
-        skill = skill("s3", 7103) {
+        skill = skill("s3", 7103, false) {
             wait(0.15)
             Buffs.str(40.percent).selfBuff(5.0)
             wait(0.9)
@@ -75,7 +75,7 @@ object Weapons : DataMap<Weapon>() {
     val wand0 = Weapon("Wand", Element.Neutral, 0, noMove, wand, emptyList())
     val wand5b1 = wand0.copy(
         str = 528,
-        skill = skill("s3", 12668) {
+        skill = skill("s3", 12668, false) {
             wait(1.05)
         }
     )

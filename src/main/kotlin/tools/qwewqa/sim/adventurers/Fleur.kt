@@ -34,7 +34,7 @@ val fleur = AdventurerSetup {
         wait(1.1)
     }
 
-    s2(5934) {
+    s2(5934, false) {
         wait(0.15)
         Buffs.str(25.percent).selfBuff(5.0)
         sp.charge(100.percent, name = "s1", source = "s2")
