@@ -72,6 +72,9 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
     val buffTime = statAbility("buff time", Stat.BUFF_TIME)
     val wpBuffTime = cappedStatAbility("buff time (wp)", Stat.BUFF_TIME, 30.percent)
 
+    val brokenPunisher = statAbility("broken punisher", Stat.BROKEN_PUNISHER)
+    val wpBrokenPunisher = cappedStatAbility("broken punisher (wp)", Stat.BROKEN_PUNISHER, 30.percent)
+
     fun barrageAbility(name: String, buff: Buff<Double, *>, interval: Int) = Ability<Double, Double>(
         name = name,
         initialValue = { 0.0 },
@@ -175,6 +178,8 @@ object Abilities : CaseInsensitiveMap<Ability<*, *>>() {
         this["buff time (wp)", "buff-time (wp)", "bt (wp)"] = wpBuffTime
         this["punisher", "k"] = punisher
         this["punisher (wp)", "k (wp)"] = wpPunisher
+        this["broken punisher", "bp", "bk"] = brokenPunisher
+        this["broken punisher (wp)", "bp (wp)", "bk (wp)"] = wpBrokenPunisher
         this["barrage obliteration"] = barrageObliteration
         this["barrage devastation"] = barrageDevastation
         this["skill prep", "prep"] = skillPrep

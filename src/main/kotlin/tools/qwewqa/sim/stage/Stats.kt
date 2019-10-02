@@ -82,6 +82,7 @@ enum class Stat(val type: StatType, vararg val names: String, val default: Doubl
     FORCESTRIKE_DAMAGE(FULLY_ADDITIVE, "forcestrike damage", "forcestrike", "fs", "fs dmg", default = 100.percent),
     HEALING_POTENCY(FULLY_ADDITIVE, "healing potency", "healing", "potency", default = 100.percent),
     PUNISHER(FULLY_ADDITIVE, "punisher", "bane", "killer", "k", default = 100.percent),
+    BROKEN_PUNISHER(FULLY_ADDITIVE, "broken punisher", "bp", "bk", default = 100.percent),
     BURN_CHANCE(FULLY_ADDITIVE, "burn"),
     PARALYSIS_CHANCE(FULLY_ADDITIVE, "paralysis"),
     POISON_CHANCE(FULLY_ADDITIVE, "poison"),

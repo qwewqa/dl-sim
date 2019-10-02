@@ -49,7 +49,7 @@ internal class TimerTest {
                 end()
             }
             schedule(5.0) {
-                timer.set(20.0)
+                timer.setFor(20.0)
             }
         }.startAndJoin()
         assertEquals(1, runs)

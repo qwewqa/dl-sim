@@ -41,11 +41,14 @@ object Buffs : CaseInsensitiveMap<Buff<*, *>>()  {
         stackCap = 10
     )
 
+    val dignifiedSoul = statBuff("dignified soul", Stat.STR)
+
     init {
         this["str", "strength"] = str
         this["crit rate", "crit-rate", "cr"] = critRate
         this["crit damage", "crit-damage", "cd"] = critDamage
         this["skill haste", "haste", "sp"] = skillHaste
         this["def", "defense"] = def
+        this["dignified soul"] = dignifiedSoul
     }
 }

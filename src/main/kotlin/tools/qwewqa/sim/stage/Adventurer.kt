@@ -9,6 +9,7 @@ import tools.qwewqa.sim.equip.BaseEquip
 import tools.qwewqa.sim.equip.Dragon
 import tools.qwewqa.sim.equip.Weapon
 import tools.qwewqa.sim.equip.Wyrmprint
+import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.status.*
 import tools.qwewqa.sim.wep.WeaponType
@@ -136,7 +137,8 @@ class Adventurer(val stage: Stage) : Listenable {
     fun Attack.apply() = this.snapshot().apply()
 
     // snapshots damage based on current stats including crit but not damage variance
-    fun Attack.snapshot() = Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = this.od,name = name)
+    fun Attack.snapshot() =
+        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = this.od, name = name)
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
@@ -144,6 +146,7 @@ class Adventurer(val stage: Stage) : Listenable {
                 (if (skill) stats[SKILL_DAMAGE].value else 1.0) *
                 (if (fs) stats[FORCESTRIKE_DAMAGE].value else 1.0) *
                 stats[PUNISHER].value *
+                (if (enemy.phase == Phase.Break) stats[BROKEN_PUNISHER].value else 1.0) *
                 element.multiplier(enemy.element)
 
     fun spFormula(amount: Int, fs: Boolean = false) =
@@ -204,15 +207,30 @@ class Adventurer(val stage: Stage) : Listenable {
         log("buff", "teambuff $name [value: $rdur]")
     }
 
+    fun Buff<*, *>.pause() {
+        this.getStack(this@Adventurer).stacks.forEach { it.pause() }
+    }
+
+    fun Buff<*, *>.start() {
+        this.getStack(this@Adventurer).stacks.forEach { it.start() }
+    }
+
     val Buff<*, *>.on get() = this.getStack(this@Adventurer).on
 
     var <T> Buff<*, T>.value: T
         get() = this.getStack(this@Adventurer).value
-        set(value) { this.getStack(this@Adventurer).value = value }
+        set(value) {
+            this.getStack(this@Adventurer).value = value
+        }
 
     val Debuff<*, *>.on get() = this.getStack(enemy).on
+    val Debuff<*, *>.count get() = this.getStack(enemy).count
+    val Debuff<*, *>.capped get() = this.getStack(enemy).count == this.stackCap
     fun Debuff<*, *>.DebuffInstance.apply() = this.apply(enemy)
     fun Debuff<*, *>.DebuffInstance.apply(duration: Double) = this.apply(enemy, duration)
+    fun Debuff<*, *>.DebuffInstance.apply(duration: Double, chance: Double = 100.percent) {
+        if (Random.nextDouble() < chance) this.apply(enemy, duration)
+    }
 
     operator fun Condition.invoke() = condition()
 }

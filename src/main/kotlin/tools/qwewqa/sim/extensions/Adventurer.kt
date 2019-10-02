@@ -1,6 +1,7 @@
 package tools.qwewqa.sim.extensions
 
 import tools.qwewqa.sim.data.Buffs
+import tools.qwewqa.sim.data.Debuffs
 import tools.qwewqa.sim.stage.AdventurerCondition
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.*

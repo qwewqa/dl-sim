@@ -61,7 +61,7 @@ class SP(val adventurer: Adventurer) {
     }
 
     fun setCost(name: String, max: Int) {
-        charges[name] = 0
+        charges[name] = charges[name] ?: 0
         costs[name] = max
     }
 }

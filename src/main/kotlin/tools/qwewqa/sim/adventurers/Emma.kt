@@ -8,7 +8,7 @@ import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.status.burn
 
-val emma = AdventurerSetup() {
+val emma = AdventurerSetup {
     name = "Emma"
     element = Element.Flame
     str = 471

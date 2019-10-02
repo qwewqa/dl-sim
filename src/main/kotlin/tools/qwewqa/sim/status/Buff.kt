@@ -90,16 +90,16 @@ data class Buff<T, U>(
             val stack = getStack(adventurer)
             if (stackCap != null && stack.count >= stackCap) return null
             onStart(adventurer, duration, value, stack)
-            adventurer.listeners.raise("buff")
             stack.count++
+            adventurer.listeners.raise("buff")
             if (duration == null) return null
             val timer = adventurer.timeline.getTimer {
                 onEnd(adventurer, duration, value, stack)
-                adventurer.listeners.raise("buff-end")
                 stack.stacks -= this
                 stack.count--
+                adventurer.listeners.raise("buff-end")
             }
-            timer.set(duration)
+            timer.setFor(duration)
             stack.stacks += timer
             return timer
         }

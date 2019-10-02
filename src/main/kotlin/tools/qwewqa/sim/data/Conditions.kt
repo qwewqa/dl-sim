@@ -38,7 +38,7 @@ object Conditions : CaseInsensitiveMap<Condition>() {
     val overdrive = Condition("overdrive") { enemy.phase == Phase.Overdrive }
     val broken = Condition("overdrive") { enemy.phase == Phase.Break }
 
-    val bleeding = Condition("bleeding", "bleeding") { Debuffs.bleed.on }
+    val bleeding = Condition("bleeding", "debuff", "debuff-end") { Debuffs.bleed.on }
     val burning = Condition("burning", "burn-start", "burn-end") { Debuffs.burn.on }
     val poisoned = Condition("poisoned", "poison-start", "poison-end") { Debuffs.poison.on }
     val paralyzed = Condition("paralyzed", "paralysis-start", "paralysis-end") { Debuffs.paralysis.on }

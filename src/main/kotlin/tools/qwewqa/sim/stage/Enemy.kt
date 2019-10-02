@@ -65,7 +65,9 @@ class Enemy(val stage: Stage) : Listenable {
                 listeners.raise("phase")
             }
             Phase.Overdrive -> toBreak?.let {
-                gauge += floor(actual * snapshot.od).toInt()
+                val od = floor(actual * snapshot.od).toInt()
+                gauge += od
+                log(Logger.Level.VERBOSIEST, "gauge", "od gauge filled by $od (mult ${snapshot.od})")
                 if (gauge > it) {
                     phase = Phase.Break
                     def /= odDef
