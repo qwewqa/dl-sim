@@ -56,7 +56,7 @@ class Run : CliktCommand(
     name = "run",
     help = "Runs a time based sim for the given adventurer"
 ) {
-    val name by argument("name", help = "name of adventurer")
+    val name by argument("NAME", help = "name of adventurer")
     val duration by option("-t", "--time", help = "sim duration in seconds").double().default(180.0)
     val mass by option("-m", "--mass", help = "number of mass sims").int().default(2500)
     val teamDps by option("--team", help = "team dps, defaulting to 6000").int()
@@ -65,9 +65,10 @@ class Run : CliktCommand(
     val r by option("-r", "--wand", help = "wand coab").flag(default = false)
     val d by option("-d", "--dagger", help = "dagger coab").flag(default = false)
     val b by option("-b", "--bow", help = "bow coab").flag(default = false)
-    val prints by option("--wp", "--wyrmprint").multiple()
-    val wep by option("--weap", "--weapon")
-    val drag by option("--drag", "--dragon")
+    val prints by option("--wp", "--wyrmprint", help = "wyrmprint, repeatable").multiple()
+    val wep by option("--weap", "--weapon", help = "weapon")
+    val drag by option("--drag", "--dragon", help = "dragon")
+    val yaml by option("--yaml", hidden = true).flag(default = false)
 
     override fun run() {
         stage(
@@ -78,7 +79,8 @@ class Run : CliktCommand(
                 2 -> Logger.Level.VERBOSE
                 3 -> Logger.Level.VERBOSER
                 else -> Logger.Level.VERBOSIEST
-            }
+            },
+            yaml = yaml
         ) {
             val adv = Adventurers[name] {
                 if (prints.isNotEmpty()) {
