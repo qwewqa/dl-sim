@@ -10,6 +10,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import org.yaml.snakeyaml.Yaml
 import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.*
+import tools.qwewqa.sim.extensions.lowercasedKeys
 import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.stage.*
 import javax.script.ScriptEngineManager
@@ -139,10 +140,11 @@ class Preset : CliktCommand(
     }
 
     fun loadPreset(data: Map<String, Any>): RunPreset {
-        val adventurerData = data["adventurers"] as List<Map<String, Map<String, Any?>?>>? ?: error("error with adventurers")
+        val preset = data.lowercasedKeys()
+        val adventurerData = preset["adventurers"] as List<Map<String, Map<String, Any?>?>>? ?: error("error with adventurers")
         val adventurers = adventurerData.map { adv -> adv.map { loadBuild(it.toPair()) } }.reduce { a, b -> a + b }
-        val config = loadConfig(data["config"] as Map<String, Any?>? ?: error("error with config"))
-        val enemy = loadEnemy(data["enemy"] as Map<String, Any?>? ?: emptyMap())
+        val config = loadConfig(preset["config"] as Map<String, Any?>? ?: error("error with config"))
+        val enemy = loadEnemy(preset["enemy"] as Map<String, Any?>? ?: emptyMap())
         return RunPreset(
             config,
             adventurers,
@@ -151,26 +153,28 @@ class Preset : CliktCommand(
     }
 
     fun loadBuild(adv: Pair<String, Map<String, Any?>?>): AdventurerPreset {
-        val map = adv.second ?: emptyMap()
+        val build = (adv.second ?: emptyMap()).lowercasedKeys()
         val name = adv.first
-        val wyrmprints = map["wyrmprints"] as List<String>?
-        val weapon = map["weapon"] as String?
-        val dragon = map["dragon"] as String?
-        val acl = map["acl"] as String?
-        val rotation = map["rotation"] as Map<String, String>?
+        val wyrmprints = build["wyrmprints"] as List<String>?
+        val weapon = build["weapon"] as String?
+        val dragon = build["dragon"] as String?
+        val acl = build["acl"] as String?
+        val rotation = build["rotation"] as Map<String, String>?
         val rotationInit = rotation?.get("init")
         val rotationLoop = rotation?.get("loop")
         return AdventurerPreset(name, wyrmprints, weapon, dragon, acl, rotationInit, rotationLoop)
     }
 
     fun loadConfig(conf: Map<String, Any?>): StageConfig {
-        val duration = conf["duration"] as Double?
-        val mass = conf["mass"] as Int? ?: 2500
-        val yaml = conf["yaml"] as Boolean? ?: false
+        val stageConf = conf.lowercasedKeys()
+        val duration = stageConf["duration"] as Double?
+        val mass = stageConf["mass"] as Int? ?: 2500
+        val yaml = stageConf["yaml"] as Boolean? ?: false
         return StageConfig(duration, mass, yaml)
     }
 
-    fun loadEnemy(enemy: Map<String, Any?>): EnemyPreset {
+    fun loadEnemy(conf: Map<String, Any?>): EnemyPreset {
+        val enemy = conf.lowercasedKeys()
         val def = enemy["def"] as Double?
         val hp = enemy["hp"] as Int?
         val element = (enemy["element"] as? String)?.let {

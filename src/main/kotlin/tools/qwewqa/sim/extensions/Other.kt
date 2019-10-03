@@ -23,6 +23,8 @@ fun Collection<Number>.std(): Double {
     return sqrt(d.map { (average - it) * (average - it) }.average())
 }
 
+fun Map<String, *>.lowercasedKeys() = this.mapKeys { it.key.toLowerCase() }
+
 operator fun <T> (T.() -> Unit).plus(other: T.() -> Unit): T.() -> Unit = {
     other()
     this@plus()
