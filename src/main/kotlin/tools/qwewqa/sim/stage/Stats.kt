@@ -77,7 +77,7 @@ enum class Stat(val type: StatType, vararg val names: String, val default: Doubl
     HP(MULTI_BRACKET, "hp", "health", default = 100.percent),
     BUFF_TIME(FULLY_ADDITIVE, "buff time", "bt", default = 100.percent),
     DRAGON_HASTE(FULLY_ADDITIVE, "dragon haste", "dh", default = 100.percent),
-    SKILL_HASTE(FULLY_ADDITIVE, "skill haste", "sh", default = 100.percent),
+    SKILL_HASTE(FULLY_ADDITIVE, "skill haste", "sh"),
     STRIKING_HASTE(SINGLE_BRACKET, "striking haste", "fs haste", "fsh"),
     FORCESTRIKE_DAMAGE(FULLY_ADDITIVE, "forcestrike damage", "forcestrike", "fs", "fs dmg", default = 100.percent),
     HEALING_POTENCY(FULLY_ADDITIVE, "healing potency", "healing", "potency", default = 100.percent),

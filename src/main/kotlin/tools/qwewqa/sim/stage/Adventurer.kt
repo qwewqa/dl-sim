@@ -152,7 +152,7 @@ class Adventurer(val stage: Stage) : Listenable {
                 element.multiplier(enemy.element)
 
     fun spFormula(amount: Int, fs: Boolean = false) =
-        ceil((amount.toFloat() * (stats[SKILL_HASTE].value.toFloat() + if (fs) stats[STRIKING_HASTE].value.toFloat() else 0.0f)).toDouble()).toInt()
+        ceil((amount.toFloat() * (1.0 + stats[SKILL_HASTE].value + if (fs) stats[STRIKING_HASTE].value else 0.0).toFloat()).toDouble()).toInt()
 
     fun getCritMod() = if (Random.nextDouble() <= stats[CRIT_RATE].value) stats[CRIT_DAMAGE].value else 0.0
 

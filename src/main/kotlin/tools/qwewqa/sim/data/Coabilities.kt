@@ -15,14 +15,23 @@ object Coabilities : DataMap<Coability>() {
     fun dragonHaste(value: Double) = coability(Stat.DRAGON_HASTE, value)
     fun skillDamage(value: Double) = coability(Stat.SKILL_DAMAGE, value)
 
+    val axe = def(15.percent)
+    val blade = str(10.percent)
+    val bow = skillHaste(15.percent)
+    val dagger = critRate(10.percent)
+    val lance = hp(15.percent)
+    val staff = healingPotency(15.percent)
+    val sword = dragonHaste(10.percent)
+    val wand = skillDamage(15.percent)
+
     init {
-        this["axe", "def"] = def(15.percent)
-        this["blade", "str"] = str(10.percent)
-        this["bow", "haste"] = skillHaste(15.percent)
-        this["dagger", "crit", "crit rate"] = critRate(10.percent)
-        this["lance", "hp"] = hp(15.percent)
-        this["staff", "potency"] = healingPotency(15.percent)
-        this["sword", "dragon"] = dragonHaste(10.percent)
-        this["wand", "skill", "skill damage"] = skillDamage(15.percent)
+        this["axe", "def"] = axe
+        this["blade", "str"] = blade
+        this["bow", "haste"] = bow
+        this["dagger", "crit", "crit rate"] = dagger
+        this["lance", "hp"] = lance
+        this["staff", "potency"] = staff
+        this["sword", "dragon"] = sword
+        this["wand", "skill", "skill damage"] = wand
     }
 }

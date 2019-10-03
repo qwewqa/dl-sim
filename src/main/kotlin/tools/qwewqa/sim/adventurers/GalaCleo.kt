@@ -12,7 +12,7 @@ val galaCleo = AdventurerSetup {
     name = "Gala Cleo"
     element = Element.Shadow
     str = 489
-    ex = Coabilities["Wand"]
+    ex = Coabilities.wand
     weapon = Weapons.shadowWand5t3
     dragon = Dragons.shinobi
     wp = Wyrmprints.rr + Wyrmprints.jots
@@ -40,8 +40,20 @@ val galaCleo = AdventurerSetup {
         wait(1.45)
     }
 
-    rotation {
-        init = "s2 s1 c5 c4fs s1"
-        loop = "c5 c4fs s1 c5 s2 c5fs s1"
+    prerun {
+        val haste = stats[Stat.SKILL_HASTE].value
+        if (logic != null) return@prerun
+        if (haste >= 8.percent) {
+            rotation {
+                init = "s2 s1 c5 c4fs s1"
+                loop = "c5 c4fs s1 c5 s2 c5fs s1"
+            }
+        } else {
+            acl {
+                +fs { altFs > 0 && (sp.ready("s1") || sp.ready("s2")) }
+                +s2
+                +s1
+            }
+        }
     }
 }

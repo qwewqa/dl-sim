@@ -12,8 +12,13 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.stage.Logger
+import tools.qwewqa.sim.stage.Stat
 import tools.qwewqa.sim.stage.endIn
 import tools.qwewqa.sim.stage.stage
+import tools.qwewqa.sim.wep.blade
+import tools.qwewqa.sim.wep.bow
+import tools.qwewqa.sim.wep.dagger
+import tools.qwewqa.sim.wep.wand
 import javax.script.ScriptEngineManager
 
 fun main(args: Array<String>) = Main().subcommands(Script(), Run()).main(args)
@@ -56,10 +61,10 @@ class Run : CliktCommand(
     val mass by option("-m", "--mass", help = "number of mass sims").int().default(2500)
     val teamDps by option("--team", help = "team dps, defaulting to 6000").int()
     val verbose by option("-v", help = "verbosity (use 0-4 times), ignored if mass isn't 1").counted()
-    val blade by option("-k", help = "blade coab").flag(default = false)
-    val wand by option("-r", help = "wand coab").flag(default = false)
-    val dagger by option("-d", help = "dagger coab").flag(default = false)
-    val bow by option("-b", help = "bow coab").flag(default = false)
+    val k by option("-k", "--blade", help = "blade coab").flag(default = false)
+    val r by option("-r", "--wand", help = "wand coab").flag(default = false)
+    val d by option("-d", "--dagger", help = "dagger coab").flag(default = false)
+    val b by option("-b", "--bow", help = "bow coab").flag(default = false)
     val prints by option("--wp", "--wyrmprint").multiple()
     val wep by option("--weap", "--weapon")
     val drag by option("--drag", "--dragon")
@@ -81,20 +86,20 @@ class Run : CliktCommand(
                 }
 
                 wep?.let { weapon = Weapons[it] }
-                drag?. let { dragon = Dragons[it] }
+                drag?.let { dragon = Dragons[it] }
 
                 prerun {
-                    if (blade) {
-                        Coabilities.str(10.percent).initialize(this)
+                    if (k) {
+                        Coabilities.blade.initialize(this)
                     }
-                    if (wand) {
-                        Coabilities.skillDamage(15.percent).initialize(this)
+                    if (r) {
+                        Coabilities.wand.initialize(this)
                     }
-                    if (dagger) {
-                        Coabilities.critRate(10.percent).initialize(this)
+                    if (d) {
+                        Coabilities.dagger.initialize(this)
                     }
-                    if (bow) {
-                        Coabilities.skillHaste(15.percent).initialize(this)
+                    if (b) {
+                        Coabilities.bow.initialize(this)
                     }
                 }
             }
@@ -104,10 +109,10 @@ class Run : CliktCommand(
                 prerun {
                     if (teamDps != null) return@prerun
                     var multiplier = 1.0
-                    if (blade) multiplier *= 1.1
-                    if (wand) multiplier *= 1.08
-                    if (dagger) multiplier *= 1.07
-                    if (bow) multiplier *= 1.05
+                    multiplier *= 1.0 + stats[Stat.STR].coability
+                    multiplier *= 1.0 + stats[Stat.SKILL_DAMAGE].coability * 8.0 / 15.0
+                    multiplier *= 1.0 + stats[Stat.CRIT_RATE].coability * 7.0 / 10.0
+                    multiplier *= 1.0 + stats[Stat.SKILL_HASTE].coability * 1.0 / 3.0
                     str = (str * multiplier).toInt()
                 }
             }
