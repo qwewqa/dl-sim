@@ -76,7 +76,7 @@ data class EnemyPreset(
 
 fun Stage.loadEnemyPreset(preset: EnemyPreset) {
     enemy {
-        def = preset.def ?: 1.0
+        def = preset.def ?: 10.0
         preset.hp?.let { hp = it }
         preset.element?.let { element = it }
         preset.toOd?.let { toOd = it }

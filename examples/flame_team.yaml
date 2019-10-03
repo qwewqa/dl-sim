@@ -1,0 +1,11 @@
+config:
+  duration: 180.0
+adventurers:
+  - Rena:
+  - Emma:
+  - Aoi:
+      wyrmprints: [RR, EE]
+  - Serena:
+      wyrmprints: [RR, EE]
+enemy:
+  element: wind

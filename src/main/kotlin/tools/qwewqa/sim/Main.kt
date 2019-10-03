@@ -139,10 +139,10 @@ class Preset : CliktCommand(
     }
 
     fun loadPreset(data: Map<String, Any>): RunPreset {
-        val adventurerData = data["adventurers"] as List<Map<String, Map<String, Any?>>>? ?: error("error with adventurers")
+        val adventurerData = data["adventurers"] as List<Map<String, Map<String, Any?>?>>? ?: error("error with adventurers")
         val adventurers = adventurerData.map { adv -> adv.map { loadBuild(it.toPair()) } }.reduce { a, b -> a + b }
         val config = loadConfig(data["config"] as Map<String, Any?>? ?: error("error with config"))
-        val enemy = loadEnemy(data["enemy"] as Map<String, Any?>? ?: emptyMap<String, Any?>())
+        val enemy = loadEnemy(data["enemy"] as Map<String, Any?>? ?: emptyMap())
         return RunPreset(
             config,
             adventurers,
@@ -150,8 +150,8 @@ class Preset : CliktCommand(
         )
     }
 
-    fun loadBuild(adv: Pair<String, Map<String, Any?>>): AdventurerPreset {
-        val map = adv.second
+    fun loadBuild(adv: Pair<String, Map<String, Any?>?>): AdventurerPreset {
+        val map = adv.second ?: emptyMap()
         val name = adv.first
         val wyrmprints = map["wyrmprints"] as List<String>?
         val weapon = map["weapon"] as String?
