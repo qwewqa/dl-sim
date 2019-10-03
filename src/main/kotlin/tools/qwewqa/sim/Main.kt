@@ -10,6 +10,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import org.yaml.snakeyaml.Yaml
 import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.*
+import tools.qwewqa.sim.extensions.enemy
 import tools.qwewqa.sim.extensions.lowercasedKeys
 import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.stage.*
@@ -54,7 +55,7 @@ class Run : CliktCommand(
     val duration by option("-t", "--time", help = "sim duration in seconds").double().default(180.0)
     val mass by option("-m", "--mass", help = "number of mass sims").int().default(2500)
     val teamDps by option("--team", help = "team dps, defaulting to 6000").int()
-    val verbose by option("-v", help = "verbosity (use 0-4 times), ignored if mass isn't 1").counted()
+    val verbose by option("-v", help = "verbosity (use 0-4 times), disables mass sim").counted()
     val k by option("-k", "--blade", help = "blade coab").flag(default = false)
     val r by option("-r", "--wand", help = "wand coab").flag(default = false)
     val d by option("-d", "--dagger", help = "dagger coab").flag(default = false)
@@ -64,12 +65,13 @@ class Run : CliktCommand(
     val drag by option("--drag", "--dragon", help = "dragon")
     val customAcl by option("--acl", help = "custom acl")
     val rotInit by option("--rotation-init", help = "custom rotation init")
-    val rot by option("--rotation", "--rotation-loop", help = "custom rotation loop (overrides acl)")
+    val rot by option("--rotation-loop", help = "custom rotation loop (overrides acl)")
+    val res by option("--res", "--resistance", help = "value of all affliction resistances as a percent").int()
     val yaml by option("--yaml", hidden = true).flag(default = false)
 
     override fun run() {
         stage(
-            mass = if (mass > 0) mass else 1,
+            mass = if (verbose == 0) mass else 1,
             logLevel = when (verbose) {
                 0 -> Logger.Level.NONE
                 1 -> Logger.Level.BASIC
@@ -117,6 +119,21 @@ class Run : CliktCommand(
                     str = (str * multiplier).toInt()
                 }
             }
+            enemy {
+                def = 10.0
+                res?.toDouble()?.div(100.0)?.let {
+                    afflictions.apply {
+                        burn.resist = it
+                        poison.resist = it
+                        paralysis.resist = it
+                        bog.resist = it
+                        blind.resist = it
+                        sleep.resist = it
+                        freeze.resist = it
+                        stun.resist = it
+                    }
+                }
+            }
 
             endIn(duration)
         }
@@ -143,7 +160,7 @@ class Preset : CliktCommand(
         val preset = data.lowercasedKeys()
         val adventurerData = preset["adventurers"] as List<Map<String, Map<String, Any?>?>>? ?: error("error with adventurers")
         val adventurers = adventurerData.map { adv -> adv.map { loadBuild(it.toPair()) } }.reduce { a, b -> a + b }
-        val config = loadConfig(preset["config"] as Map<String, Any?>? ?: error("error with config"))
+        val config = loadConfig(preset["config"] as Map<String, Any?>? ?: emptyMap())
         val enemy = loadEnemy(preset["enemy"] as Map<String, Any?>? ?: emptyMap())
         return RunPreset(
             config,

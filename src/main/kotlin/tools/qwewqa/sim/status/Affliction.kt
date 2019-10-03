@@ -6,7 +6,7 @@ import tools.qwewqa.sim.stage.*
 import kotlin.random.Random
 
 data class AfflictionStatus(var resist: Double = 0.percent, var tolerance: Double = 5.percent) {
-    fun attempt(chance: Double) = if (resist < 1.0 && Random.nextDouble() < chance - resist) {
+    fun attempt(chance: Double) = if (resist < (1.0 - 0.00001) && Random.nextDouble() < chance - resist) {
         resist += tolerance
         true
     } else false
