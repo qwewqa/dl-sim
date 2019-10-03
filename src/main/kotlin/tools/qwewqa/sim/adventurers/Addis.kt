@@ -15,7 +15,7 @@ val addis = AdventurerSetup {
     ex = Coabilities["Str"]
     weapon = Weapons.windBlade5t3
     dragon = Dragons.vayu
-    wp = Wyrmprints.rr + Wyrmprints.bn
+    wyrmprints = Wyrmprints.rr + Wyrmprints.bn
 
     a1 = Abilities.punisher(8.percent, Conditions.bleeding)
     a3 = Abilities.brokenPunisher(20.percent)

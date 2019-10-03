@@ -15,7 +15,7 @@ val ezelith = AdventurerSetup {
     ex = Coabilities["Dagger"]
     weapon = Weapons.flameDagger5t3
     dragon = Dragons.sakuya
-    wp = Wyrmprints.tb + Wyrmprints.lc
+    wyrmprints = Wyrmprints.tb + Wyrmprints.lc
 
     a1 = Abilities.debuffChance(20.percent, Conditions.combo15)
     a3 = Abilities.brokenPunisher(30.percent)

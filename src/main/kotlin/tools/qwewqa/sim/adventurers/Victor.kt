@@ -14,7 +14,7 @@ val victor = AdventurerSetup {
     ex = Coabilities["Str"]
     weapon = Weapons["Anemone"]
     dragon = Dragons["Vayu"]
-    wp = Wyrmprints["RR", "BN"]
+    wyrmprints = Wyrmprints["RR", "BN"]
 
     a1 = Abilities["str"](13.percent, Conditions["hp70"])
 

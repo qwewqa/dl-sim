@@ -17,7 +17,7 @@ val aoi = AdventurerSetup {
     ex = Coabilities["Str"]
     weapon = Weapons["Heaven's Acuity"]
     dragon = Dragons["Sakuya"]
-    wp = Wyrmprints["RR", "CE"]
+    wyrmprints = Wyrmprints["RR", "CE"]
 
     s1(2630) {
         +skillAtk(878.percent, "s1")

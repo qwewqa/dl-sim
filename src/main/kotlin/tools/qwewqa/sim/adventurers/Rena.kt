@@ -15,7 +15,7 @@ val rena = AdventurerSetup {
     ex = Coabilities["Str"]
     weapon = Weapons.flameBlade5t3
     dragon = Dragons.sakuya
-    wp = Wyrmprints.rr + Wyrmprints.ee
+    wyrmprints = Wyrmprints.rr + Wyrmprints.ee
 
     s1(3303) {
         burn(skillAtk(97.percent, "s1", "burn").snapshot(), duration = 12.0, chance = 120.percent)

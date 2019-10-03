@@ -14,7 +14,7 @@ val serena = AdventurerSetup {
     ex = Coabilities["Sword"]
     weapon = Weapons["Levatein"]
     dragon = Dragons["Arctos"]
-    wp = Wyrmprints["RR"] + Wyrmprints["CE"]
+    wyrmprints = Wyrmprints["RR"] + Wyrmprints["CE"]
 
     a1 = Abilities["barrage obliteration"](6.percent)
     a3 = Abilities["barrage devastation"](3.percent)

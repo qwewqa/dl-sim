@@ -37,7 +37,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var dodge: Move? = genericDodge
     var dragon: Dragon? = null
     var weapon: Weapon? = null
-    var wp: Wyrmprint? = null
+    var wyrmprints: Wyrmprint? = null
     var weaponType: WeaponType? = null
     val timeline get() = stage.timeline
     val enemy get() = stage.enemy
@@ -182,7 +182,7 @@ class Adventurer(val stage: Stage) : Listenable {
         a3.init()
         ex.init()
         dragon?.init()
-        wp.init()
+        wyrmprints.init()
         prerunChecks()
         prerun()
         think()

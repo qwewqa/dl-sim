@@ -6,7 +6,7 @@ stage {
         ex = Coabilities["Str"]
         weapon = Weapons["Wind 5t3 Blade"]
         dragon = Dragons["Vayu"]
-        wp = Wyrmprints["RR", "BN"]
+        wyrmprints = Wyrmprints["RR", "BN"]
 
         a1 = Abilities["Punisher"](8.percent, Conditions["Bleeding"])
         a3 = Abilities["Broken Punisher"](20.percent)

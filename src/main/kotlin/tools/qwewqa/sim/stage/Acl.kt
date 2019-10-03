@@ -24,6 +24,10 @@ class AclSelector(val adventurer: Adventurer) {
     val s2info get() = SkillData(adventurer.sp["s2"], adventurer.sp.remaining("s2"), adventurer.sp.ready("s2"))
     val s3info get() = SkillData(adventurer.sp["s3"], adventurer.sp.remaining("s3"), adventurer.sp.ready("s3"))
 
+    val String.remaining get() = adventurer.sp.remaining(this)
+    val String.ready get() = adventurer.sp.ready(this)
+    val String.charge get() = adventurer.sp[this]
+
     val seq = when (adventurer.trigger) {
         "idle" -> 0
         "x1" -> 1

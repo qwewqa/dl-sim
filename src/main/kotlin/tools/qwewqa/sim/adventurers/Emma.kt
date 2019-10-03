@@ -13,7 +13,7 @@ val emma = AdventurerSetup {
     ex = Coabilities["HP"]
     weapon = Weapons.flameLance5t3
     dragon = Dragons.cerberus
-    wp = Wyrmprints.bb + Wyrmprints.hg
+    wyrmprints = Wyrmprints.bb + Wyrmprints.hg
 
     a1 = Abilities.buffTime(25.percent)
     a3 = Abilities.primedStr(5.percent)

@@ -16,7 +16,7 @@ val fleur = AdventurerSetup {
     ex = Coabilities["Crit Rate"]
     weapon = Weapons.lightDagger5t3
     dragon = Dragons.cupid
-    wp = Wyrmprints.tb + Wyrmprints.lc
+    wyrmprints = Wyrmprints.tb + Wyrmprints.lc
 
     a1 = Abilities.skillHaste(8.percent, Conditions.hp70)
     a3 = Abilities.punisher(20.percent, Conditions.paralyzed)

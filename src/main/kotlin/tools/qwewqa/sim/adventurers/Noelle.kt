@@ -14,7 +14,7 @@ val noelle = AdventurerSetup {
     ex = Coabilities["Skill Damage"]
     weapon = Weapons.windWand5t3
     dragon = Dragons.zephyr
-    wp = Wyrmprints.hoh + Wyrmprints.hg
+    wyrmprints = Wyrmprints.hoh + Wyrmprints.hg
 
     a1 = Abilities.buffTime(25.percent)
     a3 = Abilities.primedDef(8.percent)

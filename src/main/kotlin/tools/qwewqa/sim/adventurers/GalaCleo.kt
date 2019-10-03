@@ -15,7 +15,7 @@ val galaCleo = AdventurerSetup {
     ex = Coabilities.wand
     weapon = Weapons.shadowWand5t3
     dragon = Dragons.shinobi
-    wp = Wyrmprints.rr + Wyrmprints.jots
+    wyrmprints = Wyrmprints.rr + Wyrmprints.jots
 
     a1 = Abilities.magicalModification(25.percent)
     a3 = Abilities.skillPrep(100.percent)

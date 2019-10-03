@@ -1,0 +1,16 @@
+config:
+  duration: 180.0
+adventurers:
+  - Addis:
+      wyrmprints: [RR, BN]
+      weapon: wind 5t3 blade
+      dragon: Vayu
+      acl: |
+        s2, s1.remaining < 260 && x5 && bleed < 3
+        s1, !s2.ready && bleed < 3
+        s3, !s1transform
+        fs, s1transform && x4 && s1.remaining <= 200
+        fsf, x5
+  - Noelle:
+      rotation:
+        loop: c5fs c5 s1
