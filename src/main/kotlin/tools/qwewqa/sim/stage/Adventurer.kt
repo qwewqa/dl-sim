@@ -43,15 +43,21 @@ class Adventurer(val stage: Stage) : Listenable {
     val enemy get() = stage.enemy
     var real = true
 
-    var s1phase = 1
+    var s1Phase = 1
         set(value) {
             field = if (value > 3) 1 else value
         }
 
-    var s2phase = 1
+    var s2Phase = 1
         set(value) {
             field = if (value > 3) 1 else value
         }
+
+    var s1TransformBuff: Buff<*, *>? = null
+    val s1Transform get() = s1TransformBuff?.on ?: false
+
+    var s2TransformBuff: Buff<*, *>? = null
+    val s2Transform get() = s2TransformBuff?.on ?: false
 
     var altFs = 0
 

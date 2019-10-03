@@ -9,16 +9,9 @@ import com.github.ajalt.clikt.parameters.types.file
 import com.github.ajalt.clikt.parameters.types.int
 import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.prerun
-import tools.qwewqa.sim.stage.Logger
-import tools.qwewqa.sim.stage.Stat
-import tools.qwewqa.sim.stage.endIn
-import tools.qwewqa.sim.stage.stage
-import tools.qwewqa.sim.wep.blade
-import tools.qwewqa.sim.wep.bow
-import tools.qwewqa.sim.wep.dagger
-import tools.qwewqa.sim.wep.wand
+import tools.qwewqa.sim.extensions.rotation
+import tools.qwewqa.sim.stage.*
 import javax.script.ScriptEngineManager
 
 fun main(args: Array<String>) = Main().subcommands(Script(), Run()).main(args)
@@ -68,6 +61,9 @@ class Run : CliktCommand(
     val prints by option("--wp", "--wyrmprint", help = "wyrmprint, repeatable").multiple()
     val wep by option("--weap", "--weapon", help = "weapon")
     val drag by option("--drag", "--dragon", help = "dragon")
+    val customAcl by option("--acl", help = "custom acl")
+    val rotInit by option("--rotation-init", help = "custom rotation init")
+    val rot by option("--rotation", help = "custom rotation loop (overrides acl)")
     val yaml by option("--yaml", hidden = true).flag(default = false)
 
     override fun run() {
@@ -82,14 +78,15 @@ class Run : CliktCommand(
             },
             yaml = yaml
         ) {
-            val adv = Adventurers[name] {
-                if (prints.isNotEmpty()) {
-                    wp = prints.map { Wyrmprints[it] }.reduce { a, b -> a + b }
-                }
-
-                wep?.let { weapon = Weapons[it] }
-                drag?.let { dragon = Dragons[it] }
-
+            val adv = AdventurerBuild(
+                name = name,
+                wp = prints,
+                weapon = wep,
+                dragon = drag,
+                acl = customAcl,
+                rotationInit = rotInit,
+                rotationLoop = rot
+            ).build().apply {
                 prerun {
                     if (k) {
                         Coabilities.blade.initialize(this)
@@ -105,6 +102,7 @@ class Run : CliktCommand(
                     }
                 }
             }
+
             teambuff {
                 element = adv.element
                 str = teamDps ?: 6000

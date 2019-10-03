@@ -1,7 +1,7 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.extensions.acl
+import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.skillAtk
@@ -21,7 +21,7 @@ val galaCleo = AdventurerSetup {
     a3 = Abilities.skillPrep(100.percent)
 
     s1(2814) {
-        val hits = s1phase + 2
+        val hits = s1Phase + 2
         schedule {
             wait(30.frames)
             repeat(hits) {
@@ -30,7 +30,7 @@ val galaCleo = AdventurerSetup {
                 +skillAtk(265.percent, "s1", "explosion")
             }
         }
-        s1phase++
+        s1Phase++
         wait(1.45)
     }
 

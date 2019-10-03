@@ -1,12 +1,11 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.extensions.acl
+import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
-import tools.qwewqa.sim.status.burn
 import tools.qwewqa.sim.status.paralysis
 import tools.qwewqa.sim.status.paralyzed
 
@@ -27,10 +26,10 @@ val fleur = AdventurerSetup {
         paralysis(
             skillAtk(88.3.percent, "s1", "paralysis").snapshot(),
             duration = 13.0,
-            chance = if (s1phase == 1) 110.percent else 160.percent
+            chance = if (s1Phase == 1) 110.percent else 160.percent
         )
         +skillAtk(333.percent * if (enemy.paralyzed) 1.8 else 1.0, "s1", "hit", "b")
-        s1phase++
+        s1Phase++
         wait(1.1)
     }
 

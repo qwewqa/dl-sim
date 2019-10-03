@@ -36,6 +36,8 @@ class Stage {
     operator fun AdventurerSetup.invoke() = Adventurer(this@Stage).apply(init).also { adventurers += it }
     inline operator fun AdventurerSetup.invoke(init2: Adventurer.() -> Unit) = Adventurer(this@Stage).apply(init).apply(init2).also { adventurers += it }
 
+    fun AdventurerBuild.build() = build(this)
+
     suspend fun awaitResults(): StageResults {
         if (!started) run()
         timeline.join()

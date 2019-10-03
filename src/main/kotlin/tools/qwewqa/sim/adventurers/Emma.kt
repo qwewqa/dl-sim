@@ -1,12 +1,10 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.extensions.acl
+import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
-import tools.qwewqa.sim.status.burn
 
 val emma = AdventurerSetup {
     name = "Emma"
