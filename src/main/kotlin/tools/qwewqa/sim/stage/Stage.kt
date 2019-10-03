@@ -104,7 +104,7 @@ fun Enemy.disp() {
     if (name != "Enemy") println("  Name: $name")
     println("  Element: $element")
     println("  Def: $def")
-    hp?.let { println("  Hp: $it") }
+    baseHp?.let { println("  Hp: $it") }
     toOd?.let { println("  ToOd: $it") }
     toBreak?.let { println("  ToBreak: $it") }
     toOd?.let { println("  OdDef: $odDef") }

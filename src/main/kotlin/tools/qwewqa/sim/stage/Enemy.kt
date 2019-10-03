@@ -18,6 +18,8 @@ class Enemy(val stage: Stage) : Listenable {
     fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category, message)
 
     var hp: Int? = null
+    var baseHp: Int? = null
+        private set
     var toOd: Int? = null
     var toBreak: Int? = null
     var breakDuration = 10.0
@@ -53,6 +55,7 @@ class Enemy(val stage: Stage) : Listenable {
         damageSlices.get(snapshot.name) += hitDamage
         listeners.raise("dmg")
         hp?.let {
+            if (baseHp == null) baseHp = it
             hp = it - actual
             if (it <= 0) {
                 stage.end()

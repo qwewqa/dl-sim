@@ -202,6 +202,7 @@ fun AclSelector.evaluateValue(name: String) = when (name.toLowerCase()) {
     "s2.remaining" -> s2info.remaining
     "s3.charge" -> s3info.charge
     "s3.remaining" -> s3info.remaining
+    "od_remaining" -> adventurer.enemy.odRemaining
     else -> when {
         name.toIntOrNull() != null -> name.toIntOrNull()!!
         else -> error("unknown value $name")
@@ -211,13 +212,20 @@ fun AclSelector.evaluateValue(name: String) = when (name.toLowerCase()) {
 fun tokenizeCondition(string: String) = string
     .replace("(", " ( ")
     .replace(")", " ) ")
+    .replace("\\s+".toRegex(), " ")
     .replace("==", "=")
-    .replace(" = ", "=")
-    .replace(" > ", ">")
-    .replace(" < ", "<")
-    .replace(" >= ", ">=")
-    .replace(" <= ", "<=")
-    .replace(" != ", "!=")
+    .replace(" =", "=")
+    .replace(" >", ">")
+    .replace(" <", "<")
+    .replace(" >=", ">=")
+    .replace(" <=", "<=")
+    .replace(" !=", "!=")
+    .replace("= ", "=")
+    .replace("> ", ">")
+    .replace("< ", "<")
+    .replace(">= ", ">=")
+    .replace("<= ", "<=")
+    .replace("!= ", "!=")
     .replace("&&", " && ")
     .replace("||", " || ")
     .replace("\\s+".toRegex(), " ")

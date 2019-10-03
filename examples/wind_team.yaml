@@ -14,3 +14,7 @@ adventurers:
   - Noelle:
       rotation:
         loop: c5fs c5 s1
+enemy:
+  hp: 1000000
+  def: 10.0
+  element: water

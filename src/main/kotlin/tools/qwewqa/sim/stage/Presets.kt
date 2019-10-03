@@ -4,7 +4,22 @@ import tools.qwewqa.sim.data.Adventurers
 import tools.qwewqa.sim.data.Dragons
 import tools.qwewqa.sim.data.Weapons
 import tools.qwewqa.sim.data.Wyrmprints
+import tools.qwewqa.sim.extensions.enemy
 import tools.qwewqa.sim.extensions.rotation
+
+data class RunPreset(
+    val config: StageConfig,
+    val adventurers: List<AdventurerPreset>,
+    val enemy: EnemyPreset
+)
+
+fun Stage.applyPreset(preset: RunPreset) {
+    loadConfig(preset.config)
+    preset.adventurers.forEach {
+        loadAdventurerPreset(it)
+    }
+    loadEnemyPreset(preset.enemy)
+}
 
 data class AdventurerPreset(
     val name: String,
@@ -32,21 +47,52 @@ fun Stage.loadAdventurerPreset(advPreset: AdventurerPreset) =
 
 data class StageConfig(
     val duration: Double?,
-    val mass: Int
+    val mass: Int,
+    val yaml: Boolean
 )
 
 fun Stage.loadConfig(config: StageConfig) = config.apply {
     duration?.let { endIn(it) }
 }
 
-data class RunPreset(
-    val config: StageConfig,
-    val adventurers: List<AdventurerPreset>
+data class EnemyPreset(
+    val def: Double?,
+    val hp: Int?,
+    val element: Element?,
+    val toOd: Int?,
+    val toBreak: Int?,
+    val odDef: Double?,
+    val breakDef: Double?,
+    val breakDuration: Double?,
+    val burnRes: Double?,
+    val poisonRes: Double?,
+    val paralysisRes: Double?,
+    val blindRes: Double?,
+    val bogRes: Double?,
+    val sleepRes: Double?,
+    val freezeRes: Double?,
+    val stunRes: Double?
 )
 
-fun Stage.applyPreset(preset: RunPreset) {
-    loadConfig(preset.config)
-    preset.adventurers.forEach {
-        loadAdventurerPreset(it)
+fun Stage.loadEnemyPreset(preset: EnemyPreset) {
+    enemy {
+        def = preset.def ?: 1.0
+        preset.hp?.let { hp = it }
+        preset.element?.let { element = it }
+        preset.toOd?.let { toOd = it }
+        preset.toBreak?. let { toBreak = it }
+        preset.odDef?.let { odDef = it }
+        preset.breakDef?.let { breakDef = it }
+        preset.breakDuration?.let { breakDuration = it }
+        afflictions.apply {
+            preset.poisonRes?.let { poison.resist = it }
+            preset.burnRes?.let { burn.resist = it }
+            preset.paralysisRes?.let { paralysis.resist = it }
+            preset.blindRes?.let { blind.resist = it }
+            preset.bogRes?.let { bog.resist = it }
+            preset.sleepRes?.let { sleep.resist = it }
+            preset.freezeRes?.let { freeze.resist = it }
+            preset.stunRes?.let { stun.resist = it }
+        }
     }
 }

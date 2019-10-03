@@ -16,5 +16,10 @@ stage{
             loop = "c5fs c5 s1"
         }
     }
+    enemy {
+        def = 10.0
+        hp = 1_000_000
+        element = Water
+    }
     endIn(180.0)
 }

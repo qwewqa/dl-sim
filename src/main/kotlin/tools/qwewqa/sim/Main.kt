@@ -22,7 +22,7 @@ class Main : CliktCommand() {
 
 class Script : CliktCommand(
     name = "script",
-    help = "Runs a script file"
+    help = "Runs a script file (kts)"
 ) {
     val file by argument("filename").file(exists = true)
 
@@ -125,7 +125,7 @@ class Run : CliktCommand(
 @Suppress("UNCHECKED_CAST")
 class Preset : CliktCommand(
     name = "preset",
-    help = "run an adventurer preset"
+    help = "run an adventurer preset (yaml)"
 ) {
     val file by argument("filename").file(exists = true)
 
@@ -133,37 +133,86 @@ class Preset : CliktCommand(
         val yaml = Yaml()
         val data: Map<String, Any> = yaml.load(file.reader())
         val preset = loadPreset(data)
-        stage(mass = preset.config.mass) {
+        stage(mass = preset.config.mass, yaml = preset.config.yaml) {
             applyPreset(preset)
         }
     }
 
     fun loadPreset(data: Map<String, Any>): RunPreset {
-        val adventurerData = data["adventurers"] as? List<Map<String, Map<String, Any?>>> ?: error("error with adventurers")
+        val adventurerData = data["adventurers"] as List<Map<String, Map<String, Any?>>>? ?: error("error with adventurers")
         val adventurers = adventurerData.map { adv -> adv.map { loadBuild(it.toPair()) } }.reduce { a, b -> a + b }
-        val config = loadConfig(data["config"] as? Map<String, Any?> ?: error("error with config"))
+        val config = loadConfig(data["config"] as Map<String, Any?>? ?: error("error with config"))
+        val enemy = loadEnemy(data["enemy"] as Map<String, Any?>? ?: emptyMap<String, Any?>())
         return RunPreset(
             config,
-            adventurers
+            adventurers,
+            enemy
         )
     }
 
     fun loadBuild(adv: Pair<String, Map<String, Any?>>): AdventurerPreset {
         val map = adv.second
         val name = adv.first
-        val wyrmprints = map["wyrmprints"] as? List<String>
-        val weapon = map["weapon"] as? String?
-        val dragon = map["dragon"] as? String?
-        val acl = map["acl"] as? String?
-        val rotation = map["rotation"] as? Map<String, String>
+        val wyrmprints = map["wyrmprints"] as List<String>?
+        val weapon = map["weapon"] as String?
+        val dragon = map["dragon"] as String?
+        val acl = map["acl"] as String?
+        val rotation = map["rotation"] as Map<String, String>?
         val rotationInit = rotation?.get("init")
         val rotationLoop = rotation?.get("loop")
         return AdventurerPreset(name, wyrmprints, weapon, dragon, acl, rotationInit, rotationLoop)
     }
 
     fun loadConfig(conf: Map<String, Any?>): StageConfig {
-        val duration = conf["duration"] as? Double
-        val mass = conf["mass"] as? Int ?: 2500
-        return StageConfig(duration, mass)
+        val duration = conf["duration"] as Double?
+        val mass = conf["mass"] as Int? ?: 2500
+        val yaml = conf["yaml"] as Boolean? ?: false
+        return StageConfig(duration, mass, yaml)
+    }
+
+    fun loadEnemy(enemy: Map<String, Any?>): EnemyPreset {
+        val def = enemy["def"] as Double?
+        val hp = enemy["hp"] as Int?
+        val element = (enemy["element"] as? String)?.let {
+            when(it.toLowerCase()) {
+                "flame" -> Element.Flame
+                "water" -> Element.Water
+                "wind" -> Element.Wind
+                "light" -> Element.Light
+                "shadow" -> Element.Shadow
+                else -> error("unknown element $it")
+            }
+        }
+        val toOd = enemy["to_od"] as Int?
+        val toBreak = enemy["to_break"] as Int?
+        val odDef = enemy["od_def"] as Double?
+        val breakDef = enemy["break_def"] as Double?
+        val breakDuration = enemy["break_duration"] as Double?
+        val burnRes = enemy["burn_res"] as Double?
+        val poisonRes = enemy["poison_res"] as Double?
+        val paralysisRes = enemy["paralysis_res"] as Double?
+        val blindRes = enemy["blind_res"] as Double?
+        val bogRes = enemy["bog_res"] as Double?
+        val sleepRes = enemy["sleep_res"] as Double?
+        val freezeRes = enemy["freeze_res"] as Double?
+        val stunRes = enemy["stun_res"] as Double?
+        return EnemyPreset(
+            def = def,
+            hp = hp,
+            element = element,
+            toOd = toOd,
+            toBreak = toBreak,
+            odDef = odDef,
+            breakDef = breakDef,
+            breakDuration = breakDuration,
+            burnRes = burnRes,
+            poisonRes = poisonRes,
+            paralysisRes = paralysisRes,
+            blindRes = blindRes,
+            bogRes = bogRes,
+            sleepRes = sleepRes,
+            freezeRes = freezeRes,
+            stunRes = stunRes
+        )
     }
 }
