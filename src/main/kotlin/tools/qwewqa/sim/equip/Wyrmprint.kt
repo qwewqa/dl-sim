@@ -14,5 +14,5 @@ data class Wyrmprint(
     }
 
     operator fun plus(other: Wyrmprint) =
-        Wyrmprint("$name + ${other.name}", str + other.str, abilities + other.abilities)
+        Wyrmprint("$name, ${other.name}", str + other.str, abilities + other.abilities)
 }

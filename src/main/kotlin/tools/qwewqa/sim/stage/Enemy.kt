@@ -27,7 +27,12 @@ class Enemy(val stage: Stage) : Listenable {
     var phase = Phase.Normal
     val odRemaining = if (phase == Phase.Overdrive) toBreak?.minus(gauge) ?: Int.MAX_VALUE else Int.MAX_VALUE
 
-    var def: Double by stats["def"]::base.newModifier()
+    var def = 0.0
+        set(value) {
+            _def = value
+            field = value
+        }
+    private var _def: Double by stats["def"]::base.newModifier()
 
     var debuffCount = 0
 
@@ -59,7 +64,7 @@ class Enemy(val stage: Stage) : Listenable {
                 if (gauge > it) {
                     gauge = 0
                     phase = Phase.Overdrive
-                    def *= odDef
+                    _def *= odDef
                     log("phase", "od")
                 }
                 listeners.raise("phase")
@@ -70,13 +75,13 @@ class Enemy(val stage: Stage) : Listenable {
                 log(Logger.Level.VERBOSIEST, "gauge", "od gauge filled by $od (mult ${snapshot.od})")
                 if (gauge > it) {
                     phase = Phase.Break
-                    def /= odDef
-                    def *= breakDef
+                    _def /= odDef
+                    _def *= breakDef
                     gauge = 0
                     log("phase", "break")
                     listeners.raise("phase")
                     timeline.schedule(breakDuration) {
-                        def /= breakDef
+                        _def /= breakDef
                         phase = Phase.Normal
                         log("phase", "normal")
                         listeners.raise("phase")

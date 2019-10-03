@@ -41,6 +41,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var weaponType: WeaponType? = null
     val timeline get() = stage.timeline
     val enemy get() = stage.enemy
+    var real = true
 
     var s1phase = 1
         set(value) {

@@ -1,8 +1,6 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.core.listen
-import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.extensions.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.*
@@ -10,6 +8,7 @@ import tools.qwewqa.sim.stage.*
 val empiricalTeambuff = AdventurerSetup {
     name = "Teambuff"
     element = Element.Neutral
+    real = false
 
     val freq = 2
 
@@ -36,6 +35,7 @@ val teambuff = AdventurerSetup {
     name = "Teambuff"
     element = Element.Neutral
     str = 6000
+    real = false
 
     var total = 0.0
     var lastCount = 0.0

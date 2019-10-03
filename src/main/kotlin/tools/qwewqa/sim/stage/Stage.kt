@@ -49,27 +49,66 @@ class Stage {
 inline fun stage(
     mass: Int = 2500,
     logLevel: Logger.Level = Logger.Level.VERBOSER,
+    disp: Boolean = true,
     yaml: Boolean = false,
     crossinline init: Stage.() -> Unit
 ) = runBlocking {
     val slices = DamageSliceLists("Damage")
-    if (mass > 1) (1..mass).map {
+    if (mass > 1) (1..mass).map { number ->
         async {
             Stage().apply(init).also {
                 it.logger.filterLevel = Logger.Level.NONE
+            }.also { stage ->
+                if (number == mass && disp) {
+                    stage.onEnd {
+                        disp()
+                    }
+                }
             }.awaitResults().apply {
                 slices.add(slice, duration)
             }
         }
     }.awaitAll() else {
-        Stage().apply(init).also {
-            it.logger.filterLevel = logLevel
+        Stage().apply(init).also { stage ->
+            stage.logger.filterLevel = logLevel
+            stage.onEnd {
+                if (logLevel > Logger.Level.NONE) println()
+                disp()
+            }
         }.awaitResults().apply {
             slices.add(slice, duration)
         }
     }
-    if (logLevel > Logger.Level.NONE && mass == 1) println()
     if (yaml) slices.displayYAML() else slices.display()
+}
+
+fun Stage.disp() {
+    println("Adventurers: ")
+    adventurers.forEach { it.disp() }
+    enemy.disp()
+}
+
+fun Adventurer.disp() {
+    if (!real) return
+    println("  $name:")
+    println("    Weapon: ${weapon?.name}")
+    println("    Dragon: ${dragon?.name}")
+    println("    Wyrmprints: [${wp?.name}]")
+    println()
+}
+
+fun Enemy.disp() {
+    println("Enemy:")
+    if (name != "Enemy") println("  Name: $name")
+    println("  Element: $element")
+    println("  Def: $def")
+    hp?.let { println("  Hp: $it") }
+    toOd?.let { println("  ToOd: $it") }
+    toBreak?.let { println("  ToBreak: $it") }
+    toOd?.let { println("  OdDef: $odDef") }
+    toBreak?.let { println("  BreakDef: $breakDef") }
+    toBreak?.let { println("  BreakDuration: $breakDuration") }
+    println()
 }
 
 data class StageResults(val duration: Double, val slice: DamageSlice)
