@@ -12,12 +12,12 @@ object Buffs : DataMap<Buff<*, *>>()  {
         onStart = { duration, value, _ ->
             stats[stat].buff += value
             buffCount++
-            log(Logger.Level.VERBOSER, "buff", "started: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for ${duration ?: "indef"}")
         },
         onEnd = { duration, value, _ ->
             stats[stat].buff -= value
             buffCount--
-            log(Logger.Level.VERBOSER, "buff", "ended: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for ${duration ?: "indef"}")
         },
         stackCap = cap
     )
@@ -33,12 +33,12 @@ object Buffs : DataMap<Buff<*, *>>()  {
             stats[Stat.DEF].buff += value
             buffCount++
             listeners.raise("doublebuff")
-            log(Logger.Level.VERBOSER, "buff", "started: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "started: def buff value $value for ${duration ?: "indef"}")
         },
         onEnd = { duration, value, _ ->
             stats[Stat.DEF].buff -= value
             buffCount--
-            log(Logger.Level.VERBOSER, "buff", "ended: ${this@Buff.name} buff value $value for ${duration ?: "indef"}")
+            log(Logger.Level.VERBOSER, "buff", "ended: def buff value $value for ${duration ?: "indef"}")
         },
         stackCap = 10
     )

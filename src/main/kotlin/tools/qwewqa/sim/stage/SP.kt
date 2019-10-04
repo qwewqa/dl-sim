@@ -25,6 +25,8 @@ class SP(val adventurer: Adventurer) {
     fun logCharges() =
         adventurer.log(Logger.Level.VERBOSE, "sp", charges.keys.map { "$it: ${charges[it]}/${costs[it]}" }.toString())
 
+    fun cost(name: String) = costs[name] ?: throw IllegalArgumentException("Unknown skill [$name]")
+
     fun charge(amount: Int, source: String = adventurer.doing) {
         charges.keys.forEach {
             charge(amount, it, source)
@@ -37,22 +39,22 @@ class SP(val adventurer: Adventurer) {
         }
     }
 
-    fun charge(fraction: Double, name: String, source: String = adventurer.doing) {
-        charge(ceil(fraction * costs[name]!!).toInt(), name, source)
+    fun charge(fraction: Double, target: String, source: String = adventurer.doing) {
+        charge(ceil(fraction * costs[target]!!).toInt(), target, source)
     }
 
-    fun charge(amount: Int, name: String, source: String = adventurer.doing) {
-        require(charges[name] != null) { "Unknown skill [$name]" }
-        if (charges[name] == costs[name]) return
-        charges[name] = charges[name]!! + amount
-        if (charges[name]!! >= costs[name]!!) {
-            charges[name] = costs[name]!!
-            adventurer.listeners.raise("$name-charged")
+    fun charge(amount: Int, target: String, source: String = adventurer.doing) {
+        require(charges[target] != null) { "Unknown skill [$target]" }
+        if (charges[target] == costs[target]) return
+        charges[target] = charges[target]!! + amount
+        if (charges[target]!! >= costs[target]!!) {
+            charges[target] = costs[target]!!
+            adventurer.listeners.raise("$target-charged")
         }
         adventurer.log(
             Logger.Level.VERBOSIEST,
             "sp",
-            "$name charged $amount sp by $source (${charges[name]}/${costs[name]})"
+            "$target charged $amount sp by $source (${charges[target]}/${costs[target]})"
         )
     }
 

@@ -44,7 +44,10 @@ class Rotation(val adventurer: Adventurer) {
             when {
                 remaining[0] == 'd' -> {
                     remaining = remaining.drop(1)
-                    data += RotationData("d", if (trigger in listOf("x1", "x2", "x3", "x4", "x5", "fs")) trigger else "idle")
+                    data += RotationData(
+                        "d",
+                        if (trigger in listOf("x1", "x2", "x3", "x4", "x5", "fs")) trigger else "idle"
+                    )
                     trigger = "idle"
                 }
                 remaining[0] == 'c' -> {
@@ -106,6 +109,16 @@ inline fun Adventurer.rotation(init: Rotation.() -> Unit) {
     val rotation = Rotation(this).also(init)
     logic = {
         rotation.next(trigger)
+    }
+}
+
+fun Adventurer.autocharge(target: String, amount: Int, interval: Double = 1.0) {
+    schedule {
+        while (true) {
+            wait(interval)
+            sp.charge(amount, target, "autocharge")
+            log(Logger.Level.VERBOSER, "autocharge", "$target autocharge $amount [${sp[target]}/${sp.cost(target)}]")
+        }
     }
 }
 

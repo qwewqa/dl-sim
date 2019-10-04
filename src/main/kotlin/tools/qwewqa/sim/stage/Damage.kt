@@ -30,6 +30,7 @@ fun Adventurer.doFsAtk(
     val n = name.joinToString("-")
     listeners.raise("pre-$n")
     +attack(mod = mod, od = od, sp = sp, names = *name, fs = true)
+    listeners.raise("fs-connect")
     listeners.raise("fsa")
     think(n)
 }
@@ -42,6 +43,7 @@ fun Adventurer.doFsAtk(
     val n = name.joinToString("-")
     think("pre-$n")
     +attack(mod = mod, od = od, names = *name, fs = true)
+    listeners.raise("fs-connect")
     think(n)
 }
 

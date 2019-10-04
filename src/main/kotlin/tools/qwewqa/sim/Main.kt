@@ -192,6 +192,7 @@ class Preset : CliktCommand(
 
     fun loadEnemy(conf: Map<String, Any?>): EnemyPreset {
         val enemy = conf.lowercasedKeys()
+        val name = enemy["name"] as String?
         val def = enemy["def"] as Double?
         val hp = enemy["hp"] as Int?
         val element = (enemy["element"] as? String)?.let {
@@ -218,6 +219,7 @@ class Preset : CliktCommand(
         val freezeRes = enemy["freeze_res"] as Double?
         val stunRes = enemy["stun_res"] as Double?
         return EnemyPreset(
+            name = name,
             def = def,
             hp = hp,
             element = element,

@@ -75,6 +75,9 @@ object Abilities : DataMap<Ability<*, *>>() {
     val brokenPunisher = statAbility("broken punisher", Stat.BROKEN_PUNISHER)
     val wpBrokenPunisher = cappedStatAbility("broken punisher (wp)", Stat.BROKEN_PUNISHER, 30.percent)
 
+    val fsDamage = statAbility("force strike", Stat.FORCESTRIKE_DAMAGE)
+    val wpFsDamage = cappedStatAbility("force strike (wp)", Stat.FORCESTRIKE_DAMAGE, 50.percent)
+
     val debuffChance = statAbility("debuff chance", Stat.DEBUFF_CHANCE)
 
     fun barrageAbility(name: String, buff: Buff<Double, *>, interval: Int) = Ability<Double, Double>(
@@ -204,6 +207,55 @@ object Abilities : DataMap<Ability<*, *>>() {
     val energyDoublebuff = doublebuff("energy doublebuff") { energize(it.toInt()) }
     val wpEnergyDoublebuff = cappedDoublebuff("energy doublebuff (wp)", 1.0) { energize(it.toInt()) }
 
+    val dragonsClaws = Ability<Int, Int>(
+        name = "Dragon's Claws",
+        initialValue = { 0 },
+        onStart = { value, stack ->
+            stack.value += value
+        },
+        onStop = { value, stack ->
+            stack.value -= value
+        },
+        stackStart = { stack ->
+            schedule {
+                Buffs.str((3 + stack.value).percent / 2).selfBuff()
+            }
+        }
+    )
+    val wpDragonsClaws = Ability<Int, Int>(
+        name = "Dragon's Claws (wp)",
+        initialValue = { 0 },
+        onStart = { value, stack ->
+            stack.value += value
+        },
+        onStop = { value, stack ->
+            stack.value -= value
+        },
+        stackStart = { stack ->
+            schedule {
+                Buffs.str((3 + min(stack.value, 3)).percent / 2).selfBuff()
+            }
+        }
+    )
+
+    val wpForceCharge = Ability<Int, Int>(
+        name = "Force Charge",
+        initialValue = { 0 },
+        onStart = { value, stack ->
+            stack.value += value
+            if (stack.value > 3) stack.value = 3
+        },
+        stackStart = { stack ->
+            listen("fs-connect") {
+                if (stack.value > 0) {
+                    stack.value--
+                    sp.charge(25.percent)
+                    log(Logger.Level.VERBOSER, "force charge", "force charge (25%) proc, remaining charges: ${stack.value}")
+                }
+            }
+        }
+    )
+
     init {
         this["strength", "str"] = strength
         this["strength (wp)", "str (wp)"] = wpStr
@@ -220,6 +272,8 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["punisher (wp)", "k (wp)"] = wpPunisher
         this["broken punisher", "bp", "bk"] = brokenPunisher
         this["broken punisher (wp)", "bp (wp)", "bk (wp)"] = wpBrokenPunisher
+        this["forcestrike", "forcestrike damage", "fs"] = fsDamage
+        this["forcestrike (wp)", "forcestrike damage (wp)", "fs (wp)"] = wpFsDamage
         this["barrage obliteration"] = barrageObliteration
         this["barrage devastation"] = barrageDevastation
         this["skill prep", "prep"] = skillPrep
@@ -228,5 +282,8 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["magical modification"] = magicalModification
         this["energy doublebuff"] = energyDoublebuff
         this["energy doublebuff (wp)"] = wpEnergyDoublebuff
+        this["dragon's claws", "dragon claws", "claws"] = dragonsClaws
+        this["dragon's claws (wp)", "dragon claws (wp)", "claws (wp)"] = wpDragonsClaws
+        this["force charge (wp)"] = wpForceCharge
     }
 }

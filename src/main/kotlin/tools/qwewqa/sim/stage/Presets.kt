@@ -56,6 +56,7 @@ fun Stage.loadConfig(config: StageConfig) = config.apply {
 }
 
 data class EnemyPreset(
+    val name: String?,
     val def: Double?,
     val hp: Int?,
     val element: Element?,
@@ -76,6 +77,7 @@ data class EnemyPreset(
 
 fun Stage.loadEnemyPreset(preset: EnemyPreset) {
     enemy {
+        preset.name?.let { name = it }
         def = preset.def ?: 10.0
         preset.hp?.let { hp = it }
         preset.element?.let { element = it }
