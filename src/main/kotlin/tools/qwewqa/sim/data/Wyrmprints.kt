@@ -137,6 +137,17 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         )
     )
 
+    val hdt = Wyrmprint(
+        name = "HDT",
+        str = 39,
+        abilities = emptyList()
+    )
+    val gt = hdt.copy(name = "Glorious Tempest")
+    val vq = hdt.copy(name = "Volcanic Queen")
+    val qotbs = hdt.copy(name = "Queen of the Blue Seas")
+    val kots = hdt.copy(name = "Kind of the Skies")
+    val rod = hdt.copy(name = "Ruler of Darkness")
+
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
@@ -153,5 +164,11 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         this["SDO", "Sister's Day Out"] = sdo
         this["Choc", "The Chocolatiers"] = choc
         this["SS", "Stellar Show"] = ss
+        this["HDT"] = hdt
+        this["GT", "Glorious Tempest"] = gt
+        this["VQ", "Volcanic Queeen"] = vq
+        this["QotBS", "Queen of the Blue Seas"] = qotbs
+        this["KotS", "King of the Skies"] = kots
+        this["RoD", "Ruler of Darkness"] = rod
     }
 }
