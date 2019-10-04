@@ -7,7 +7,7 @@ plugins {
 }
 
 application {
-    mainClassName = "tools.qwewqa.sim.MainKt"
+    mainClassName = "tools.qwewqa.sim.main.MainKt"
 }
 
 group = "tools.qwewqa.sim"

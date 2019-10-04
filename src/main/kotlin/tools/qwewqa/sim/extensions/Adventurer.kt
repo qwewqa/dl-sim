@@ -34,8 +34,8 @@ class Rotation(val adventurer: Adventurer) {
         "d" -> adventurer.dodge
         "fsf" -> adventurer.fsf
         "cancel" -> cancel
-        else -> error("Unknown rotation $name")
-    }!!
+        else -> error("Unknown move $name")
+    } ?: error("Move $name not available")
 
     private fun parse(string: String): List<RotationData> {
         var remaining = string.filter { it != '-' && it != ' ' }
@@ -81,6 +81,9 @@ class Rotation(val adventurer: Adventurer) {
         return data
     }
 
+    /**
+     * Get next move in rotation (if available)
+     */
     fun next(trigger: String): Move? {
         if (starting) {
             queue += parse(init)
@@ -92,6 +95,7 @@ class Rotation(val adventurer: Adventurer) {
         val next = queue[0]
         return if (trigger == next.trigger) {
             val move = getMove(next.name)
+            // start combo and queue up the skill to cancel once ui becomes available if ui currently is hidden
             if (!adventurer.ui.available && next.name in listOf("s1", "s2", "s3")) {
                 queue[0] = next.copy(trigger = "ui")
                 adventurer.x
@@ -112,6 +116,9 @@ inline fun Adventurer.rotation(init: Rotation.() -> Unit) {
     }
 }
 
+/**
+ * Charges the [target] skill [amount] with a delay of [interval] between each charge
+ */
 fun Adventurer.autocharge(target: String, amount: Int, interval: Double = 1.0) {
     schedule {
         while (true) {

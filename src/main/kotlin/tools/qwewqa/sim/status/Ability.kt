@@ -42,6 +42,7 @@ data class Ability<T, U>(
 
     /**
      * Creates an [AbilityInstance] targeting this
+     * Easier to use in a script at the expense of an unchecked cast
      */
     operator fun invoke(value: Any?, condition: Condition = noCondition) = getInstance(value as T, condition)
 
@@ -61,6 +62,10 @@ data class Ability<T, U>(
         }
     }
 
+    /**
+     * Tracks the status of an instance of an ability
+     * Runs [onStop] and [onStart] when it becomes inactive and active respectively
+     */
     inner class Passive(
         val name: String,
         val adventurer: Adventurer,

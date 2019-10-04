@@ -63,6 +63,7 @@ data class Debuff<T, U>(
 
     /**
      * Creates a [DebuffInstance] targeting this
+     * Easier to use in a script at the expense of an unchecked cast
      */
     operator fun invoke(value: Any?) = getInstance(value as T)
 

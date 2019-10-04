@@ -74,6 +74,7 @@ data class Buff<T, U>(
 
     /**
      * Creates a [BuffInstance] targeting this
+     * Easier to use in a script at the expense of an unchecked cast
      */
     operator fun invoke(value: Any?) = getInstance(value as T)
 

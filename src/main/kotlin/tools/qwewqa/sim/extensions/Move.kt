@@ -39,10 +39,12 @@ fun skill(name: String, cost: Int, energizable: Boolean = true, includeUILatency
 val noMove = Move(name = "None", condition = { false })
 val cancel = Move(name = "Cancel", condition = { true }, action = {})
 
+/** Create and set s1 */
 fun Adventurer.s1(cost: Int, energizable: Boolean = true, name: String = "s1", includeUILatency: Boolean = true, action: Action) {
     s1 = skill(name, cost, energizable, includeUILatency, action)
 }
 
+/** Create and set s2 */
 fun Adventurer.s2(cost: Int, energizable: Boolean = true, name: String = "s2", includeUILatency: Boolean = true, action: Action) {
     s2 = skill(name, cost, energizable, includeUILatency, action)
 }
