@@ -148,6 +148,16 @@ class DamageSliceLists(
         }
     }
 
+    fun displayList() {
+        (damage.indices).forEach { i ->
+            print("- {")
+            this.subslices.forEach { subslice ->
+                print("${subslice.key}: ${subslice.value.damage[i].let { it.damage / it.duration }}, ")
+            }
+            println("}")
+        }
+    }
+
     fun displayYAML(level: Int = 0) {
         val avg = damage.map { it.damage / it.duration }
         val dmgs = damage.map { it.damage }

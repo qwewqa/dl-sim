@@ -52,6 +52,7 @@ inline fun stage(
     mass: Int = 2500,
     logLevel: Logger.Level = Logger.Level.VERBOSER,
     disp: Boolean = true,
+    list: Boolean = false,
     yaml: Boolean = false,
     crossinline init: Stage.() -> Unit
 ) = runBlocking {
@@ -61,7 +62,7 @@ inline fun stage(
             Stage().apply(init).also {
                 it.logger.filterLevel = Logger.Level.NONE
             }.also { stage ->
-                if (number == mass && disp) {
+                if (number == mass && disp && !list) {
                     stage.onEnd {
                         disp()
                     }
@@ -75,13 +76,19 @@ inline fun stage(
             stage.logger.filterLevel = logLevel
             stage.onEnd {
                 if (logLevel > Logger.Level.NONE) println()
-                disp()
+                if (disp && !list) {
+                    disp()
+                }
             }
         }.awaitResults().apply {
             slices.add(slice, duration)
         }
     }
-    if (yaml) slices.displayYAML() else slices.display()
+    if (list) {
+        slices.displayList()
+    } else {
+        if (yaml) slices.displayYAML() else slices.display()
+    }
 }
 
 fun Stage.disp() {

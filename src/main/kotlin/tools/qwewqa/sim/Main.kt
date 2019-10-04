@@ -68,6 +68,8 @@ class Run : CliktCommand(
     val rot by option("--rotation-loop", help = "custom rotation loop (overrides acl)")
     val res by option("--res", "--resistance", help = "value of all affliction resistances as a percent").int()
     val yaml by option("--yaml", hidden = true).flag(default = false)
+    val disp by option("--disp", hidden = true).flag(default = false)
+    val list by option("--list", hidden = true).flag(default = false)
 
     override fun run() {
         stage(
@@ -79,7 +81,9 @@ class Run : CliktCommand(
                 3 -> Logger.Level.VERBOSER
                 else -> Logger.Level.VERBOSIEST
             },
-            yaml = yaml
+            yaml = yaml,
+            disp = disp,
+            list = list
         ) {
             val adv = AdventurerPreset(
                 name = name,
@@ -151,7 +155,7 @@ class Preset : CliktCommand(
         val yaml = Yaml()
         val data: Map<String, Any> = yaml.load(file.reader())
         val preset = loadPreset(data)
-        stage(mass = preset.config.mass, yaml = preset.config.yaml) {
+        stage(mass = preset.config.mass, yaml = preset.config.yaml, disp = preset.config.disp, list = preset.config.list) {
             applyPreset(preset)
         }
     }
@@ -187,7 +191,9 @@ class Preset : CliktCommand(
         val duration = stageConf["duration"] as Double?
         val mass = stageConf["mass"] as Int? ?: 2500
         val yaml = stageConf["yaml"] as Boolean? ?: false
-        return StageConfig(duration, mass, yaml)
+        val disp = stageConf["disp"] as Boolean? ?: true
+        val list = stageConf["list"] as Boolean? ?: false
+        return StageConfig(duration, mass, yaml, disp, list)
     }
 
     fun loadEnemy(conf: Map<String, Any?>): EnemyPreset {

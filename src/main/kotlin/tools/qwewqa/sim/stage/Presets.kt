@@ -48,7 +48,9 @@ fun Stage.loadAdventurerPreset(advPreset: AdventurerPreset) =
 data class StageConfig(
     val duration: Double?,
     val mass: Int,
-    val yaml: Boolean
+    val yaml: Boolean,
+    val disp: Boolean,
+    val list: Boolean
 )
 
 fun Stage.loadConfig(config: StageConfig) = config.apply {
