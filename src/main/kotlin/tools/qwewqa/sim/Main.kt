@@ -193,9 +193,10 @@ class Preset : CliktCommand(
         val duration = stageConf["duration"] as Double?
         val mass = stageConf["mass"] as Int? ?: 2500
         val yaml = stageConf["yaml"] as Boolean? ?: false
+        val teamDps = stageConf["team_dps"] as Int?
         val disp = stageConf["disp"] as Boolean? ?: true
         val list = stageConf["list"] as Boolean? ?: false
-        return StageConfig(duration, mass, yaml, disp, list)
+        return StageConfig(duration, mass, teamDps, yaml, disp, list)
     }
 
     fun loadEnemy(conf: Map<String, Any?>): EnemyPreset {

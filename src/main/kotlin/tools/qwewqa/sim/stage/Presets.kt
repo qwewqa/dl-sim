@@ -1,10 +1,12 @@
 package tools.qwewqa.sim.stage
 
+import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.Adventurers
 import tools.qwewqa.sim.data.Dragons
 import tools.qwewqa.sim.data.Weapons
 import tools.qwewqa.sim.data.Wyrmprints
 import tools.qwewqa.sim.extensions.enemy
+import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.extensions.rotation
 
 data class RunPreset(
@@ -19,6 +21,26 @@ fun Stage.applyPreset(preset: RunPreset) {
         loadAdventurerPreset(it)
     }
     loadEnemyPreset(preset.enemy)
+    preset.config.teamDps?.let {
+        if (it == 0) return
+        teambuff {
+            str = it
+            element = adventurers[0].element
+        }
+    } ?: if (adventurers.size == 1) {
+        teambuff {
+            str = 6000
+            element = adventurers[0].element
+            prerun {
+                var multiplier = 1.0
+                multiplier *= 1.0 + stats[Stat.STR].coability
+                multiplier *= 1.0 + stats[Stat.SKILL_DAMAGE].coability * 8.0 / 15.0
+                multiplier *= 1.0 + stats[Stat.CRIT_RATE].coability * 7.0 / 10.0
+                multiplier *= 1.0 + stats[Stat.SKILL_HASTE].coability * 1.0 / 3.0
+                str = (str * multiplier).toInt()
+            }
+        }
+    }
 }
 
 data class AdventurerPreset(
@@ -50,6 +72,7 @@ fun Stage.loadAdventurerPreset(advPreset: AdventurerPreset) =
 data class StageConfig(
     val duration: Double?,
     val mass: Int,
+    val teamDps: Int?,
     val yaml: Boolean,
     val disp: Boolean,
     val list: Boolean

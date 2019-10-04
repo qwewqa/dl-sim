@@ -1,0 +1,12 @@
+config:
+  duration: 180.0
+  team_dps: 6420
+adventurers:
+  - delphi:
+      dragon: marishiten
+      wyrmprints: [TB, SS]
+      acl: |
+        s1
+        s2, default && altfs == 0
+        s3
+        fs, x2 && (altfs == 0 || combo >= 15)
