@@ -5,11 +5,12 @@ Adventurers:
       weapon: light bane dagger
       acl: |
         s2, s1
-        s1, default
+        s1
         fs, x4
   - Yachiyo:
       weapon: light bane blade
   - Geuden:
+      wyrmprints: [TSO, Choc]
       weapon: light bane sword
 Enemy:
   name: High Zodiark
