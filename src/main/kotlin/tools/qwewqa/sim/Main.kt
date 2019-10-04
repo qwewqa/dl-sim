@@ -68,7 +68,7 @@ class Run : CliktCommand(
     val rot by option("--rotation-loop", help = "custom rotation loop (overrides acl)")
     val res by option("--res", "--resistance", help = "value of all affliction resistances as a percent").int()
     val yaml by option("--yaml", hidden = true).flag(default = false)
-    val disp by option("--disp", hidden = true).flag(default = false)
+    val disp by option("--disp", hidden = true).flag(default = true)
     val list by option("--list", hidden = true).flag(default = false)
 
     override fun run() {

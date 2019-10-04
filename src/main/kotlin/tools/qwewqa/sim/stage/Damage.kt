@@ -21,6 +21,19 @@ fun Adventurer.attack(
     fs: Boolean = false
 ) = Attack(mod, od, sp, listOf(name) + names.toList(), skill, fs)
 
+fun Adventurer.fsAtk(
+    mod: Double,
+    od: Double = 1.0,
+    sp: Int = 0,
+    vararg name: String
+) = attack(mod = mod, od = od, sp = sp, names = *name, skill = false, fs = true)
+
+fun Adventurer.fsAtk(
+    mod: Double,
+    od: Double = 1.0,
+    vararg name: String
+) = attack(mod = mod, od = od, names = *name, skill = false, fs = true)
+
 fun Adventurer.doFsAtk(
     mod: Double,
     od: Double,

@@ -106,6 +106,7 @@ object Weapons : DataMap<Weapon>() {
     )
     val flameDagger5t3 = dagger5b1.copy(name = "Aeternal Flame", element = Element.Flame)
     val lightDagger5t3 = dagger5b2.copy(name = "Thunderblade Sugaar", element = Element.Light)
+    val shadowDagger5t3 = dagger5b1.copy(name = "Honor Edge", element = Element.Shadow)
     val lightDaggerHJPBane =
         dagger0.copy(
             name = "Merciful Claw",
@@ -134,6 +135,7 @@ object Weapons : DataMap<Weapon>() {
         this["wind 5t3 bow", "Stellar Pegasus"] = windBow5t3
         this["flame 5t3 dagger", "Aeternal Flame"] = flameDagger5t3
         this["light 5t3 dagger", "Tunderblade Sugaar"] = lightDagger5t3
+        this["shadow 5t3 dagger", "Honor Edge"] = shadowDagger5t3
         this["wind 5t3 wand", "Phytalmios"] = windWand5t3
         this["shadow 5t3 wand", "Underworld Despair"] = shadowWand5t3
 

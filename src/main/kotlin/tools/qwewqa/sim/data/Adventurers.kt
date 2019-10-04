@@ -4,8 +4,9 @@ import tools.qwewqa.sim.adventurers.*
 
 object Adventurers : DataMap<AdventurerSetup>() {
     init {
-        this["aoi"] = aoi
         this["addis"] = addis
+        this["aoi"] = aoi
+        this["delphi"] = delphi
         this["emma"] = emma
         this["ezelith", "daggers sux"] = ezelith
         this["fleur"] = fleur

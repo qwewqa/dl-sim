@@ -81,6 +81,8 @@ object Abilities : DataMap<Ability<*, *>>() {
 
     val debuffChance = statAbility("debuff chance", Stat.DEBUFF_CHANCE)
 
+    val poisonChance = statAbility("poison chance", Stat.POISON_CHANCE)
+
     fun barrageAbility(name: String, buff: Buff<Double, *>, interval: Int) = Ability<Double, Double>(
         name = name,
         initialValue = { 0.0 },
@@ -268,7 +270,7 @@ object Abilities : DataMap<Ability<*, *>>() {
     class AfflictBuffAbilityData(var value: Double, val cooldown: Cooldown)
     fun afflictBuffAbilitiy(name: String, event: String, buff: Buff<Double, *>, duration: Double, cooldown: Double = 5.0) = Ability<Double, AfflictBuffAbilityData>(
         name = name,
-        initialValue = { AfflictBuffAbilityData(0.0, timeline.getCooldown(5.0)) },
+        initialValue = { AfflictBuffAbilityData(0.0, timeline.getCooldown(cooldown)) },
         onStart = { value, stack ->
             stack.value.value += value
         },
@@ -283,8 +285,22 @@ object Abilities : DataMap<Ability<*, *>>() {
             }
         }
     )
-
     val paraUserStr = afflictBuffAbilitiy("paralysis = user strength", "paralysis-proc", Buffs.str, 10.0)
+
+    val poisonousCage = Ability<Int, Int>(
+        name = "poisonous cage",
+        initialValue = { 0 },
+        onStart = {  value, stack ->
+            stack.value += value
+            stats[Stat.STR].passive += value * 10.percent
+        },
+        stackStart = {
+            stats[Stat.STR].passive -= 80.percent
+            listen("post-s1") {
+                altFs = 1
+            }
+        }
+    )
 
     init {
         this["strength", "str"] = strength
@@ -298,6 +314,7 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["buff time", "buff-time", "bt"] = buffTime
         this["buff time (wp)", "buff-time (wp)", "bt (wp)"] = wpBuffTime
         this["debuff chance", "debuff", "debilitator"] = debuffChance
+        this["poison chance", "poison"] = poisonChance
         this["punisher", "k"] = punisher
         this["punisher (wp)", "k (wp)"] = wpPunisher
         this["broken punisher", "bp", "bk"] = brokenPunisher
@@ -317,5 +334,6 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["dragon's claws (wp)", "dragon claws (wp)", "claws (wp)"] = wpDragonsClaws
         this["force charge (wp)"] = wpForceCharge
         this["paralysis = user strength"] = paraUserStr
+        this["poisonous cage"] = poisonousCage
     }
 }

@@ -232,6 +232,9 @@ class Adventurer(val stage: Stage) : Listenable {
             this.getStack(this@Adventurer).value = value
         }
 
+    val <T> Ability<*, T>.value: T
+        get() = this.getStack(this@Adventurer).value
+
     val energy = Buffs.energy.value
     fun energize(times: Int = 1) {
         Buffs.energy(times).selfBuff()

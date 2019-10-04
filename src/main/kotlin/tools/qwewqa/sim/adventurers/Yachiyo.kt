@@ -43,7 +43,7 @@ val yachiyo = AdventurerSetup {
         wait(2.0)
     }
 
-    s2(4139) {
+    s2(4139, false) {
         wait(0.15)
         altFs = 1
         wait(0.9)

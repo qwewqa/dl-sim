@@ -6,6 +6,7 @@ import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.Stat
 import tools.qwewqa.sim.status.burn
 
 val rena = AdventurerSetup {
@@ -40,10 +41,22 @@ val rena = AdventurerSetup {
         wait(0.9)
     }
 
-    acl {
-        +s1 { default }
-        +s2 { +"s1" }
-        +s3 { +"fs" }
-        +fs { +"x5" }
+    prerun {
+        if (logic == null) {
+            if (stats[Stat.SKILL_HASTE].value >= 15.percent) {
+                acl {
+                    +s1 { default }
+                    +s2 { +"s1" }
+                    +s3 { default }
+                }
+            } else {
+                acl {
+                    +s1 { default }
+                    +s2 { +"s1" }
+                    +s3 { +"fs" }
+                    +fs { +"x5" }
+                }
+            }
+        }
     }
 }
