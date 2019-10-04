@@ -15,7 +15,7 @@ val delphi = AdventurerSetup {
     ex = Coabilities.dagger
     weapon = Weapons.shadowDagger5t3
     dragon = Dragons.marishiten
-    wyrmprints = Wyrmprints.tb + Wyrmprints.sdo
+    wyrmprints = Wyrmprints.tb + Wyrmprints.ss
 
     a1 = Abilities.poisonousCage(2)
     a3 = Abilities.poisonChance(60.percent, Conditions.combo15)
@@ -71,8 +71,8 @@ val delphi = AdventurerSetup {
 
     acl {
         +s1 { default }
-        +s2 { default }
+        +s2 { default && altFs == 0 }
         +s3 { default }
-        +fs { +"x2" }
+        +fs { +"x2" && (altFs == 0 || combo >= 15) }
     }
 }
