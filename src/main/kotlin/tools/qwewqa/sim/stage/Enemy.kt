@@ -10,6 +10,7 @@ import kotlin.random.Random
 class Enemy(val stage: Stage) : Listenable {
     override val listeners = ListenerMap()
     var name: String = "Enemy"
+    val alias: String = "Enemy"
     val stats = StatMap()
     val timeline = stage.timeline
     var element = Element.Weak

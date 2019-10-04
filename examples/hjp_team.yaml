@@ -1,0 +1,18 @@
+Config:
+  duration: 180.0
+Adventurers:
+  - Fleur:
+      weapon: light bane dagger
+      acl: |
+        s2, s1
+        s1, default
+        fs, x4
+  - Yachiyo:
+      weapon: light bane blade
+  - Geuden:
+      weapon: light bane sword
+Enemy:
+  name: High Zodiark
+  def: 10.0
+  element: Shadow
+  paralysis_res: 0.0

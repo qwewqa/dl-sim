@@ -74,7 +74,11 @@ data class AclLine(val move: String, val condition: List<String>)
 
 fun parseLine(string: String): AclLine {
     val skill = string.substringBefore(",").trim()
-    val condition = parseCondition(string.substringAfter(",", "").trim())
+    val conditionText = string.substringAfter(",", "").trim()
+    val condition =
+        if (conditionText.isEmpty() && skill in listOf("s1", "s2", "s3")) listOf("default") else parseCondition(
+            conditionText
+        )
     return AclLine(skill, condition)
 }
 

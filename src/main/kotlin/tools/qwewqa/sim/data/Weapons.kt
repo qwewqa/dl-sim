@@ -29,6 +29,13 @@ object Weapons : DataMap<Weapon>() {
     val flameBlade5t3 = blade5b1.copy(name = "Heaven's Acuity", element = Element.Flame)
     val windBlade5t3 = blade5b1.copy(name = "Anemone", element = Element.Wind)
     val lightBlade5t3 = blade5b1.copy(name = "Heavenwing", element = Element.Light)
+    val lightBladeHJPBane =
+        blade0.copy(
+            name = "Hollow Lightning",
+            element = Element.Light,
+            str = 383,
+            abilities = listOf(Abilities.punisher(30.percent, Conditions.enemy("High Zodiark")))
+        )
 
     val sword0 = Weapon("Sword", Element.Neutral, 0, noMove, sword, emptyList())
     val sword5b1 = sword0.copy(
@@ -45,6 +52,13 @@ object Weapons : DataMap<Weapon>() {
     )
     val flameSword5t3 = sword5b1.copy(name = "Levatein", element = Element.Flame)
     val lightSword5t3 = sword5b1.copy(name = "Zex's End", element = Element.Light)
+    val lightSwordHJPBane =
+        sword0.copy(
+            name = "Death Aeon",
+            element = Element.Light,
+            str = 362,
+            abilities = listOf(Abilities.punisher(30.percent, Conditions.enemy("High Zodiark")))
+        )
 
     val lance0 = Weapon("Lance", Element.Neutral, 0, noMove, lance, emptyList())
     val lance5b1 = lance0.copy(
@@ -92,6 +106,13 @@ object Weapons : DataMap<Weapon>() {
     )
     val flameDagger5t3 = dagger5b1.copy(name = "Aeternal Flame", element = Element.Flame)
     val lightDagger5t3 = dagger5b2.copy(name = "Thunderblade Sugaar", element = Element.Light)
+    val lightDaggerHJPBane =
+        dagger0.copy(
+            name = "Merciful Claw",
+            element = Element.Light,
+            str = 327,
+            abilities = listOf(Abilities.punisher(30.percent, Conditions.enemy("High Zodiark")))
+        )
 
     val wand0 = Weapon("Wand", Element.Neutral, 0, noMove, wand, emptyList())
     val wand5b1 = wand0.copy(
@@ -115,5 +136,9 @@ object Weapons : DataMap<Weapon>() {
         this["light 5t3 dagger", "Tunderblade Sugaar"] = lightDagger5t3
         this["wind 5t3 wand", "Phytalmios"] = windWand5t3
         this["shadow 5t3 wand", "Underworld Despair"] = shadowWand5t3
+
+        this["light bane sword", "Death Aeon"] = lightSwordHJPBane
+        this["light bane dagger", "Merciful Claw"] = lightDaggerHJPBane
+        this["light bane blade", "Hollow Lightning"] = lightBladeHJPBane
     }
 }

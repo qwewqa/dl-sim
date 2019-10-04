@@ -51,7 +51,7 @@ val yachiyo = AdventurerSetup {
 
     acl {
         +fs { +"x5" && altFs > 0 }
-        +s2
-        +s1
+        +s2 { default }
+        +s1 { default }
     }
 }

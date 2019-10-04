@@ -48,7 +48,7 @@ object Conditions : DataMap<Condition>() {
     val stunned = Condition("stunned", "stun-start", "stun-end") { Debuffs.stun.on }
     val frozen = Condition("frozen", "freeze-start", "freeze-end") { Debuffs.freeze.on }
 
-    fun enemy(name: String) = Condition("enemy $name") { enemy.name == name }
+    fun enemy(name: String) = Condition("enemy $name") { enemy.name == name || enemy.alias == name }
 
     init {
         this["hp70"] = hp70
