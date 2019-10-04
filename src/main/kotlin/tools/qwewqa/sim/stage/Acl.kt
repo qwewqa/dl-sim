@@ -1,6 +1,9 @@
 package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.data.Debuffs
+import tools.qwewqa.sim.wep.blade
+import tools.qwewqa.sim.wep.lance
+import tools.qwewqa.sim.wep.wand
 
 class AclSelector(val adventurer: Adventurer) {
     class SkillData(val charge: Int, val remaining: Int, val ready: Boolean)
@@ -49,10 +52,13 @@ class AclSelector(val adventurer: Adventurer) {
     operator fun String.unaryMinus() = !+this
 }
 
-inline fun Adventurer.acl(implicitX: Boolean = true, crossinline init: AclSelector.() -> Unit) {
+inline fun Adventurer.acl(implicitX: Boolean = true, fsf: Boolean = true, crossinline init: AclSelector.() -> Unit) {
     logic = {
         AclSelector(this).apply {
             init()
+            if (fsf) {
+                if (adventurer.weaponType in listOf(blade, wand, lance)) +fsf { +"x5" }
+            }
             if (implicitX) add(x)
         }.value
     }
@@ -64,6 +70,7 @@ fun Adventurer.acl(string: String) {
         parsed.forEach {
             if (evaluateConditions(it.condition)) +parseSkill(it.move)
         }
+        if (adventurer.weaponType in listOf(blade, wand, lance)) +fsf { +"x5" }
         +x
     }
 }

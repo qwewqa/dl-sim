@@ -41,7 +41,7 @@ val rena = AdventurerSetup {
     }
 
     acl {
-        +s1 { +"idle" || +"ui" || cancel }
+        +s1 { default }
         +s2 { +"s1" }
         +s3 { +"fs" }
         +fs { +"x5" }
