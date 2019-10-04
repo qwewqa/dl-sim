@@ -15,5 +15,6 @@ object Adventurers : DataMap<AdventurerSetup>() {
         this["rena"] = rena
         this["serena"] = serena
         this["victor"] = victor
+        this["yachiyo", "yachi"] = yachiyo
     }
 }

@@ -1,5 +1,6 @@
 package tools.qwewqa.sim.data
 
+import tools.qwewqa.sim.core.Cooldown
 import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.status.Ability
 import tools.qwewqa.sim.status.Buff
@@ -138,6 +139,14 @@ object Abilities : DataMap<Ability<*, *>>() {
         }
     )
 
+    val wpSkillPrep = Ability<Double, Unit>(
+        name = "Skill Prep",
+        initialValue = {},
+        onStart = { value, _ ->
+            sp.charge(fraction = value, source = "prep")
+        }
+    )
+
     val magicalModification = Ability<Double, Double>(
         name = "Magical Modification",
         initialValue = { 0.0 },
@@ -256,6 +265,27 @@ object Abilities : DataMap<Ability<*, *>>() {
         }
     )
 
+    class AfflictBuffAbilityData(var value: Double, val cooldown: Cooldown)
+    fun afflictBuffAbilitiy(name: String, event: String, buff: Buff<Double, *>, duration: Double, cooldown: Double = 5.0) = Ability<Double, AfflictBuffAbilityData>(
+        name = name,
+        initialValue = { AfflictBuffAbilityData(0.0, timeline.getCooldown(5.0)) },
+        onStart = { value, stack ->
+            stack.value.value += value
+        },
+        onStop = { value, stack ->
+            stack.value.value -= value
+        },
+        stackStart = { stack ->
+            listen(event) {
+                stack.value.cooldown.ifAvailable {
+                    buff(stack.value.value).selfBuff(duration)
+                }
+            }
+        }
+    )
+
+    val paraUserStr = afflictBuffAbilitiy("paralysis = user strength", "paralysis-proc", Buffs.str, 10.0)
+
     init {
         this["strength", "str"] = strength
         this["strength (wp)", "str (wp)"] = wpStr
@@ -277,6 +307,7 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["barrage obliteration"] = barrageObliteration
         this["barrage devastation"] = barrageDevastation
         this["skill prep", "prep"] = skillPrep
+        this["skill prep (wp)", "prep (wp)"] = wpSkillPrep
         this["primed str"] = primedStr
         this["primed def"] = primedDef
         this["magical modification"] = magicalModification
@@ -285,5 +316,6 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["dragon's claws", "dragon claws", "claws"] = dragonsClaws
         this["dragon's claws (wp)", "dragon claws (wp)", "claws (wp)"] = wpDragonsClaws
         this["force charge (wp)"] = wpForceCharge
+        this["paralysis = user strength"] = paraUserStr
     }
 }

@@ -120,6 +120,23 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         )
     )
 
+    val choc = Wyrmprint(
+        name = "The Chocolatiers",
+        str = 62,
+        abilities = listOf(
+            Abilities.wpSkillPrep(100.percent)
+        )
+    )
+
+    val ss = Wyrmprint(
+        name = "Stellar Show",
+        str = 65,
+        abilities = listOf(
+            Abilities.wpFsDamage(50.percent),
+            Abilities.wpCritDamage(15.percent)
+        )
+    )
+
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
@@ -134,5 +151,7 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         this["LC", "Levin's Champion"] = lc
         this["TSO", "The Shining Overlord"] = tso
         this["SDO", "Sister's Day Out"] = sdo
+        this["Choc", "The Chocolatiers"] = choc
+        this["SS", "Stellar Show"] = ss
     }
 }
