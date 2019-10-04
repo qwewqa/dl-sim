@@ -1,0 +1,11 @@
+config:
+  duration: 180.0
+adventurers:
+  - gcleo:
+      name: "G!Cleo 1"
+  - gcleo:
+      name: "G!Cleo 2"
+  - gcleo:
+      name: "G!Cleo 3"
+  - gcleo:
+      name: "G!Cleo 4"

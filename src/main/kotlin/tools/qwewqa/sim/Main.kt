@@ -87,6 +87,7 @@ class Run : CliktCommand(
         ) {
             val adv = AdventurerPreset(
                 name = name,
+                nick = null,
                 wyrmprints = prints,
                 weapon = wep,
                 dragon = drag,
@@ -176,6 +177,7 @@ class Preset : CliktCommand(
     fun loadBuild(adv: Pair<String, Map<String, Any?>?>): AdventurerPreset {
         val build = (adv.second ?: emptyMap()).lowercasedKeys()
         val name = adv.first
+        val nick = build["name"] as String?
         val wyrmprints = build["wyrmprints"] as List<String>?
         val weapon = build["weapon"] as String?
         val dragon = build["dragon"] as String?
@@ -183,7 +185,7 @@ class Preset : CliktCommand(
         val rotation = build["rotation"] as Map<String, String>?
         val rotationInit = rotation?.get("init")
         val rotationLoop = rotation?.get("loop")
-        return AdventurerPreset(name, wyrmprints, weapon, dragon, acl, rotationInit, rotationLoop)
+        return AdventurerPreset(name, nick, wyrmprints, weapon, dragon, acl, rotationInit, rotationLoop)
     }
 
     fun loadConfig(conf: Map<String, Any?>): StageConfig {

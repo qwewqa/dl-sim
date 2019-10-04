@@ -23,6 +23,7 @@ fun Stage.applyPreset(preset: RunPreset) {
 
 data class AdventurerPreset(
     val name: String,
+    val nick: String?,
     val wyrmprints: List<String>?,
     val weapon: String?,
     val dragon: String?,
@@ -33,6 +34,7 @@ data class AdventurerPreset(
 
 fun Stage.loadAdventurerPreset(advPreset: AdventurerPreset) =
     Adventurers[advPreset.name] {
+        advPreset.nick?.apply { name = this }
         advPreset.wyrmprints?.apply { if (this.isNotEmpty()) wyrmprints = this.map { Wyrmprints[it] }.reduce { a, b -> a + b } }
         advPreset.weapon?.apply { weapon = Weapons[this] }
         advPreset.dragon?.apply { dragon = Dragons[this] }
