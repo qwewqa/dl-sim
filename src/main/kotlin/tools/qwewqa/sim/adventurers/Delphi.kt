@@ -36,7 +36,7 @@ val delphi = AdventurerSetup {
             val fsMod = 47.percent + 5.percent * abilityLevel
             val knifeMod = 9.percent + 1.percent * abilityLevel
             val poisonMod = 240.percent + 30.percent * abilityLevel
-            doFsAtk(fsMod, 4.2, 300, "fs", "alt", "a")
+            doFsAtk(fsMod, 4.2, 288, "fs", "alt", "a")
             doFsAtk(fsMod, 4.2, "fs", "alt", "b")
             doFsAtk(fsMod, 4.2, "fs", "alt", "c")
             doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
@@ -45,7 +45,7 @@ val delphi = AdventurerSetup {
             poison(fsAtk(poisonMod, 0.0, "fs", "alt", "poison").snapshot(), duration = 24.0, chance = 120.percent)
         } else {
             hit("fs") {
-                doFsAtk(47.percent, 8.4, 300, "fs", "normal", "a")
+                doFsAtk(47.percent, 8.4, 288, "fs", "normal", "a")
                 doFsAtk(47.percent, 8.4, "fs", "normal", "b")
                 doFsAtk(47.percent, 4.2, "fs", "normal", "c")
             }

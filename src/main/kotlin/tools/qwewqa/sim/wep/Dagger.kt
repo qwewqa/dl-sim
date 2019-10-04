@@ -52,7 +52,7 @@ val dagger = WeaponType(
             else -> wait(54.frames)
         }
         hit("fs") {
-            doFsAtk(47.percent, 8.4, 300, "fs", "a")
+            doFsAtk(47.percent, 8.4, 288, "fs", "a")
             doFsAtk(47.percent, 8.4, "fs", "b")
             doFsAtk(47.percent, 4.2, "fs", "c")
         }
