@@ -184,8 +184,21 @@ class Adventurer(val stage: Stage) : Listenable {
         dragon?.init()
         wyrmprints.init()
         prerunChecks()
+        enemy.damageSlices[name].prepopulate()
         prerun()
         think()
+    }
+
+    fun DamageSlice.prepopulate() {
+        this["attack", "x1"]
+        this["attack", "x2"]
+        this["attack", "x3"]
+        this["attack", "x4"]
+        this["attack", "x5"]
+        this["fs"]
+        this["skill", "s1"]
+        this["skill", "s2"]
+        this["skill", "s3"]
     }
 
     fun BaseEquip?.init() = this?.initialize(this@Adventurer)

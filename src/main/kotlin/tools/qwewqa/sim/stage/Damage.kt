@@ -155,6 +155,7 @@ class DamageSliceLists(
         val stdDps = avg.std().roundToInt()
         val dmg = dmgs.average().roundToInt()
         val stdDmg = dmgs.std().roundToInt()
+        if (dmg == 0) return
         println("${"  ".repeat(level)}$name: $dps dps, $stdDps std ($dmg dmg, $stdDmg std)")
         this.subslices.forEach {
             it.value.display(level + 1)
@@ -179,6 +180,7 @@ class DamageSliceLists(
         val dmg = dmgs.average().roundToInt()
         val stdDmg = dmgs.std().roundToInt()
         val indentation = "  ".repeat(level)
+        if (dmg == 0) return
         println("$indentation$name:")
         println("$indentation  stats: [{dps: $dps}, {stdDps: $stdDps}, {dmg: $dmg}, {stdDmg: $stdDmg}]")
         println("$indentation  children:")
