@@ -34,7 +34,8 @@ class Stage {
     }
 
     operator fun AdventurerSetup.invoke() = Adventurer(this@Stage).apply(init).also { adventurers += it }
-    inline operator fun AdventurerSetup.invoke(init2: Adventurer.() -> Unit) = Adventurer(this@Stage).apply(init).apply(init2).also { adventurers += it }
+    inline operator fun AdventurerSetup.invoke(init2: Adventurer.() -> Unit) =
+        Adventurer(this@Stage).apply(init).apply(init2).also { adventurers += it }
 
     fun AdventurerPreset.loadAdventurerPreset() = loadAdventurerPreset(this)
 
@@ -54,40 +55,37 @@ inline fun stage(
     disp: Boolean = true,
     list: Boolean = false,
     yaml: Boolean = false,
+
     crossinline init: Stage.() -> Unit
 ) = runBlocking {
-    val slices = DamageSliceLists("Damage")
-    if (mass > 1) (1..mass).map { number ->
+    val slices = DamageSliceAggregate("Damage")
+    (1..mass).map { number ->
         async {
-            Stage().apply(init).also {
-                it.logger.filterLevel = Logger.Level.NONE
-            }.also { stage ->
-                if (number == mass && disp && !list) {
+            Stage().apply(init).also { stage ->
+                if (mass > 1) {
+                    stage.logger.filterLevel = Logger.Level.NONE
+                    if (number == mass && disp && !list) {
+                        stage.onEnd {
+                            disp()
+                        }
+                    }
+                } else {
+                    stage.logger.filterLevel = logLevel
                     stage.onEnd {
-                        disp()
+                        if (logLevel > Logger.Level.NONE) println()
+                        if (disp && !list) {
+                            disp()
+                        }
                     }
                 }
             }.awaitResults().apply {
                 slices.add(slice, duration)
             }
         }
-    }.awaitAll() else {
-        Stage().apply(init).also { stage ->
-            stage.logger.filterLevel = logLevel
-            stage.onEnd {
-                if (logLevel > Logger.Level.NONE) println()
-                if (disp && !list) {
-                    disp()
-                }
-            }
-        }.awaitResults().apply {
-            slices.add(slice, duration)
-        }
-    }
-    if (list) {
-        slices.displayList()
-    } else {
-        if (yaml) slices.displayYAML() else slices.display()
+    }.awaitAll()
+    when {
+        list -> slices.displayList()
+        else -> if (yaml) slices.displayYAML() else slices.display()
     }
 }
 
