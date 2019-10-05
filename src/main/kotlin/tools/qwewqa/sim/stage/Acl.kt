@@ -130,7 +130,7 @@ fun AclSelector.parseSkill(name: String) = when (name) {
  */
 fun parseCondition(string: String): List<String> {
     if (string.isEmpty()) return emptyList()
-    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/")
+    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/", "-u")
     val tokens = tokenizeCondition(string) // get list of tokens
     val output = mutableListOf<String>() // output list
     val stack = mutableListOf<String>() // operator stack
@@ -196,23 +196,23 @@ fun tokenizeCondition(string: String): List<String> {
         add(this@infix)
         repeat(precedence) { add("(") }
     }
-    return (listOf("(") + tokens.map { replacements[it] ?: it } + listOf(")")).map {
-        when (it) {
-            "*" -> it.infix(1)
-            "/" -> it.infix(1)
-            "+" -> it.infix(2)
-            "-" -> it.infix(2)
-            "==" -> it.infix(3)
-            "!=" -> it.infix(3)
-            ">=" -> it.infix(3)
-            "<=" -> it.infix(3)
-            ">" -> it.infix(3)
-            "<" -> it.infix(3)
-            "&&" -> it.infix(4)
-            "||" -> it.infix(4)
+    return (listOf("", "(") + tokens.map { replacements[it] ?: it } + listOf(")")).zipWithNext().map { (last, token) ->
+        when (token) {
+            "*" -> token.infix(1)
+            "/" -> token.infix(1)
+            "+" -> token.infix(2)
+            "-" -> if (last in specialTokens) listOf("-u") else token.infix(2) // unary minus
+            "==" -> token.infix(3)
+            "!=" -> token.infix(3)
+            ">=" -> token.infix(3)
+            "<=" -> token.infix(3)
+            ">" -> token.infix(3)
+            "<" -> token.infix(3)
+            "&&" -> token.infix(4)
+            "||" -> token.infix(4)
             "(" -> listOf("(", "(", "(", "(", "(")
             ")" -> listOf(")", ")", ")", ")", ")")
-            else -> listOf(it)
+            else -> listOf(token)
         }
     }.reduce { a, b -> a + b }
 }
@@ -220,7 +220,7 @@ fun tokenizeCondition(string: String): List<String> {
 /**
  * Evaluate conditions (in RPN)
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
 fun AclSelector.evaluateConditions(conditions: List<String>): Boolean {
     if (conditions.isEmpty()) return true
     val results = ArrayDeque<Any>()
@@ -240,6 +240,11 @@ fun AclSelector.evaluateConditions(conditions: List<String>): Boolean {
                 }
                 "!" -> {
                     !results.pop().let { (it as? Boolean) ?: (((it as? Int)?.toDouble() ?: (it as Double)) > 0) }
+                }
+                "-u" -> {
+                    results.pop().let {
+                        if (it is Int) -it else -(it as Double)
+                    }
                 }
                 else -> {
                     if (it in listOf(">=", "<=", ">", "<", "==", "!=", "+", "-", "*", "/")) {

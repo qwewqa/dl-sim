@@ -22,7 +22,7 @@ val delphi = AdventurerSetup {
 
     fs = forcestrike {
         doing = "fs"
-        when(trigger) {
+        when (trigger) {
             "x1" -> wait(62.frames)
             "x2" -> wait(52.frames)
             "x3" -> wait(56.frames)
@@ -30,21 +30,21 @@ val delphi = AdventurerSetup {
             "x5" -> wait(64.frames)
             else -> wait(54.frames)
         }
-        if (altFs > 0) {
-            altFs--
-            val abilityLevel = Abilities.poisonousCage.value
-            val fsMod = 47.percent + 5.percent * abilityLevel
-            val knifeMod = 9.percent + 1.percent * abilityLevel
-            val poisonMod = 240.percent + 30.percent * abilityLevel
-            doFsAtk(fsMod, 4.2, 288, "fs", "alt", "a")
-            doFsAtk(fsMod, 4.2, "fs", "alt", "b")
-            doFsAtk(fsMod, 4.2, "fs", "alt", "c")
-            doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
-            doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
-            doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
-            poison(fsAtk(poisonMod, 0.0, "fs", "alt", "poison").snapshot(), duration = 24.0, chance = 120.percent)
-        } else {
-            hit("fs") {
+        hit("fs") {
+            if (altFs > 0) {
+                altFs--
+                val abilityLevel = Abilities.poisonousCage.value
+                val fsMod = 47.percent + 5.percent * abilityLevel
+                val knifeMod = 9.percent + 1.percent * abilityLevel
+                val poisonMod = 240.percent + 30.percent * abilityLevel
+                doFsAtk(fsMod, 4.2, 288, "fs", "alt", "a")
+                doFsAtk(fsMod, 4.2, "fs", "alt", "b")
+                doFsAtk(fsMod, 4.2, "fs", "alt", "c")
+                doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
+                doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
+                doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
+                poison(fsAtk(poisonMod, 0.0, "fs", "alt", "poison").snapshot(), duration = 24.0, chance = 120.percent)
+            } else {
                 doFsAtk(47.percent, 8.4, 288, "fs", "normal", "a")
                 doFsAtk(47.percent, 8.4, "fs", "normal", "b")
                 doFsAtk(47.percent, 4.2, "fs", "normal", "c")
