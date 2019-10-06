@@ -4,9 +4,9 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.properties.Delegates
 
-class Timeline {
+class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
+    private val job = Job()
     private val queue = PriorityQueue<Event>()
-    private val job = SupervisorJob()
 
     /*
     The reason this isn't a boolean and equivalent to running is so wait can work.
@@ -35,7 +35,7 @@ class Timeline {
      */
     fun end() {
         running = false
-        job.cancel()
+        job.complete()
         onEnd()
     }
 
@@ -54,7 +54,7 @@ class Timeline {
         }
         if (action.startTime >= time) time = action.startTime else throw IllegalStateException()
         active++
-        GlobalScope.launch(action.job) {
+        action.job = launch {
             action()
             active--
         }
@@ -90,7 +90,7 @@ class Timeline {
     }
 
     inner class Event(val startTime: Double, private val action: suspend Timeline.() -> Unit) : Comparable<Event> {
-        var job = Job(this@Timeline.job)
+        var job: Job? = null
 
         suspend operator fun invoke() {
             action()
@@ -103,8 +103,8 @@ class Timeline {
 
         fun cancel() {
             unschedule(this)
-            if (job.isActive) {
-                job.cancel()
+            job?.let {
+                if (it.isActive) it.cancel()
             }
         }
 
