@@ -18,7 +18,9 @@ import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
 import kotlin.coroutines.coroutineContext
 import kotlin.math.ceil
+import kotlin.properties.ReadWriteProperty
 import kotlin.random.Random
+import kotlin.reflect.KProperty
 
 class Adventurer(val stage: Stage) : Listenable {
     var name: String = "unnamed"

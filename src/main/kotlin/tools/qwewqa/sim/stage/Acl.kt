@@ -5,8 +5,9 @@ import tools.qwewqa.sim.wep.blade
 import tools.qwewqa.sim.wep.lance
 import tools.qwewqa.sim.wep.wand
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
-class AclSelector(val adventurer: Adventurer) {
+class Acl(val adventurer: Adventurer) {
     class SkillData(val charge: Int, val remaining: Int, val ready: Boolean)
 
     var value: Move? = null
@@ -71,9 +72,9 @@ class AclSelector(val adventurer: Adventurer) {
     operator fun String.unaryMinus() = !+this
 }
 
-inline fun Adventurer.acl(implicitX: Boolean = true, fsf: Boolean = true, crossinline init: AclSelector.() -> Unit) {
+inline fun Adventurer.acl(implicitX: Boolean = true, fsf: Boolean = true, crossinline init: Acl.() -> Unit) {
     logic = {
-        AclSelector(this).apply {
+        Acl(this).apply {
             init()
             if (fsf) {
                 if (adventurer.weaponType in listOf(blade, wand, lance)) +fsf { +"x5" }
@@ -84,10 +85,13 @@ inline fun Adventurer.acl(implicitX: Boolean = true, fsf: Boolean = true, crossi
 }
 
 fun Adventurer.acl(string: String) {
-    val parsed = parseAcl(string)
+    acl(parseAcl(string))
+}
+
+private fun Adventurer.acl(parsed: List<AclLine>) {
     acl {
         parsed.forEach {
-            if (value == null && evaluateConditions(it.condition)) +parseSkill(it.move)
+            if (value == null && evaluateConditions(it.condition)) +(it.move(this) ?: error("skill error"))
         }
         if (adventurer.weaponType in listOf(blade, wand, lance)) +fsf { +"x5" }
         +x
@@ -95,42 +99,286 @@ fun Adventurer.acl(string: String) {
 }
 
 /** Single line of a parsed acl */
-data class AclLine(val move: String, val condition: List<String>)
+private data class AclLine(val move: AclSkill, val condition: List<AclToken>)
+
+typealias AclSkill = Acl.() -> Move?
+
+interface AclToken {
+    fun evaluate(stack: Deque<AclValue>, acl: Acl): AclValue
+}
+
+inline class AclVariable(val accessor: Acl.() -> AclValue) : AclToken {
+    override fun evaluate(
+        stack: Deque<AclValue>,
+        acl: Acl
+    ) = acl.accessor()
+}
+
+interface AclValue : AclToken {
+    fun toBoolean(): AclBoolean
+    fun toInt(): AclInt
+    fun toDouble(): AclDouble
+    operator fun compareTo(other: AclValue): Int
+    operator fun unaryMinus(): AclValue
+    operator fun plus(other: AclValue): AclValue
+    operator fun minus(other: AclValue): AclValue
+    operator fun times(other: AclValue): AclValue
+    operator fun div(other: AclValue): AclValue
+}
+
+inline class AclBoolean(val value: Boolean) : AclValue {
+    override fun toBoolean() = this
+    override fun toInt() = if (value) 1.aclValue else 0.aclValue
+    override fun toDouble() = if (value) 1.0.aclValue else 0.0.aclValue
+    override fun evaluate(
+        stack: Deque<AclValue>,
+        acl: Acl
+    ) = this
+
+    override fun compareTo(other: AclValue) = toInt().compareTo(other)
+    override fun unaryMinus(): AclValue = toInt().unaryMinus()
+    override fun plus(other: AclValue) = toInt().plus(other)
+    override fun minus(other: AclValue) = toInt().minus(other)
+    override fun times(other: AclValue) = toInt().times(other)
+    override fun div(other: AclValue) = toInt().div(other)
+}
+
+inline class AclInt(val value: Int) : AclValue {
+    override fun toBoolean() = if (value == 0) false.aclValue else true.aclValue
+    override fun toInt() = this
+    override fun toDouble() = value.toDouble().aclValue
+    override fun evaluate(
+        stack: Deque<AclValue>,
+        acl: Acl
+    ) = this
+
+    override fun unaryMinus() = (-value).aclValue
+    override fun compareTo(other: AclValue) = when (other) {
+        is AclInt -> value.compareTo(other.value)
+        is AclDouble -> value.compareTo(other.value)
+        else -> -other.compareTo(this)
+    }
+
+    override fun plus(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.plus(other.value)).aclValue
+        is AclDouble -> (value.plus(other.value)).aclValue
+        else -> plus(other.toInt())
+    }
+
+    override fun minus(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.minus(other.value)).aclValue
+        is AclDouble -> (value.minus(other.value)).aclValue
+        else -> minus(other.toInt())
+    }
+
+    override fun times(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.times(other.value)).aclValue
+        is AclDouble -> (value.times(other.value)).aclValue
+        else -> times(other.toInt())
+    }
+
+    override fun div(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.div(other.value)).aclValue
+        is AclDouble -> (value.div(other.value)).aclValue
+        else -> div(other.toInt())
+    }
+
+}
+
+inline class AclDouble(val value: Double) : AclValue {
+    override fun toBoolean() = if (value == 0.0 || value == -0.0) false.aclValue else true.aclValue
+    override fun toInt() = value.toInt().aclValue
+    override fun toDouble() = this
+    override fun evaluate(
+        stack: Deque<AclValue>,
+        acl: Acl
+    ) = this
+
+    override fun unaryMinus() = (-value).aclValue
+    override fun compareTo(other: AclValue) = when (other) {
+        is AclInt -> value.compareTo(other.value)
+        is AclDouble -> value.compareTo(other.value)
+        else -> -other.compareTo(this)
+    }
+
+    override fun plus(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.plus(other.value)).aclValue
+        is AclDouble -> (value.plus(other.value)).aclValue
+        else -> plus(other.toDouble())
+    }
+
+    override fun minus(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.minus(other.value)).aclValue
+        is AclDouble -> (value.minus(other.value)).aclValue
+        else -> minus(other.toDouble())
+    }
+
+    override fun times(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.times(other.value)).aclValue
+        is AclDouble -> (value.times(other.value)).aclValue
+        else -> times(other.toDouble())
+    }
+
+    override fun div(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.div(other.value)).aclValue
+        is AclDouble -> (value.div(other.value)).aclValue
+        else -> div(other.toDouble())
+    }
+}
+
+inline val Boolean.aclValue get() = AclBoolean(this)
+inline val Int.aclValue get() = AclInt(this)
+inline val Double.aclValue get() = AclDouble(this)
+
+private interface UnaryOperator : AclToken {
+    fun op(value: AclValue): AclValue
+    override fun evaluate(
+        stack: Deque<AclValue>,
+        acl: Acl
+    ) = op(stack.pop())
+}
+
+private interface InfixOperator : AclToken {
+    fun op(a: AclValue, b: AclValue): AclValue
+    override fun evaluate(
+        stack: Deque<AclValue>,
+        acl: Acl
+    ): AclValue {
+        val b = stack.pop()
+        val a = stack.pop()
+        return op(a, b)
+    }
+}
+
+private object UnaryMinus : UnaryOperator {
+    override fun op(value: AclValue) = when (value) {
+        is AclInt -> -value
+        is AclDouble -> -value
+        is AclBoolean -> throw UnsupportedOperationException("Can't negate boolean")
+        else -> throw UnsupportedOperationException()
+    }
+}
+
+private object UnaryNot : UnaryOperator {
+    override fun op(value: AclValue) = (!value.toBoolean().value).aclValue
+}
+
+private object Geq : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a >= b).aclValue
+}
+
+private object Leq : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a <= b).aclValue
+}
+
+private object Gt : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a > b).aclValue
+}
+
+private object Lt : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a < b).aclValue
+}
+
+private object Eq : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a == b).aclValue
+}
+
+private object Neq : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a != b).aclValue
+}
+
+private object Or : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a.toBoolean().value || b.toBoolean().value).aclValue
+}
+
+private object And : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = (a.toBoolean().value && b.toBoolean().value).aclValue
+}
+
+private object Plus : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = a + b
+}
+
+private object Minus : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = a - b
+}
+
+private object Times : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = a * b
+}
+
+private object Div : InfixOperator {
+    override fun op(a: AclValue, b: AclValue) = a / b
+}
 
 /** Parse the acl line by line (lines delimited by newlines and semicolons)*/
-fun parseAcl(string: String): List<AclLine> = string.trim().split("\n", ";").map { parseLine(it) }
+private fun parseAcl(string: String): List<AclLine> =
+    aclCache[string] ?: string.trim().split("\n", ";").map { parseLine(it) }.also { aclCache[string] = it }
+
+private val aclCache = ConcurrentHashMap<String, List<AclLine>>()
 
 /**
  * Parse a single line of the acl
  * Each line is in the format: skill_name, conditions
  * */
-fun parseLine(string: String): AclLine {
-    val skill = string.substringBefore(",").trim()
-    val conditionText = string.substringAfter(",", "default").trim()
-    val condition = parseCondition(conditionText)
+private fun parseLine(string: String): AclLine {
+    val skill = parseSkill(string.substringBefore(",").trim())
+    val condition = parseCondition(string.substringAfter(",", "default").trim())
     return AclLine(skill, condition)
 }
 
 /**
  * Returns the move for the given skill name
  */
-fun AclSelector.parseSkill(name: String) = when (name) {
-    "s1" -> adventurer.s1
-    "s2" -> adventurer.s2
-    "s3" -> adventurer.s3
-    "fs" -> adventurer.fs
-    "fsf" -> adventurer.fsf
-    "dodge" -> adventurer.dodge
-    "x" -> adventurer.x
+private fun parseSkill(name: String): AclSkill = when (name) {
+    "s1" -> {
+        { adventurer.s1 }
+    }
+    "s2" -> {
+        { adventurer.s2 }
+    }
+    "s3" -> {
+        { adventurer.s3 }
+    }
+    "fs" -> {
+        { adventurer.fs }
+    }
+    "fsf" -> {
+        { adventurer.fsf }
+    }
+    "dodge" -> {
+        { adventurer.dodge }
+    }
+    "x" -> {
+        { adventurer.x }
+    }
     else -> error("Unknown skill $name")
 }
+
+private val operators = mapOf(
+    "!" to UnaryNot,
+    "&&" to And,
+    "||" to Or,
+    "!=" to Neq,
+    ">=" to Geq,
+    "<=" to Leq,
+    ">" to Gt,
+    "<" to Lt,
+    "=-" to Eq,
+    "+" to Plus,
+    "-" to Minus,
+    "*" to Times,
+    "/" to Div,
+    "-u" to UnaryMinus
+)
 
 /**
  * Parse the whole condition line, converting it to reverse polish order
  */
-fun parseCondition(string: String): List<String> {
+private fun parseCondition(string: String): List<AclToken> {
     if (string.isEmpty()) return emptyList()
-    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/", "-u")
+    val specialTokens =
+        listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "==", "(", ")", "+", "-", "*", "/", "-u")
     val tokens = tokenizeCondition(string) // get list of tokens
     val output = mutableListOf<String>() // output list
     val stack = mutableListOf<String>() // operator stack
@@ -149,13 +397,15 @@ fun parseCondition(string: String): List<String> {
         }
     }
     output += stack // add remaining operators in stack
-    return output
+    return output.map {
+        operators[it] ?: parseVariable(it)
+    }
 }
 
 /**
  * Split a condition string into tokens
  */
-fun tokenizeCondition(string: String): List<String> {
+private fun tokenizeCondition(string: String): List<String> {
     var current = ""
     var remaining = string + " "
     val tokens = mutableListOf<String>()
@@ -189,27 +439,31 @@ fun tokenizeCondition(string: String): List<String> {
             }
         }
     }
-    // this part just does operator precedence
-    // this does, in fact, work
-    fun String.infix(precedence: Int) = mutableListOf<String>().apply {
+    return parenthesize(tokens.map { replacements[it] ?: it })
+}
+
+/** Operator precedence */
+private fun parenthesize(tokens: List<String>): List<String> {
+    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/")
+    fun String.precedence(precedence: Int) = mutableListOf<String>().apply {
         repeat(precedence) { add(")") }
-        add(this@infix)
+        add(this@precedence)
         repeat(precedence) { add("(") }
     }
-    return (listOf("", "(") + tokens.map { replacements[it] ?: it } + listOf(")")).zipWithNext().map { (last, token) ->
+    return (listOf("", "(") + tokens + listOf(")")).zipWithNext().map { (last, token) ->
         when (token) {
-            "*" -> token.infix(1)
-            "/" -> token.infix(1)
-            "+" -> token.infix(2)
-            "-" -> if (last in specialTokens) listOf("-u") else token.infix(2) // unary minus
-            "==" -> token.infix(3)
-            "!=" -> token.infix(3)
-            ">=" -> token.infix(3)
-            "<=" -> token.infix(3)
-            ">" -> token.infix(3)
-            "<" -> token.infix(3)
-            "&&" -> token.infix(4)
-            "||" -> token.infix(4)
+            "*" -> token.precedence(1)
+            "/" -> token.precedence(1)
+            "+" -> token.precedence(2)
+            "-" -> if (last in specialTokens) listOf("-u") else token.precedence(2) // unary minus
+            "==" -> token.precedence(3)
+            "!=" -> token.precedence(3)
+            ">=" -> token.precedence(3)
+            "<=" -> token.precedence(3)
+            ">" -> token.precedence(3)
+            "<" -> token.precedence(3)
+            "&&" -> token.precedence(4)
+            "||" -> token.precedence(4)
             "(" -> listOf("(", "(", "(", "(", "(")
             ")" -> listOf(")", ")", ")", ")", ")")
             else -> listOf(token)
@@ -220,102 +474,42 @@ fun tokenizeCondition(string: String): List<String> {
 /**
  * Evaluate conditions (in RPN)
  */
-@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-fun AclSelector.evaluateConditions(conditions: List<String>): Boolean {
+fun Acl.evaluateConditions(conditions: List<AclToken>): Boolean {
     if (conditions.isEmpty()) return true
-    val results = ArrayDeque<Any>()
+    val stack = ArrayDeque<AclValue>()
     conditions.forEach {
-        results.push(
-            when (it) {
-                "&&" -> {
-                    // shitty version of converting numbers to booleans
-                    val b = results.pop().let { (it as? Boolean) ?: (((it as? Int)?.toDouble() ?: (it as Double)) > 0) }
-                    val a = results.pop().let { (it as? Boolean) ?: (((it as? Int)?.toDouble() ?: (it as Double)) > 0) }
-                    a && b
-                }
-                "||" -> {
-                    val b = results.pop().let { (it as? Boolean) ?: (((it as? Int)?.toDouble() ?: (it as Double)) > 0) }
-                    val a = results.pop().let { (it as? Boolean) ?: (((it as? Int)?.toDouble() ?: (it as Double)) > 0) }
-                    a || b
-                }
-                "!" -> {
-                    !results.pop().let { (it as? Boolean) ?: (((it as? Int)?.toDouble() ?: (it as Double)) > 0) }
-                }
-                "-u" -> {
-                    results.pop().let {
-                        if (it is Int) -it else -(it as Double)
-                    }
-                }
-                else -> {
-                    if (it in listOf(">=", "<=", ">", "<", "==", "!=", "+", "-", "*", "/")) {
-                        val b = results.pop()
-                        val a = results.pop()
-                        if (a is Int && b is Int) {
-                            when (it) {
-                                ">=" -> a >= b
-                                "<=" -> a <= b
-                                ">" -> a > b
-                                "<" -> a < b
-                                "==" -> a == b
-                                "!=" -> a != b
-                                "+" -> a + b
-                                "-" -> a - b
-                                "*" -> a * b
-                                "/" -> a / b
-                                else -> error("error")
-                            }
-                        } else {
-                            val bd = (a as? Int)?.toDouble() ?: a as Double
-                            val ad = (b as? Int)?.toDouble() ?: b as Double
-                            when (it) {
-                                ">=" -> ad >= bd
-                                "<=" -> ad <= bd
-                                ">" -> ad > bd
-                                "<" -> ad < bd
-                                "==" -> ad == bd
-                                "!=" -> ad != bd
-                                "+" -> ad + bd
-                                "-" -> ad - bd
-                                "*" -> ad * bd
-                                "/" -> ad / bd
-                                else -> error("error")
-                            }
-                        }
-                    } else evaluateSingleCondition(it) // evaluate value if it's not an operator
-                }
-            }
-        )
+        stack.push(it.evaluate(stack, this))
     }
-    check(results.size == 1)
-    return results.pop() as Boolean
+    check(stack.size == 1)
+    return stack.pop().toBoolean().value
 }
 
-fun AclSelector.evaluateSingleCondition(name: String): Any = when (name.toLowerCase()) {
-    "default" -> default
-    "cancel" -> cancel
-    "s1.ready" -> s1info.ready
-    "s2.ready" -> s2info.ready
-    "s3.ready" -> s3info.ready
-    "s1transform" -> adventurer.s1Transform
-    "s2transform" -> adventurer.s2Transform
-    "seq" -> seq
-    "hp" -> (adventurer.hp * 100).toInt()
-    "combo" -> adventurer.combo
-    "s1phase" -> adventurer.s1Phase
-    "s2phase" -> adventurer.s2Phase
-    "altfs" -> adventurer.altFs
-    "energy" -> adventurer.energy
-    "bleed" -> Debuffs.bleed.getStack(adventurer.enemy).count
-    "s1.charge" -> s1info.charge
-    "s1.remaining" -> s1info.remaining
-    "s2.charge" -> s2info.charge
-    "s2.remaining" -> s2info.remaining
-    "s3.charge" -> s3info.charge
-    "s3.remaining" -> s3info.remaining
-    "od_remaining" -> adventurer.enemy.odRemaining
+fun parseVariable(name: String): AclToken = when (name.toLowerCase()) {
+    "default" -> AclVariable { default.aclValue }
+    "cancel" -> AclVariable { cancel.aclValue }
+    "s1.ready" -> AclVariable { s1info.ready.aclValue }
+    "s2.ready" -> AclVariable { s2info.ready.aclValue }
+    "s3.ready" -> AclVariable { s3info.ready.aclValue }
+    "s1transform" -> AclVariable { adventurer.s1Transform.aclValue }
+    "s2transform" -> AclVariable { adventurer.s2Transform.aclValue }
+    "seq" -> AclVariable { seq.aclValue }
+    "hp" -> AclVariable { (adventurer.hp * 100).toInt().aclValue }
+    "combo" -> AclVariable { adventurer.combo.aclValue }
+    "s1phase" -> AclVariable { adventurer.s1Phase.aclValue }
+    "s2phase" -> AclVariable { adventurer.s2Phase.aclValue }
+    "altfs" -> AclVariable { adventurer.altFs.aclValue }
+    "energy" -> AclVariable { adventurer.energy.aclValue }
+    "bleed" -> AclVariable { Debuffs.bleed.getStack(adventurer.enemy).count.aclValue }
+    "s1.charge" -> AclVariable { s1info.charge.aclValue }
+    "s1.remaining" -> AclVariable { s1info.remaining.aclValue }
+    "s2.charge" -> AclVariable { s2info.charge.aclValue }
+    "s2.remaining" -> AclVariable { s2info.remaining.aclValue }
+    "s3.charge" -> AclVariable { s3info.charge.aclValue }
+    "s3.remaining" -> AclVariable { s3info.remaining.aclValue }
+    "od_remaining" -> AclVariable { adventurer.enemy.odRemaining.aclValue }
     else -> when {
-        name.toIntOrNull() != null -> name.toIntOrNull()!!
-        name.toDoubleOrNull() != null -> name.toDoubleOrNull()!!
-        else -> +name
+        name.toIntOrNull() != null -> name.toIntOrNull()!!.aclValue
+        name.toDoubleOrNull() != null -> name.toDoubleOrNull()!!.aclValue
+        else -> AclVariable { (+name).aclValue }
     }
 }
