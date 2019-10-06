@@ -152,26 +152,9 @@ object Abilities : DataMap<Ability<*, *>>() {
     val magicalModification = Ability<Double, Double>(
         name = "Magical Modification",
         initialValue = { 0.0 },
-        stackStart = { stack ->
-            listen("post-s1") { _ ->
+        stackStart = { _ ->
+            listen("post-s1") {
                 altFs = 1
-                fs = (fs ?: noMove).copy(action = {
-                    if (altFs > 0) {
-                        when (trigger) {
-                            "x5" -> wait(57.frames)
-                            else -> wait(43.frames)
-                        }
-                        stage.adventurers.forEach { adv ->
-                            Buffs.str(stack.value).apply(adv, 10.0)
-                        }
-                        altFs--
-                        think("fs")
-                        wait(67.frames)
-                    } else {
-                        fs?.action?.invoke(this)
-                    }
-                }
-                )
             }
         },
         onStart = { value, stack ->

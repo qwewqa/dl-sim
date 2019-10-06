@@ -7,6 +7,8 @@ import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Stat
+import tools.qwewqa.sim.wep.forcestrike
+import tools.qwewqa.sim.wep.wand
 
 val galaCleo = AdventurerSetup {
     name = "Gala Cleo"
@@ -19,6 +21,23 @@ val galaCleo = AdventurerSetup {
 
     a1 = Abilities.magicalModification(25.percent)
     a3 = Abilities.skillPrep(100.percent)
+
+    fs = forcestrike {
+        if (altFs > 0) {
+            when (trigger) {
+                "x5" -> wait(57.frames)
+                else -> wait(43.frames)
+            }
+            stage.adventurers.forEach { adv ->
+                Buffs.str(Abilities.magicalModification.value).apply(adv, 10.0)
+            }
+            altFs--
+            think("fs")
+            wait(67.frames)
+        } else {
+            wand.fs.action(this)
+        }
+    }
 
     s1(2814) {
         val hits = s1Phase + 2

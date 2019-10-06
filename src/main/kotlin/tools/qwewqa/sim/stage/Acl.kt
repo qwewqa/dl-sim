@@ -124,6 +124,7 @@ interface AclValue : AclToken {
     operator fun minus(other: AclValue): AclValue
     operator fun times(other: AclValue): AclValue
     operator fun div(other: AclValue): AclValue
+    operator fun rem(other: AclValue): AclValue
 }
 
 inline class AclBoolean(val value: Boolean) : AclValue {
@@ -141,6 +142,7 @@ inline class AclBoolean(val value: Boolean) : AclValue {
     override fun minus(other: AclValue) = toInt().minus(other)
     override fun times(other: AclValue) = toInt().times(other)
     override fun div(other: AclValue) = toInt().div(other)
+    override fun rem(other: AclValue) = toInt().rem(other)
 }
 
 inline class AclInt(val value: Int) : AclValue {
@@ -181,6 +183,12 @@ inline class AclInt(val value: Int) : AclValue {
         is AclInt -> (value.div(other.value)).aclValue
         is AclDouble -> (value.div(other.value)).aclValue
         else -> div(other.toInt())
+    }
+
+    override fun rem(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.rem(other.value)).aclValue
+        is AclDouble -> (value.rem(other.value)).aclValue
+        else -> rem(other.toInt())
     }
 
 }
@@ -224,22 +232,26 @@ inline class AclDouble(val value: Double) : AclValue {
         is AclDouble -> (value.div(other.value)).aclValue
         else -> div(other.toDouble())
     }
+
+    override fun rem(other: AclValue): AclValue = when (other) {
+        is AclInt -> (value.rem(other.value)).aclValue
+        is AclDouble -> (value.rem(other.value)).aclValue
+        else -> rem(other.toDouble())
+    }
 }
 
 inline val Boolean.aclValue get() = AclBoolean(this)
 inline val Int.aclValue get() = AclInt(this)
 inline val Double.aclValue get() = AclDouble(this)
 
-private interface UnaryOperator : AclToken {
-    fun op(value: AclValue): AclValue
+private class UnaryOperator(val op: (AclValue) -> AclValue) : AclToken {
     override fun evaluate(
         stack: Deque<AclValue>,
         acl: Acl
     ) = op(stack.pop())
 }
 
-private interface InfixOperator : AclToken {
-    fun op(a: AclValue, b: AclValue): AclValue
+private class InfixOperator(val op: (a: AclValue, b: AclValue) -> AclValue) : AclToken {
     override fun evaluate(
         stack: Deque<AclValue>,
         acl: Acl
@@ -250,66 +262,21 @@ private interface InfixOperator : AclToken {
     }
 }
 
-private object UnaryMinus : UnaryOperator {
-    override fun op(value: AclValue) = when (value) {
-        is AclInt -> -value
-        is AclDouble -> -value
-        is AclBoolean -> throw UnsupportedOperationException("Can't negate boolean")
-        else -> throw UnsupportedOperationException()
-    }
-}
-
-private object UnaryNot : UnaryOperator {
-    override fun op(value: AclValue) = (!value.toBoolean().value).aclValue
-}
-
-private object Geq : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a >= b).aclValue
-}
-
-private object Leq : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a <= b).aclValue
-}
-
-private object Gt : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a > b).aclValue
-}
-
-private object Lt : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a < b).aclValue
-}
-
-private object Eq : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a == b).aclValue
-}
-
-private object Neq : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a != b).aclValue
-}
-
-private object Or : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a.toBoolean().value || b.toBoolean().value).aclValue
-}
-
-private object And : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = (a.toBoolean().value && b.toBoolean().value).aclValue
-}
-
-private object Plus : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = a + b
-}
-
-private object Minus : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = a - b
-}
-
-private object Times : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = a * b
-}
-
-private object Div : InfixOperator {
-    override fun op(a: AclValue, b: AclValue) = a / b
-}
+private val unaryNot = UnaryOperator { (!it.toBoolean().value).aclValue }
+private val unaryMinus = UnaryOperator { -it }
+private val gt = InfixOperator { a, b -> (a > b).aclValue }
+private val lt = InfixOperator { a, b -> (a < b).aclValue }
+private val geq = InfixOperator { a, b -> (a >= b).aclValue }
+private val leq = InfixOperator { a, b -> (a <= b).aclValue }
+private val eq = InfixOperator { a, b -> (a == b).aclValue }
+private val neq = InfixOperator { a, b -> (a != b).aclValue }
+private val or = InfixOperator { a, b -> (a.toBoolean().value || b.toBoolean().value).aclValue }
+private val and = InfixOperator { a, b -> (a.toBoolean().value && b.toBoolean().value).aclValue }
+private val plus = InfixOperator { a, b -> a + b }
+private val minus = InfixOperator { a, b -> a - b }
+private val times = InfixOperator { a, b -> a * b }
+private val div = InfixOperator { a, b -> a / b }
+private val rem = InfixOperator { a, b -> a % b }
 
 /** Parse the acl line by line (lines delimited by newlines and semicolons)*/
 private fun parseAcl(string: String): List<AclLine> =
@@ -356,20 +323,21 @@ private fun parseSkill(name: String): AclSkill = when (name) {
 }
 
 private val operators = mapOf(
-    "!" to UnaryNot,
-    "&&" to And,
-    "||" to Or,
-    "!=" to Neq,
-    ">=" to Geq,
-    "<=" to Leq,
-    ">" to Gt,
-    "<" to Lt,
-    "=-" to Eq,
-    "+" to Plus,
-    "-" to Minus,
-    "*" to Times,
-    "/" to Div,
-    "-u" to UnaryMinus
+    "!" to unaryNot,
+    "&&" to and,
+    "||" to or,
+    "!=" to neq,
+    ">=" to geq,
+    "<=" to leq,
+    ">" to gt,
+    "<" to lt,
+    "=-" to eq,
+    "+" to plus,
+    "-" to minus,
+    "*" to times,
+    "/" to div,
+    "%" to rem,
+    "-u" to unaryMinus
 )
 
 /**
@@ -378,7 +346,7 @@ private val operators = mapOf(
 private fun parseCondition(string: String): List<AclToken> {
     if (string.isEmpty()) return emptyList()
     val specialTokens =
-        listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "==", "(", ")", "+", "-", "*", "/", "-u")
+        listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "==", "(", ")", "+", "-", "*", "/", "%", "-u")
     val tokens = tokenizeCondition(string) // get list of tokens
     val output = mutableListOf<String>() // output list
     val stack = mutableListOf<String>() // operator stack
@@ -409,8 +377,8 @@ private fun tokenizeCondition(string: String): List<String> {
     var current = ""
     var remaining = string + " "
     val tokens = mutableListOf<String>()
-    val specialChars = listOf('!', '+', '-', '*', '/', '=', '&', '|', '(', ')')
-    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/")
+    val specialChars = listOf('!', '+', '-', '*', '/', '=', '&', '|', '(', ')', "%")
+    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/", "%")
     val replacements = mapOf("=" to "==", "and" to "&&", "or" to "||")
     while (remaining.isNotEmpty()) {
         val nextChar = remaining[0]
@@ -444,7 +412,7 @@ private fun tokenizeCondition(string: String): List<String> {
 
 /** Operator precedence */
 private fun parenthesize(tokens: List<String>): List<String> {
-    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/")
+    val specialTokens = listOf("!", "&&", "||", "!=", ">=", "<=", ">", "<", "=", "==", "(", ")", "+", "-", "*", "/", "%")
     fun String.precedence(precedence: Int) = mutableListOf<String>().apply {
         repeat(precedence) { add(")") }
         add(this@precedence)
@@ -454,6 +422,7 @@ private fun parenthesize(tokens: List<String>): List<String> {
         when (token) {
             "*" -> token.precedence(1)
             "/" -> token.precedence(1)
+            "%" -> token.precedence(1)
             "+" -> token.precedence(2)
             "-" -> if (last in specialTokens) listOf("-u") else token.precedence(2) // unary minus
             "==" -> token.precedence(3)
