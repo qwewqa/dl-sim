@@ -4,8 +4,9 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.doSkill
 import tools.qwewqa.sim.status.paralysis
 import tools.qwewqa.sim.status.paralyzed
 
@@ -22,13 +23,13 @@ val fleur = AdventurerSetup {
     a3 = Abilities.punisher(20.percent, Conditions.paralyzed)
 
     s1(3478) {
-        +skillAtk(333.percent * if (enemy.paralyzed) 1.8 else 1.0, "s1", "hit", "a")
+        doSkill(333.percent * if (enemy.paralyzed) 1.8 else 1.0, "s1", "hit", "a")
         paralysis(
-            skillAtk(88.3.percent, "s1", "paralysis").snapshot(),
+            snapshot(88.3.percent, "s1", "paralysis"),
             duration = 13.0,
             chance = if (s1Phase == 1) 110.percent else 160.percent
         )
-        +skillAtk(333.percent * if (enemy.paralyzed) 1.8 else 1.0, "s1", "hit", "b")
+        doSkill(333.percent * if (enemy.paralyzed) 1.8 else 1.0, "s1", "hit", "b")
         s1Phase++
         wait(1.1)
     }

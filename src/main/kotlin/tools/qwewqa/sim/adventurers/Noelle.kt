@@ -4,8 +4,9 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.doSkill
 
 val noelle = AdventurerSetup {
     name = "Noelle"
@@ -26,9 +27,8 @@ val noelle = AdventurerSetup {
     }
 
     s2(6237) {
-        val s2hit = skillAtk(492.percent, "s2") // note: matches b1ues sim but not wiki
-        +s2hit
-        +s2hit
+        doSkill(443.percent, "s2") // note: b1ues sim has different mods
+        doSkill(443.percent, "s2")
         wait(1.3)
     }
 

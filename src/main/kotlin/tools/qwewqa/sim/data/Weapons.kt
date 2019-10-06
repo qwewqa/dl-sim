@@ -5,7 +5,8 @@ import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.skill
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.doSkill
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.wep.*
 
 object Weapons : DataMap<Weapon>() {
@@ -13,10 +14,9 @@ object Weapons : DataMap<Weapon>() {
     val blade5b1 = blade0.copy(
         str = 572,
         skill = skill("s3", 8030) {
-            val hit = skillAtk(354.percent, "s3")
-            hit()
-            hit()
-            hit()
+            doSkill(354.percent, "s3")
+            doSkill(354.percent, "s3")
+            doSkill(354.percent, "s3")
             wait(2.65)
         }
     )
@@ -41,12 +41,11 @@ object Weapons : DataMap<Weapon>() {
     val sword5b1 = sword0.copy(
         str = 556,
         skill = skill("s3", 6847) {
-            val hit = skillAtk(165.percent, "s3")
-            hit()
-            hit()
-            hit()
-            hit()
-            hit()
+            doSkill(165.percent, "s3")
+            doSkill(165.percent, "s3")
+            doSkill(165.percent, "s3")
+            doSkill(165.percent, "s3")
+            doSkill(165.percent, "s3")
             wait(3.1)
         }
     )
@@ -64,9 +63,8 @@ object Weapons : DataMap<Weapon>() {
     val lance5b1 = lance0.copy(
         str = 567,
         skill = skill("s3", 8111) {
-            val hit = skillAtk(461.percent, "s3")
-            +hit
-            +hit
+            doSkill(461.percent, "s3")
+            doSkill(461.percent, "s3")
             wait(1.9)
         }
     )
@@ -87,12 +85,11 @@ object Weapons : DataMap<Weapon>() {
     val dagger5b1 = dagger0.copy(
         str = 545,
         skill = skill("s3", 7323) {
-            val hit = skillAtk(164.percent, "s3")
-            +hit
-            +hit
-            +hit
-            +hit
-            +hit
+            doSkill(164.percent, "s3")
+            doSkill(164.percent, "s3")
+            doSkill(164.percent, "s3")
+            doSkill(164.percent, "s3")
+            doSkill(164.percent, "s3")
             wait(2.5)
         }
     )

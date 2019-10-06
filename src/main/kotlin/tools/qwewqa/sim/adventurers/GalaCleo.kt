@@ -4,9 +4,9 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Stat
+import tools.qwewqa.sim.stage.doSkill
 import tools.qwewqa.sim.wep.forcestrike
 import tools.qwewqa.sim.wep.wand
 
@@ -45,8 +45,8 @@ val galaCleo = AdventurerSetup {
             wait(30.frames)
             repeat(hits) {
                 wait(12.frames)
-                +skillAtk(88.percent, "s1", "ray")
-                +skillAtk(265.percent, "s1", "explosion")
+                doSkill(88.percent, "s1", "ray")
+                doSkill(265.percent, "s1", "explosion")
             }
         }
         s1Phase++
@@ -54,7 +54,7 @@ val galaCleo = AdventurerSetup {
     }
 
     s2(6000) {
-        +skillAtk(460.percent, "s2")
+        damage(460.percent, "s2", skill = true)
         Debuffs.def(10.percent).apply(20.0)
         wait(1.45)
     }

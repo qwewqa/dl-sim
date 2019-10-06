@@ -4,8 +4,9 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.doSkill
 
 val victor = AdventurerSetup {
     name = "Victor"
@@ -19,20 +20,19 @@ val victor = AdventurerSetup {
     a1 = Abilities["str"](13.percent, Conditions["hp70"])
 
     s1(2838) {
-        val s1Hit = skillAtk(190.percent, "s1", "hit")
-        +s1Hit
-        +s1Hit
-        +s1Hit
-        +s1Hit
-        +s1Hit
+        doSkill(190.percent, "s1", "hit")
+        doSkill(190.percent, "s1", "hit")
+        doSkill(190.percent, "s1", "hit")
+        doSkill(190.percent, "s1", "hit")
+        doSkill(190.percent, "s1", "hit")
         chance(80.percent) {
-            Debuffs["bleed"](skillAtk(146.percent, "s1", "bleed").snapshot()).apply(30.0)
+            Debuffs["bleed"](snapshotSkill(146.percent,"s1", "bleed")).apply(30.0)
         }
         wait(2.35)
     }
 
     s2(7500) {
-        +skillAtk(957.percent, "s2")
+        doSkill(957.percent, "s2")
         wait(2.7)
     }
 

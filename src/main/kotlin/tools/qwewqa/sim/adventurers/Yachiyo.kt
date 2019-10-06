@@ -1,14 +1,10 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
-import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
-import tools.qwewqa.sim.stage.doFsAtk
+import tools.qwewqa.sim.stage.*
 import tools.qwewqa.sim.status.paralysis
-import tools.qwewqa.sim.status.paralyzed
 import tools.qwewqa.sim.wep.forcestrike
 
 val yachiyo = AdventurerSetup {
@@ -28,18 +24,18 @@ val yachiyo = AdventurerSetup {
         wait(30.frames)
         if (altFs > 0 ) {
             altFs--
-            doFsAtk(782.percent, 1.5, 200, "fs", "dauntless")
+            doFs(782.percent, 1.5, 200, "fs", "dauntless")
         } else {
-            doFsAtk(92.percent, 6.0, 200, "fs", "normal")
+            doFs(92.percent, 6.0, 200, "fs", "normal")
         }
         wait(41.frames)
     }
 
     s1(2567) {
-        +skillAtk(432.percent, "s1", "a")
-        paralysis(skillAtk(66.percent, "s1", "paralysis").snapshot(), chance = 100.percent, duration = 13.0)
+        doSkill(432.percent, "s1", "a")
+        paralysis(snapshotSkill(66.percent, "s1", "paralysis"), chance = 100.percent, duration = 13.0)
         yield()
-        +skillAtk(432.percent, "s1", "b")
+        doSkill(432.percent, "s1", "b")
         wait(2.0)
     }
 

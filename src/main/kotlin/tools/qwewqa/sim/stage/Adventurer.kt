@@ -63,7 +63,7 @@ class Adventurer(val stage: Stage) : Listenable {
 
     var altFs = 0
 
-    suspend fun wait(time: Double) = timeline.wait(time / stats[ATTACK_SPEED].value)
+    suspend inline fun wait(time: Double) = timeline.wait(time / stats[ATTACK_SPEED].value)
 
     suspend fun yield() = timeline.yield()
 
@@ -135,9 +135,6 @@ class Adventurer(val stage: Stage) : Listenable {
         }
     }
 
-    operator fun Attack.invoke() = this.apply()
-    operator fun Attack.unaryPlus() = this.apply()
-
     fun Snapshot.apply() {
         val actual = enemy.damage(this)
         combo++
@@ -145,11 +142,11 @@ class Adventurer(val stage: Stage) : Listenable {
         if (sp != 0) this@Adventurer.sp(sp, name.toString())
     }
 
-    fun Attack.apply() = this.snapshot().apply()
+    fun snapshot(mod: Double, vararg name: String, od: Double = 1.0, sp: Int = 0, fs: Boolean = false, skill: Boolean = false) =
+        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = od, name = name.toList())
 
-    // snapshots damage based on current stats including crit but not damage variance
-    fun Attack.snapshot() =
-        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = this.od, name = name)
+    fun damage(mod: Double, vararg name: String, od: Double = 1.0, sp: Int = 0, fs: Boolean = false, skill: Boolean = false) =
+        snapshot(mod, *name, od = od, sp = sp, fs = fs, skill = skill).apply()
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *

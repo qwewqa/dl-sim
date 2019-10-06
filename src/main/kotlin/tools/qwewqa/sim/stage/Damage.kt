@@ -3,38 +3,7 @@ package tools.qwewqa.sim.stage
 import tools.qwewqa.sim.extensions.std
 import kotlin.math.roundToInt
 
-data class Attack(
-    val mod: Double,
-    val od: Double = 1.0,
-    val sp: Int = 0,
-    val name: List<String>,
-    val skill: Boolean = false,
-    val fs: Boolean = false
-)
-
-fun Adventurer.attack(
-    mod: Double,
-    od: Double = 1.0,
-    sp: Int = 0,
-    vararg names: String,
-    skill: Boolean = false,
-    fs: Boolean = false
-) = Attack(mod, od, sp, listOf(name) + names.toList(), skill, fs)
-
-fun Adventurer.fsAtk(
-    mod: Double,
-    od: Double = 1.0,
-    sp: Int = 0,
-    vararg name: String
-) = attack(mod = mod, od = od, sp = sp, names = *name, skill = false, fs = true)
-
-fun Adventurer.fsAtk(
-    mod: Double,
-    od: Double = 1.0,
-    vararg name: String
-) = attack(mod = mod, od = od, names = *name, skill = false, fs = true)
-
-fun Adventurer.doFsAtk(
+fun Adventurer.doFs(
     mod: Double,
     od: Double,
     sp: Int,
@@ -42,50 +11,61 @@ fun Adventurer.doFsAtk(
 ) {
     val n = name.joinToString("-")
     listeners.raise("pre-$n")
-    +attack(mod = mod, od = od, sp = sp, names = *name, fs = true)
+    damage(mod = mod, od = od, sp = sp, name = *name, fs = true)
     listeners.raise("fs-connect")
     listeners.raise("fsa")
     think(n)
 }
 
-fun Adventurer.doFsAtk(
+fun Adventurer.doFs(
     mod: Double,
     od: Double,
     vararg name: String
 ) {
     val n = name.joinToString("-")
     think("pre-$n")
-    +attack(mod = mod, od = od, names = *name, fs = true)
+    damage(mod = mod, od = od, name = *name, fs = true)
     listeners.raise("fs-connect")
     think(n)
 }
 
-fun Adventurer.doAutoAtk(
+fun Adventurer.snapshotFs(
+    mod: Double,
+    vararg name: String,
+    od: Double = 1.0
+) = snapshot(mod, *name, od = od, fs = true)
+
+fun Adventurer.doAuto(
     mod: Double,
     sp: Int = 0,
     vararg name: String
 ) {
     val n = name.joinToString("-")
     listeners.raise("pre-$n")
-    +attack(mod = mod, sp = sp, names = *arrayOf("attack") + name)
+    damage(mod = mod, sp = sp, name = *arrayOf("attack") + name)
     listeners.raise("autoa")
     think(n)
 }
 
-fun Adventurer.doAutoAtk(
+fun Adventurer.doAuto(
     mod: Double,
     vararg name: String
 ) {
     val n = name.joinToString("-")
     listeners.raise("pre-$n")
-    +attack(mod = mod, names = *arrayOf("attack") + name)
+    damage(mod = mod, name = *arrayOf("attack") + name)
     think(n)
 }
 
-fun Adventurer.skillAtk(
+fun Adventurer.snapshotSkill(
     mod: Double,
     vararg name: String
-) = attack(mod = mod, names = *arrayOf("skill") + name, skill = true)
+) = snapshot(mod, *name, skill = true)
+
+fun Adventurer.doSkill(
+    mod: Double,
+    vararg name: String
+) = damage(mod, *name, skill = true)
 
 data class Snapshot(
     val amount: Double,
@@ -127,11 +107,6 @@ class DamageSlice(
         subslices.forEach { (name, subslice) ->
             slice.subslices[name] = subslice.copy().also { it.parent = slice }
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is DamageSlice) return false
-        return this.damage == other.damage && this.count == other.count && subslices.all { (key, entry) -> entry == other.subslices[key] }
     }
 }
 

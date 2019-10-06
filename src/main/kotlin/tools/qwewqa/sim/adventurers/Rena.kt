@@ -1,12 +1,9 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
-import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
 import tools.qwewqa.sim.extensions.*
-import tools.qwewqa.sim.stage.Stat
+import tools.qwewqa.sim.stage.*
 import tools.qwewqa.sim.status.burn
 
 val rena = AdventurerSetup {
@@ -19,16 +16,14 @@ val rena = AdventurerSetup {
     wyrmprints = Wyrmprints.rr + Wyrmprints.ee
 
     s1(3303) {
-        burn(skillAtk(97.percent, "s1", "burn").snapshot(), duration = 12.0, chance = 120.percent)
+        burn(snapshotSkill(97.percent, "s1", "burn"), duration = 12.0, chance = 120.percent)
         yield() // no delay (lack framedata) but need punisher to proc
         val killer = if (s1Phase == 3 && Debuffs.burn.on) 1.8 else 1.0
-        val smallHit = skillAtk(72.percent * killer, "s1", "small")
-        val bigHit = skillAtk(665.percent * killer, "s1", "big")
-        +smallHit
-        +smallHit
-        +smallHit
-        +smallHit
-        +bigHit
+        doSkill(72.percent * killer, "s1", "small")
+        doSkill(72.percent * killer, "s1", "small")
+        doSkill(72.percent * killer, "s1", "small")
+        doSkill(72.percent * killer, "s1", "small")
+        doSkill(665.percent * killer, "s1", "big")
         if (s1Phase >= 2) Buffs.critRate(10.percent).selfBuff(15.0)
         s1Phase++
         wait(2.45)

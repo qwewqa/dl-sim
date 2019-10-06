@@ -4,41 +4,41 @@ import tools.qwewqa.sim.extensions.frames
 import tools.qwewqa.sim.extensions.hit
 import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
-import tools.qwewqa.sim.stage.doAutoAtk
-import tools.qwewqa.sim.stage.doFsAtk
+import tools.qwewqa.sim.stage.doAuto
+import tools.qwewqa.sim.stage.doFs
 
 val dagger = WeaponType(
     name = "dagger",
     x1 = {
         doing = "x1"
         wait(12.frames)
-        doAutoAtk(75.percent, 144, "x1")
+        doAuto(75.percent, 144, "x1")
     },
     x2 = {
         doing = "x2"
         wait(22.frames)
         hit("x2") {
-            doAutoAtk(38.percent, 144, "x2", "a")
-            doAutoAtk(38.percent, "x2", "b")
+            doAuto(38.percent, 144, "x2", "a")
+            doAuto(38.percent, "x2", "b")
         }
     },
     x3 = {
         doing = "x3"
         wait(41.frames)
         hit("x3") {
-            doAutoAtk(54.percent, 264, "x3", "a")
-            doAutoAtk(54.percent, "x3", "b")
+            doAuto(54.percent, 264, "x3", "a")
+            doAuto(54.percent, "x3", "b")
         }
     },
     x4 = {
         doing = "x4"
         wait(25.frames)
-        doAutoAtk(119.percent, 288, "x4")
+        doAuto(119.percent, 288, "x4")
     },
     x5 = {
         doing = "x5"
         wait(36.frames)
-        doAutoAtk(119.percent, 288, "x5")
+        doAuto(119.percent, 288, "x5")
         wait(40.frames)
     },
     fs = forcestrike {
@@ -52,9 +52,9 @@ val dagger = WeaponType(
             else -> wait(54.frames)
         }
         hit("fs") {
-            doFsAtk(47.percent, 8.4, 288, "fs", "a")
-            doFsAtk(47.percent, 8.4, "fs", "b")
-            doFsAtk(47.percent, 4.2, "fs", "c")
+            doFs(47.percent, 8.4, 288, "fs", "a")
+            doFs(47.percent, 8.4, "fs", "b")
+            doFs(47.percent, 4.2, "fs", "c")
         }
         wait(14.frames)
     },

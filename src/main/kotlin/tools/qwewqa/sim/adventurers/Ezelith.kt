@@ -5,8 +5,9 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.doSkill
 
 val ezelith = AdventurerSetup {
     name = "Ezelith"
@@ -21,19 +22,8 @@ val ezelith = AdventurerSetup {
     a3 = Abilities.brokenPunisher(30.percent)
 
     s1(2400) {
-        val s1SmallHit = skillAtk(57.percent, "s1", "small")
-        val s1BigHit = skillAtk(250.percent, "s1", "big")
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1SmallHit
-        +s1BigHit
+        repeat(10) { doSkill(57.percent, "s1", "small") }
+        doSkill(250.percent, "s1", "big")
         wait(3.65)
     }
 

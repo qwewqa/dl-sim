@@ -4,7 +4,6 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.*
-import tools.qwewqa.sim.status.burn
 import tools.qwewqa.sim.status.poison
 import tools.qwewqa.sim.wep.forcestrike
 
@@ -37,32 +36,32 @@ val delphi = AdventurerSetup {
                 val fsMod = 47.percent + 5.percent * abilityLevel
                 val knifeMod = 9.percent + 1.percent * abilityLevel
                 val poisonMod = 240.percent + 30.percent * abilityLevel
-                doFsAtk(fsMod, 4.2, 288, "fs", "alt", "a")
-                doFsAtk(fsMod, 4.2, "fs", "alt", "b")
-                doFsAtk(fsMod, 4.2, "fs", "alt", "c")
-                doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
-                doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
-                doFsAtk(knifeMod, 4.2, "fs", "alt", "knife")
-                poison(fsAtk(poisonMod, 0.0, "fs", "alt", "poison").snapshot(), duration = 24.0, chance = 120.percent)
+                doFs(fsMod, 4.2, 288, "fs", "alt", "a")
+                doFs(fsMod, 4.2, "fs", "alt", "b")
+                doFs(fsMod, 4.2, "fs", "alt", "c")
+                doFs(knifeMod, 4.2, "fs", "alt", "knife")
+                doFs(knifeMod, 4.2, "fs", "alt", "knife")
+                doFs(knifeMod, 4.2, "fs", "alt", "knife")
+                poison(snapshotFs(poisonMod,  "fs", "alt", "poison"), duration = 24.0, chance = 120.percent)
             } else {
-                doFsAtk(47.percent, 8.4, 288, "fs", "normal", "a")
-                doFsAtk(47.percent, 8.4, "fs", "normal", "b")
-                doFsAtk(47.percent, 4.2, "fs", "normal", "c")
+                doFs(47.percent, 8.4, 288, "fs", "normal", "a")
+                doFs(47.percent, 8.4, "fs", "normal", "b")
+                doFs(47.percent, 4.2, "fs", "normal", "c")
             }
         }
         wait(14.frames)
     }
 
     s1(999999) {
-        +skillAtk(366.percent, "s1")
+        doSkill(366.percent, "s1")
         Debuffs.def(15.percent).apply(10.0)
         wait(1.85)
     }
 
     s2(999999) {
         combo = 0
-        +skillAtk(499.percent, "s2", "hit")
-        poison(skillAtk(300.percent, "s2", "poison").snapshot(), duration = 24.0, chance = 120.percent)
+        doSkill(499.percent, "s2", "hit")
+        poison(snapshotSkill(300.percent, "s2", "poison"), duration = 24.0, chance = 120.percent)
         wait(3.85)
     }
 

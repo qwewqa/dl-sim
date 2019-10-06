@@ -19,10 +19,9 @@ val empiricalTeambuff = AdventurerSetup {
                 (1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value) *
                 stats[Stat.PUNISHER].value *
                 element.multiplier(enemy.element)) / freq
-        val hit = attack(mod, names = *arrayOf("Teambuff"))
         schedule {
             while (true) {
-                val snapshot = hit.snapshot()
+                val snapshot = snapshot(mod, "Teambuff")
                 val actual = enemy.damage(snapshot.copy(amount = snapshot.amount - str.toDouble() / freq))
                 log("damage", "hit for $actual (freq $freq, str $str)")
                 wait(1.0 / freq)

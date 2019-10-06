@@ -7,8 +7,9 @@ import tools.qwewqa.sim.data.Wyrmprints
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.doSkill
 
 val aoi = AdventurerSetup {
     name = "Aoi"
@@ -20,12 +21,12 @@ val aoi = AdventurerSetup {
     wyrmprints = Wyrmprints["RR", "CE"]
 
     s1(2630) {
-        +skillAtk(878.percent, "s1")
+        doSkill(878.percent, "s1")
         wait(1.85)
     }
 
     s2(5280) {
-        +skillAtk(790.percent, "s2")
+        doSkill(790.percent, "s2")
         wait(1.85)
     }
 

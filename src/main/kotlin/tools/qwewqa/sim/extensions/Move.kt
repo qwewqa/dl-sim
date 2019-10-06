@@ -5,7 +5,7 @@ import tools.qwewqa.sim.stage.AdventurerCondition
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.*
 
-suspend fun Adventurer.hit(name: String, action: Action) {
+suspend inline fun Adventurer.hit(name: String, crossinline action: Action) {
     think("pre-$name")
     action()
     think("connect-$name")

@@ -4,8 +4,9 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.doSkill
 
 val serena = AdventurerSetup {
     name = "Serena"
@@ -21,18 +22,16 @@ val serena = AdventurerSetup {
 
     s1(2500) {
         Buffs["crit rate"](10.percent).selfBuff(5.0)
-        val s1hit = skillAtk(350.percent, "s1")
-        +s1hit
-        +s1hit
+        doSkill(350.percent, "s1")
+        doSkill(350.percent, "s1")
         wait(1.55)
     }
 
     s2(4593) {
-        val s2hit = skillAtk(169.percent, "s2")
-        +s2hit
-        +s2hit
-        +s2hit
-        +s2hit
+        doSkill(169.percent, "s2")
+        doSkill(169.percent, "s2")
+        doSkill(169.percent, "s2")
+        doSkill(169.percent, "s2")
         wait(2.2)
     }
 

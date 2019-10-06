@@ -4,8 +4,9 @@ import tools.qwewqa.sim.data.*
 import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
-import tools.qwewqa.sim.stage.skillAtk
+import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
+import tools.qwewqa.sim.stage.doSkill
 import tools.qwewqa.sim.status.poison
 
 val addis = AdventurerSetup {
@@ -24,21 +25,20 @@ val addis = AdventurerSetup {
 
     s1(2537) {
         Buffs.dignifiedSoul.pause()
-        val s1hit = skillAtk(216.percent, "s1", "hit")
-        +s1hit
-        +s1hit
-        +s1hit
-        +s1hit
+        doSkill(216.percent, "s1", "hit")
+        doSkill(216.percent, "s1", "hit")
+        doSkill(216.percent, "s1", "hit")
+        doSkill(216.percent, "s1", "hit")
         if (s1Transform) {
-            Debuffs.bleed(skillAtk(132.percent, "s1", "bleed").snapshot()).apply(duration = 30.0, chance = 80.percent)
+            Debuffs.bleed(snapshotSkill(132.percent, "s1", "bleed")).apply(duration = 30.0, chance = 80.percent)
         } else {
-            poison(skillAtk(53.percent, "s1", "poison").snapshot(), duration = 15.0, chance = 100.percent)
+            poison(snapshotSkill(53.percent, "s1", "poison"), duration = 15.0, chance = 100.percent)
         }
         wait(2.5)
         Buffs.dignifiedSoul.start()
     }
 
-    s2(4877) {
+    s2(4877, false) {
         wait(0.15)
         Buffs.dignifiedSoul(25.percent).selfBuff(10.0)
         wait(0.9)
