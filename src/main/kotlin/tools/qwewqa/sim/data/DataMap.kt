@@ -9,7 +9,7 @@ open class DataMap<T>(private val map: MutableMap<String, T> = mutableMapOf()) :
         names.forEach { this[it.toLowerCase()] = value }
         _primaryKeys += names[0]
     }
-    private operator fun set(key: String, value: T) {
+    protected operator fun set(key: String, value: T) {
         if (map.containsKey(key.toLowerCase())) error("$key already exists")
         else map[key.toLowerCase()] = value
     }

@@ -12,10 +12,13 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
     The reason this isn't a boolean and equivalent to running is so wait can work.
     Nothing should actually be running in parallel apart from that.
      */
-    private var active: Int by Delegates.observable(0) { _, _, newValue ->
-        check(newValue >= 0) { "Active count negative" }
-        if (newValue == 0 && running) run()
-    }
+    private var active = 0
+        set(value) {
+            field = value
+            if (value == 0 && running) {
+                run()
+            }
+        }
 
     var time: Double = 0.0
         private set

@@ -43,28 +43,33 @@ object Debuffs : DataMap<Debuff<*, *>>() {
             stage.log(
                 Logger.Level.VERBOSE,
                 "Bleed",
-                "start",
+                "start"
+            ) {
                 "start ${hit.amount} damage for $duration from ${hit.name}"
-            )
+            }
         },
         onEnd = { duration, hit, stack ->
             stack.value.remove(hit)
-            stage.log(Logger.Level.VERBOSE, "Bleed", "end", "end ${hit.amount} damage for $duration from ${hit.name}")
+            stage.log(
+                Logger.Level.VERBOSE,
+                "Bleed",
+                "end"
+            ) { "end ${hit.amount} damage for $duration from ${hit.name}" }
         },
         stackStart = { stack ->
-            stage.log(Logger.Level.VERBOSE, "Bleed", "stack start", "new stack")
+            stage.log(Logger.Level.VERBOSE, "Bleed", "stack start") { "new stack" }
             while (true) {
                 timeline.wait(4.99)
                 val multiplier = 0.5 * (1 + stack.count)
                 stack.value.forEach {
                     val amount = it.amount * multiplier
                     val actual = damage(it.copy(amount = amount, od = 0.0))
-                    stage.log(Logger.Level.VERBOSE, "Bleed", "damage", "$actual damage by ${it.name}")
+                    stage.log(Logger.Level.VERBOSE, "Bleed", "damage") { "$actual damage by ${it.name}" }
                 }
             }
         },
         stackEnd = {
-            stage.log(Logger.Level.VERBOSE, "Bleed", "stack end", "stack has ended")
+            stage.log(Logger.Level.VERBOSE, "Bleed", "stack end") { "stack has ended" }
         },
         stackCap = 3
     )
@@ -74,20 +79,20 @@ object Debuffs : DataMap<Debuff<*, *>>() {
         initialValue = { mutableListOf() },
         onStart = { duration, hit, stack ->
             stack.value.add(hit)
-            stage.log(Logger.Level.VERBOSE, "Dot ($name)", "start", "${hit.amount} for $duration")
+            stage.log(Logger.Level.VERBOSE, "Dot ($name)", "start") { "${hit.amount} for $duration" }
         },
         onEnd = { duration, hit, stack ->
             stack.value.remove(hit)
-            stage.log(Logger.Level.VERBOSE, "Dot ($name)", "end", "${hit.amount} ended after $duration")
+            stage.log(Logger.Level.VERBOSE, "Dot ($name)", "end") { "${hit.amount} ended after $duration" }
         },
         stackStart = { stack ->
-            stage.log(Logger.Level.VERBOSE, "Dot ($name)", "stack start", "new stack")
+            stage.log(Logger.Level.VERBOSE, "Dot ($name)", "stack start") { "new stack" }
             listeners.raise("$name-start")
             while (true) {
                 timeline.wait(interval)
                 stack.value.forEach {
                     val actual = damage(it.copy(od = 0.0))
-                    stage.log(Logger.Level.VERBOSE, "Dot ($name)", "damage", "$actual damage")
+                    stage.log(Logger.Level.VERBOSE, "Dot ($name)", "damage") { "$actual damage" }
                 }
             }
         },
@@ -105,11 +110,11 @@ object Debuffs : DataMap<Debuff<*, *>>() {
         initialValue = {},
         onStart = { duration, _, _ ->
             def /= 1.5
-            stage.log(Logger.Level.VERBOSE, "bog", "start", "bogged for ${duration ?: "indef"}")
+            stage.log(Logger.Level.VERBOSE, "bog", "start") { "bogged for ${duration ?: "indef"}" }
         },
         onEnd = { duration, _, _ ->
             def *= 1.5
-            stage.log(Logger.Level.VERBOSE, "bog", "end", "bog for $duration ended")
+            stage.log(Logger.Level.VERBOSE, "bog", "end") { "bog for $duration ended" }
         },
         stackStart = {
             listeners.raise("$name-start")
@@ -124,10 +129,10 @@ object Debuffs : DataMap<Debuff<*, *>>() {
         name = name,
         initialValue = {},
         onStart = { duration, _, _ ->
-            stage.log(Logger.Level.VERBOSE, "CC ($name)", "start", "$name for ${duration ?: "indef"}")
+            stage.log(Logger.Level.VERBOSE, "CC ($name)", "start") { "$name for ${duration ?: "indef"}" }
         },
         onEnd = { duration, _, _ ->
-            stage.log(Logger.Level.VERBOSE, "CC ($name)", "end", "$name for $duration ended")
+            stage.log(Logger.Level.VERBOSE, "CC ($name)", "end") { "$name for $duration ended" }
         },
         stackCap = 1
     )

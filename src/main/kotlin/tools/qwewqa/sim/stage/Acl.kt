@@ -107,7 +107,7 @@ interface AclToken {
     fun evaluate(stack: Deque<AclValue>, acl: Acl): AclValue
 }
 
-inline class AclVariable(val accessor: Acl.() -> AclValue) : AclToken {
+class AclVariable(val accessor: Acl.() -> AclValue) : AclToken {
     override fun evaluate(
         stack: Deque<AclValue>,
         acl: Acl
@@ -127,7 +127,7 @@ interface AclValue : AclToken {
     operator fun rem(other: AclValue): AclValue
 }
 
-inline class AclBoolean(val value: Boolean) : AclValue {
+class AclBoolean(val value: Boolean) : AclValue {
     override fun toBoolean() = this
     override fun toInt() = if (value) 1.aclValue else 0.aclValue
     override fun toDouble() = if (value) 1.0.aclValue else 0.0.aclValue
@@ -145,7 +145,7 @@ inline class AclBoolean(val value: Boolean) : AclValue {
     override fun rem(other: AclValue) = toInt().rem(other)
 }
 
-inline class AclInt(val value: Int) : AclValue {
+class AclInt(val value: Int) : AclValue {
     override fun toBoolean() = if (value == 0) false.aclValue else true.aclValue
     override fun toInt() = this
     override fun toDouble() = value.toDouble().aclValue
@@ -193,7 +193,7 @@ inline class AclInt(val value: Int) : AclValue {
 
 }
 
-inline class AclDouble(val value: Double) : AclValue {
+class AclDouble(val value: Double) : AclValue {
     override fun toBoolean() = if (value == 0.0 || value == -0.0) false.aclValue else true.aclValue
     override fun toInt() = value.toInt().aclValue
     override fun toDouble() = this
@@ -453,7 +453,7 @@ fun Acl.evaluateConditions(conditions: List<AclToken>): Boolean {
     return stack.pop().toBoolean().value
 }
 
-fun parseVariable(name: String): AclToken = when (name.toLowerCase()) {
+fun parseVariable(name: String): AclToken = when (name) {
     "default" -> AclVariable { default.aclValue }
     "cancel" -> AclVariable { cancel.aclValue }
     "s1.ready" -> AclVariable { s1info.ready.aclValue }
@@ -476,6 +476,8 @@ fun parseVariable(name: String): AclToken = when (name.toLowerCase()) {
     "s3.charge" -> AclVariable { s3info.charge.aclValue }
     "s3.remaining" -> AclVariable { s3info.remaining.aclValue }
     "od_remaining" -> AclVariable { adventurer.enemy.odRemaining.aclValue }
+    "true" -> true.aclValue
+    "false" -> false.aclValue
     else -> when {
         name.toIntOrNull() != null -> name.toIntOrNull()!!.aclValue
         name.toDoubleOrNull() != null -> name.toDoubleOrNull()!!.aclValue

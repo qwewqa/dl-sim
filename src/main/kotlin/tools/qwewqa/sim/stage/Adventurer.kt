@@ -16,11 +16,8 @@ import tools.qwewqa.sim.stage.Stat.*
 import tools.qwewqa.sim.status.*
 import tools.qwewqa.sim.wep.WeaponType
 import tools.qwewqa.sim.wep.genericDodge
-import kotlin.coroutines.coroutineContext
 import kotlin.math.ceil
-import kotlin.properties.ReadWriteProperty
 import kotlin.random.Random
-import kotlin.reflect.KProperty
 
 class Adventurer(val stage: Stage) : Listenable {
     var name: String = "unnamed"
@@ -70,8 +67,8 @@ class Adventurer(val stage: Stage) : Listenable {
     fun schedule(time: Double = 0.0, action: suspend () -> Unit) =
         timeline.schedule(time / stats[ATTACK_SPEED].value) { action() }
 
-    fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
-    fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category, message)
+    fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category) { message }
+    fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category) { message }
 
     /**
      * Listeners are called with the trigger before [logic] and by observable properties

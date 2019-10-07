@@ -15,8 +15,8 @@ class Enemy(val stage: Stage) : Listenable {
     val timeline = stage.timeline
     var element = Element.Weak
 
-    fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category, message)
-    fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category, message)
+    fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category) { message }
+    fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category) { message }
 
     var hp: Int? = null
     var baseHp: Int? = null

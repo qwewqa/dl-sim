@@ -1,8 +1,10 @@
 package tools.qwewqa.sim.stage
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
+import sun.rmi.runtime.Log
 import tools.qwewqa.sim.adventurers.AdventurerSetup
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.extensions.plus
@@ -18,7 +20,9 @@ class Stage {
     }
     var onEnd: Stage.() -> Unit = {}
 
-    val log = logger::log
+    inline fun log(level: Logger.Level, name: String, category: String, message: () -> String) =
+        logger.log(level, name, category, message)
+
     fun run() {
         if (started) return
         started = true
