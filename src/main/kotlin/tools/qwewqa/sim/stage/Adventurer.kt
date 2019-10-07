@@ -143,10 +143,10 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     fun snapshot(mod: Double, vararg name: String, od: Double = 1.0, sp: Int = 0, fs: Boolean = false, skill: Boolean = false) =
-        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = od, name = name.toList())
+        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = od, name = listOf(this@Adventurer.name) + name.toList())
 
     fun damage(mod: Double, vararg name: String, od: Double = 1.0, sp: Int = 0, fs: Boolean = false, skill: Boolean = false) =
-        snapshot(mod, *name, od = od, sp = sp, fs = fs, skill = skill).apply()
+        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = od, name = listOf(this@Adventurer.name) + name.toList()).apply()
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
