@@ -35,8 +35,9 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
      */
     fun end() {
         running = false
-        job.complete()
+        cancel()
         onEnd()
+        job.complete()
     }
 
     suspend fun startAndJoin() {
