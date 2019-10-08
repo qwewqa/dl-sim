@@ -131,6 +131,7 @@ object Abilities : DataMap<Ability<*, *>>() {
 
     val primedStr = primedAbility("primed str", 10.0, Buffs.str)
     val primedDef = primedAbility("primed def", 10.0, Buffs.def)
+    val primedCritRate = primedAbility("primed devastation", 5.0, Buffs.critRate)
 
 
     val skillPrep = Ability<Double, Unit>(
@@ -200,6 +201,9 @@ object Abilities : DataMap<Ability<*, *>>() {
 
     val energyDoublebuff = doublebuff("energy doublebuff") { energize(it.toInt()) }
     val wpEnergyDoublebuff = cappedDoublebuff("energy doublebuff (wp)", 1.0) { energize(it.toInt()) }
+
+    val strDoublebuff = doublebuff("str doublebuff") { Buffs.str(it).selfBuff(15.0) }
+    val wpStrDoublebuff = cappedDoublebuff("str doublebuff (wp)", 15.percent) { Buffs.str(it).selfBuff(15.0) }
 
     val dragonsClaws = Ability<Int, Int>(
         name = "Dragon's Claws",
@@ -310,9 +314,12 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["skill prep (wp)", "prep (wp)"] = wpSkillPrep
         this["primed str"] = primedStr
         this["primed def"] = primedDef
+        this["primed crit rate", "primed devastation"] = primedCritRate
         this["magical modification"] = magicalModification
         this["energy doublebuff"] = energyDoublebuff
         this["energy doublebuff (wp)"] = wpEnergyDoublebuff
+        this["str doublebuff"] = strDoublebuff
+        this["str doublebuff (wp)"] = wpStrDoublebuff
         this["dragon's claws", "dragon claws", "claws"] = dragonsClaws
         this["dragon's claws (wp)", "dragon claws (wp)", "claws (wp)"] = wpDragonsClaws
         this["force charge (wp)"] = wpForceCharge

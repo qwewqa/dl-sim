@@ -1,0 +1,27 @@
+config:
+  duration: 180.0
+adventurers:
+  - patia:
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5
+  - patia:
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5
+  - patia:
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5
+  - patia:
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5

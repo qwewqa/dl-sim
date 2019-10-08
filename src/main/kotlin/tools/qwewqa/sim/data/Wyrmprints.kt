@@ -23,6 +23,32 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         )
     )
 
+    val vc = Wyrmprint(
+        name = "Valiant Crown",
+        str = 65,
+        abilities = listOf(
+            Abilities.wpSkillDamage(30.percent),
+            Abilities.wpStrDoublebuff(10.percent)
+        )
+    )
+
+    val frh = Wyrmprint(
+        name = "First Rate Hospitality",
+        str = 50,
+        abilities = listOf(
+            Abilities.wpStrDoublebuff(10.percent),
+            Abilities.wpStr(8.percent)
+        )
+    )
+
+    val os = Wyrmprint(
+        name = "Odd Sparrows",
+        str = 51,
+        abilities = listOf(
+            Abilities.wpStrDoublebuff(8.percent)
+        )
+    )
+
     val hoh = Wyrmprint(
         name = "Heralds of Hinomoto",
         str = 64,
@@ -151,6 +177,9 @@ object Wyrmprints : DataMap<Wyrmprint>() {
     init {
         this["CE", "Crystalian Envoy"] = ce
         this["RR", "Resounding Rendition"] = rr
+        this["VC", "Valiant Crown"] = vc
+        this["FRH", "First Rate Hospitality"] = frh
+        this["OS", "Odd Sparrows"] = os
         this["HoH", "Heralds of Hinomoto"] = rr
         this["BN", "Beautiful Nothingness"] = bn
         this["EE", "Elegant Escort"] = ee
