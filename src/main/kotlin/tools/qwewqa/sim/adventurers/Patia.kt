@@ -20,7 +20,7 @@ val patia = AdventurerSetup {
     a1 = Abilities.buffTime(25.percent)
     a3 = Abilities.primedCritRate(5.percent)
 
-    s1(4367) {
+    s1(4367, false) {
         wait(0.15)
         Buffs.def(25.percent).teamBuff(15.0)
         wait(0.9)

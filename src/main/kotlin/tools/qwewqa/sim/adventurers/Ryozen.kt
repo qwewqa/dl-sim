@@ -19,7 +19,7 @@ val ryozen = AdventurerSetup {
 
     a3 = Abilities.punisher(8.percent, Conditions.overdrive)
 
-    s1(4367) {
+    s1(4367, false) {
         wait(0.15)
         Buffs.def(25.percent).teamBuff(15.0)
         wait(0.9)
