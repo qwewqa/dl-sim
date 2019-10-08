@@ -1,0 +1,31 @@
+config:
+  duration: 180.0
+adventurers:
+  - ryozen:
+      wyrmprints: [VC, FRH]
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5
+  - ryozen:
+      wyrmprints: [VC, FRH]
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5
+  - ryozen:
+      wyrmprints: [VC, FRH]
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5
+  - ryozen:
+      wyrmprints: [VC, FRH]
+      acl: |
+        s1
+        s2
+        s3
+        fs, x5

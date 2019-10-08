@@ -94,6 +94,15 @@ object Dragons : DataMap<Dragon>() {
         )
     )
 
+    val freyja = Dragon(
+        name = "Freja",
+        element = Element.Wind,
+        str = 120,
+        abilities = listOf(
+            Abilities.skillHaste(35.percent, Conditions.wind)
+        )
+    )
+
 
     val cupid = Dragon(
         name = "Cupid",
@@ -134,6 +143,7 @@ object Dragons : DataMap<Dragon>() {
         this["Zephyr", "Wind STR"] = zephyr
         this["Long Long", "Wind CD"] = longLong
         this["Vayu", "Wind SD"] = vayu
+        this["Freyja", "Wind HP Haste"] = freyja
         this["Cupid", "Light STR"] = cupid
         this["Shinobi", "Shadow SD", "Dark SD"] = shinobi
         this["Marishiten", "Shadow STR", "Dark STR"] = marishiten
