@@ -20,7 +20,7 @@ object Weapons : DataMap<Weapon>() {
             wait(2.65)
         }
     )
-    val blde5b2 = blade0.copy(
+    val blade5b2 = blade0.copy(
         str = 544,
         skill = skill("s3", 12841) {
             wait(1.05)
@@ -28,7 +28,7 @@ object Weapons : DataMap<Weapon>() {
     )
     val flameBlade5t3 = blade5b1.copy(name = "Heaven's Acuity", element = Element.Flame)
     val windBlade5t3 = blade5b1.copy(name = "Anemone", element = Element.Wind)
-    val lightBlade5t3 = blade5b1.copy(name = "Heavenwing", element = Element.Light)
+    val lightBlade5t3 = blade5b2.copy(name = "Heavenwing", element = Element.Light)
     val lightBladeHJPBane =
         blade0.copy(
             name = "Hollow Lightning",
@@ -125,7 +125,7 @@ object Weapons : DataMap<Weapon>() {
     val wand0 = Weapon("Wand", Element.Neutral, 0, noMove, wand, emptyList())
     val wand5b1 = wand0.copy(
         str = 528,
-        skill = skill("s3", 12668, false) {
+        skill = skill("s3", 12668) {
             wait(1.05)
         }
     )
