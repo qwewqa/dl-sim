@@ -19,6 +19,7 @@ class Script : CliktCommand(
                 import tools.qwewqa.sim.extensions.*
                 import tools.qwewqa.sim.wep.*
                 import tools.qwewqa.sim.stage.*
+                import tools.qwewqa.sim.acl.*
                 import tools.qwewqa.sim.stage.Element.*
                 import tools.qwewqa.sim.adventurers.*
                 import tools.qwewqa.sim.status.*
