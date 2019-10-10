@@ -1,6 +1,7 @@
 package tools.qwewqa.sim.stage
 
 import tools.qwewqa.sim.acl.acl
+import tools.qwewqa.sim.acl.rotation
 import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.Adventurers
 import tools.qwewqa.sim.data.Dragons
@@ -62,10 +63,10 @@ fun Stage.loadAdventurerPreset(advPreset: AdventurerPreset) =
         advPreset.dragon?.apply { dragon = Dragons[this] }
         advPreset.acl?.apply { acl(this) }
         advPreset.rotationLoop?.apply {
-//            rotation {
-//                init = advPreset.rotationInit ?: ""
-//                loop = advPreset.rotationLoop
-//            }
+            rotation {
+                init = advPreset.rotationInit ?: ""
+                loop = advPreset.rotationLoop
+            }
         }
     }
 
