@@ -55,7 +55,7 @@ data class Buff<T, U>(
                 }
             }
 
-        var value: U = adventurer.initialValue()
+        var value = adventurer.initialValue()
 
         fun clear() {
             stacks.forEach { it.endNow() }

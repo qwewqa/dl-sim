@@ -28,6 +28,7 @@ class Enemy(val stage: Stage) : Listenable {
     var breakDef = 0.6
     var gauge = 0
     var phase = Phase.Normal
+    var enemyClass = EnemyClass.None
     val odRemaining = if (phase == Phase.Overdrive) toBreak?.minus(gauge) ?: Int.MAX_VALUE else Int.MAX_VALUE
 
     var def = 0.0
@@ -79,6 +80,7 @@ class Enemy(val stage: Stage) : Listenable {
                 log(Logger.Level.VERBOSIEST, "gauge", "od gauge filled by $od (mult ${snapshot.od})")
                 if (gauge > it) {
                     phase = Phase.Break
+                    debuffStacks.values.forEach { it.clear() }
                     _def /= odDef
                     _def *= breakDef
                     gauge = 0
@@ -100,4 +102,8 @@ class Enemy(val stage: Stage) : Listenable {
 
 enum class Phase {
     Normal, Overdrive, Break
+}
+
+enum class EnemyClass {
+    Human, Thaumian, Demon, Physian, Demihuman, Dragon, Undead, Therion, None
 }

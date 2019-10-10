@@ -35,6 +35,7 @@ data class Debuff<T, U>(
     inner class Stack(val enemy: Enemy) {
         var on = false
         var startEvent: Timeline.Event? = null
+        val stacks = mutableListOf<Timer>()
 
         var count: Int = 0
             set(value) {
@@ -51,6 +52,10 @@ data class Debuff<T, U>(
                     enemy.stackEnd(this)
                 }
             }
+
+        fun clear() {
+            stacks.forEach { it.endNow() }
+        }
 
         var value = enemy.initialValue()
     }
@@ -83,13 +88,14 @@ data class Debuff<T, U>(
             onStart(enemy, duration, value, stack)
             stack.count++
             enemy.listeners.raise("debuff")
-            if (duration == null) return null
             val timer = enemy.timeline.getTimer {
                 onEnd(enemy, duration, value, stack)
+                stack.stacks -= this
                 stack.count--
                 enemy.listeners.raise("debuff-end")
             }
-            timer.setFor(duration)
+            if (duration != null) timer.setFor(duration)
+            stack.stacks += timer
             return timer
         }
     }

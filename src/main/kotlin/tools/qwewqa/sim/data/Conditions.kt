@@ -3,6 +3,7 @@ package tools.qwewqa.sim.data
 import tools.qwewqa.sim.status.Condition
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
+import tools.qwewqa.sim.stage.EnemyClass
 import tools.qwewqa.sim.stage.Phase
 
 object Conditions : DataMap<Condition>() {
@@ -50,6 +51,8 @@ object Conditions : DataMap<Condition>() {
 
     fun enemy(name: String) = Condition("enemy $name") { enemy.name == name || enemy.alias == name }
 
+    val thaumian = Condition("thaumian") { enemy.enemyClass == EnemyClass.Thaumian }
+
     init {
         this["hp70"] = hp70
         this["hp100", "full hp"] = hp100
@@ -82,5 +85,6 @@ object Conditions : DataMap<Condition>() {
         this["sleeping"] = sleeping
         this["stunned"] = stunned
         this["frozen"] = frozen
+        this["thaumian"] = thaumian
     }
 }
