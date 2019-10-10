@@ -8,27 +8,22 @@ import tools.qwewqa.sim.stage.doFs
 
 val sword = WeaponType(
     name = "sword",
-    x1 = {
+    x = weaponCombo {
         doing = "x1"
         wait(9.frames)
         doAuto(75.percent, 150, "x1")
-    },
-    x2 = {
         doing = "x2"
         wait(26.frames)
         doAuto(80.percent, 150, "x2")
-    },
-    x3 = {
+
         doing = "x3"
         wait(23.frames)
         doAuto(95.percent, 196, "x3")
-    },
-    x4 = {
+
         doing = "x4"
         wait(36.frames)
         doAuto(100.percent, 265, "x4")
-    },
-    x5 = {
+
         doing = "x5"
         wait(37.frames)
         doAuto(150.percent, 391, "x5")

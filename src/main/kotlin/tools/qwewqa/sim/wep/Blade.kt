@@ -8,17 +8,17 @@ import tools.qwewqa.sim.stage.doFs
 
 val blade = WeaponType(
     name = "blade",
-    x1 = {
+    x = weaponCombo { params ->
+        val fsf = params["fsf"] as? Boolean ?: true
+
         doing = "x1"
         wait(10.frames)
         doAuto(97.percent, 130, "x1")
-    },
-    x2 = {
+
         doing = "x2"
         wait(23.frames)
         doAuto(97.percent, 130, "x2")
-    },
-    x3 = {
+
         doing = "x3"
         wait(41.frames)
         hit("x3") {
@@ -26,17 +26,18 @@ val blade = WeaponType(
             wait(6.frames)
             doAuto(63.percent, "x3", "b")
         }
-    },
-    x4 = {
+
         doing = "x4"
         wait(37.frames)
         doAuto(129.percent, 360, "x4")
-    },
-    x5 = {
+
         doing = "x5"
         wait(65.frames)
         doAuto(194.percent, 660, "x5")
-        wait(62.frames)
+        if (fsf)
+            wait(33.frames)
+        else
+            wait(62.frames)
     },
     fs = forcestrike {
         doing = "fs"

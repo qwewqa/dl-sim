@@ -9,11 +9,7 @@ import tools.qwewqa.sim.stage.Move
 
 class WeaponType(
     val name: String,
-    val x1: Action,
-    val x2: Action,
-    val x3: Action,
-    val x4: Action,
-    val x5: Action,
+    val x: Move,
     val fs: Move,
     val fsf: Move,
     val abilities: List<Ability<*, *>.AbilityInstance> = listOf(Abilities.critDamage(70.percent), Abilities.critRate(2.percent))
@@ -22,17 +18,7 @@ class WeaponType(
         abilities.forEach { it.initialize(adventurer) }
         adventurer.fs = adventurer.fs ?: fs
         adventurer.fsf = adventurer.fsf ?: fsf
-        adventurer.x = Move(
-            name = "x",
-            condition = { doing == "idle" },
-            action = {
-                x1(it)
-                x2(it)
-                x3(it)
-                x4(it)
-                x5(it)
-            }
-        )
+        adventurer.x = adventurer.x ?: x
     }
 }
 
@@ -52,4 +38,10 @@ fun fsf(duration: Double) = Move(
     name = "fsf",
     condition = { !skillLock },
     action = { wait(duration) }
+)
+
+fun weaponCombo(action: Action) = Move(
+    name = "x",
+    condition = { doing == "idle" },
+    action = action
 )

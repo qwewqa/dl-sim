@@ -10,7 +10,7 @@ private val fsf = fsf(32.frames)
 
 val bow = WeaponType(
     name = "bow",
-    x1 = {
+    x = weaponCombo {
         doing = "x1"
         wait(23.frames)
         hit("x1") {
@@ -18,16 +18,14 @@ val bow = WeaponType(
             doAuto(29.percent, "x1", "b")
             doAuto(29.percent, "x1", "c")
         }
-    },
-    x2 = {
+
         doing = "x2"
         wait(35.frames)
         hit("x2") {
             doAuto(37.percent, 92, "x2", "a")
             doAuto(37.percent, "x2", "b")
         }
-    },
-    x3 = {
+
         doing = "x3"
         wait(33.frames)
         hit("x3") {
@@ -35,16 +33,14 @@ val bow = WeaponType(
             doAuto(42.percent, "x3", "b")
             doAuto(42.percent, "x3", "c")
         }
-    },
-    x4 = {
+
         doing = "x4"
         wait(51.frames)
         hit("x4") {
             doAuto(63.percent, 414, "x4", "a")
             doAuto(63.percent, "x4", "b")
         }
-    },
-    x5 = {
+
         doing = "x5"
         wait(66.frames)
         hit("x5") {

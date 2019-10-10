@@ -52,7 +52,7 @@ class Run : CliktCommand(
             val adv = AdventurerPreset(
                 name = name,
                 nick = null,
-                wyrmprints = prints,
+                wyrmprints = if (prints.isNotEmpty()) prints else null,
                 weapon = wep,
                 dragon = drag,
                 acl = customAcl,
