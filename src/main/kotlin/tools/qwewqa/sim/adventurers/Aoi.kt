@@ -4,7 +4,7 @@ import tools.qwewqa.sim.data.Coabilities
 import tools.qwewqa.sim.data.Dragons
 import tools.qwewqa.sim.data.Weapons
 import tools.qwewqa.sim.data.Wyrmprints
-import tools.qwewqa.sim.stage.acl
+import tools.qwewqa.sim.acl.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.snapshotSkill

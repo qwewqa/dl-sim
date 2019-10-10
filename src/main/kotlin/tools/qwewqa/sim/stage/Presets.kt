@@ -1,5 +1,6 @@
 package tools.qwewqa.sim.stage
 
+import tools.qwewqa.sim.acl.acl
 import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.Adventurers
 import tools.qwewqa.sim.data.Dragons
@@ -7,7 +8,6 @@ import tools.qwewqa.sim.data.Weapons
 import tools.qwewqa.sim.data.Wyrmprints
 import tools.qwewqa.sim.extensions.enemy
 import tools.qwewqa.sim.extensions.prerun
-import tools.qwewqa.sim.extensions.rotation
 
 data class RunPreset(
     val config: StageConfig,
@@ -57,15 +57,15 @@ data class AdventurerPreset(
 fun Stage.loadAdventurerPreset(advPreset: AdventurerPreset) =
     Adventurers[advPreset.name] {
         advPreset.nick?.apply { name = this }
-        advPreset.wyrmprints?.apply { if (this.isNotEmpty()) wyrmprints = this.map { Wyrmprints[it] }.reduce { a, b -> a + b } }
+        advPreset.wyrmprints?.apply { wyrmprints = if (this.isNotEmpty()) this.map { Wyrmprints[it] }.reduce { a, b -> a + b } else null }
         advPreset.weapon?.apply { weapon = Weapons[this] }
         advPreset.dragon?.apply { dragon = Dragons[this] }
         advPreset.acl?.apply { acl(this) }
         advPreset.rotationLoop?.apply {
-            rotation {
-                init = advPreset.rotationInit ?: ""
-                loop = advPreset.rotationLoop
-            }
+//            rotation {
+//                init = advPreset.rotationInit ?: ""
+//                loop = advPreset.rotationLoop
+//            }
         }
     }
 

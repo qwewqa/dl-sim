@@ -1,7 +1,7 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.stage.acl
+import tools.qwewqa.sim.acl.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.snapshotSkill

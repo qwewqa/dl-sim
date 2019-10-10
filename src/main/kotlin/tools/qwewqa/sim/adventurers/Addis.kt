@@ -1,13 +1,14 @@
 package tools.qwewqa.sim.adventurers
 
+import tools.qwewqa.sim.acl.acl
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.stage.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.doSkill
 import tools.qwewqa.sim.status.poison
+import tools.qwewqa.sim.wep.fsf
 
 val addis = AdventurerSetup {
     name = "Addis"

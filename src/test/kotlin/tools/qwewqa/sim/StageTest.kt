@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.Move
-import tools.qwewqa.sim.stage.acl
+import tools.qwewqa.sim.acl.acl
+import tools.qwewqa.sim.stage.MoveCall
 import tools.qwewqa.sim.stage.stage
 
 internal class StageTest {
@@ -40,7 +41,7 @@ internal class StageTest {
                         wait(1.0)
                     }
                 )
-                logic = { skill }
+                logic = { MoveCall(skill) }
             }
 
             timeline.schedule(9.9) {

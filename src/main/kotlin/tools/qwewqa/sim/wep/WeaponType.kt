@@ -26,11 +26,11 @@ class WeaponType(
             name = "x",
             condition = { doing == "idle" },
             action = {
-                x1()
-                x2()
-                x3()
-                x4()
-                x5()
+                x1(it)
+                x2(it)
+                x3(it)
+                x4(it)
+                x5(it)
             }
         )
     }

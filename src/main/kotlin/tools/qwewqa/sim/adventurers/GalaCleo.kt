@@ -1,7 +1,7 @@
 package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.data.*
-import tools.qwewqa.sim.stage.acl
+import tools.qwewqa.sim.acl.acl
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 import tools.qwewqa.sim.extensions.*
@@ -35,7 +35,7 @@ val galaCleo = AdventurerSetup {
             think("fs")
             wait(67.frames)
         } else {
-            wand.fs.action(this)
+            wand.fs.action(this, it)
         }
     }
 
@@ -63,10 +63,10 @@ val galaCleo = AdventurerSetup {
         val haste = stats[Stat.SKILL_HASTE].value
         if (logic != null) return@prerun
         if (haste >= 8.percent) {
-            rotation {
-                init = "s2 s1 c5 c4fs s1"
-                loop = "c5 c4fs s1 c5 s2 c5fs s1"
-            }
+//            rotation {
+//                init = "s2 s1 c5 c4fs s1"
+//                loop = "c5 c4fs s1 c5 s2 c5fs s1"
+//            }
         } else {
             acl {
                 +fs { altFs > 0 && (sp.ready("s1") || sp.ready("s2")) }

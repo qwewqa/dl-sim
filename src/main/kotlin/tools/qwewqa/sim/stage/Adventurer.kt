@@ -105,7 +105,7 @@ class Adventurer(val stage: Stage) : Listenable {
      * Decides what moves to make
      * null is a noop
      */
-    var logic: (Adventurer.(String) -> Move?)? = null
+    var logic: (Adventurer.(String) -> MoveCall?)? = null
 
     /**
      * Decides what move to make (potentially) based on [logic]
@@ -116,15 +116,14 @@ class Adventurer(val stage: Stage) : Listenable {
     fun think(trigger: String = "idle") {
         this.trigger = trigger
         listeners.raise(trigger)
-        val move = logic?.invoke(this, trigger) ?: return
-        act(move)
+        val call = logic?.invoke(this, trigger) ?: return
+        act(call)
     }
 
-    fun act(move: Move) {
-        check(move.condition(this)) { "${move.name} is not available" }
+    fun act(call: MoveCall) {
         current?.cancel()
         current = stage.timeline.schedule {
-            move.action(this@Adventurer)
+            call()
             if (coroutineContext.isActive) {
                 doing = "idle"
                 think()
@@ -259,6 +258,7 @@ class Adventurer(val stage: Stage) : Listenable {
     }
 
     operator fun Condition.invoke() = condition()
+    suspend operator fun MoveCall.invoke() = move.action(this@Adventurer, params)
 }
 
 enum class Element {
@@ -293,5 +293,7 @@ enum class Element {
     }
 }
 
+data class MoveCall(val move: Move, val params: Map<String, Any> = emptyMap())
+
 typealias AdventurerCondition = Adventurer.() -> Boolean
-typealias Action = suspend Adventurer.() -> Unit
+typealias Action = suspend Adventurer.(Map<String, Any>) -> Unit

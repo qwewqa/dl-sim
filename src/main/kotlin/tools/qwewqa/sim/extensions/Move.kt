@@ -5,7 +5,7 @@ import tools.qwewqa.sim.stage.AdventurerCondition
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.*
 
-suspend inline fun Adventurer.hit(name: String, crossinline action: Action) {
+suspend inline fun Adventurer.hit(name: String, crossinline action: suspend Adventurer.() -> Unit) {
     think("pre-$name")
     action()
     think("connect-$name")
@@ -24,7 +24,7 @@ fun skill(name: String, cost: Int, energizable: Boolean = true, includeUILatency
         listeners.raise("pre-$name")
         listeners.raise("pre-skill")
         if (energizable) listeners.raise("pre-skill-energy")
-        action()
+        action(it)
         skillLock = false
         think("post-$name")
         listeners.raise("post-skill")
