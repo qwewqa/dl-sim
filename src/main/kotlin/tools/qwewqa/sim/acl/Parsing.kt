@@ -1,5 +1,6 @@
 package tools.qwewqa.sim.acl
 
+import tools.qwewqa.sim.stage.Move
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -157,19 +158,34 @@ private val aclCache = ConcurrentHashMap<String, List<AclLine>>()
  * Each line is in the format: skill_name, conditions
  * */
 fun Acl.parseLine(string: String): AclLine {
-    val skill = when(string.substringBefore(",").trim()) {
-        "s1" -> adventurer.s1
-        "s2" -> adventurer.s2
-        "s3" -> adventurer.s3
-        "fsf" -> adventurer.fsf
-        "fs" -> adventurer.fs
-        "dodge" -> adventurer.dodge
-        "x" -> adventurer.x
-        else -> error("unknown skill")
-    }
-    val condition = parseExpression(string.substringAfter(",", "default").trim())
-    return AclLine(skill, emptyMap()) { condition.evaluate().toBoolean() }
+    val skill = parseSkill(string.substringBeforeLast(","))
+    val condition = parseExpression(string.substringAfterLast(",", "default").trim())
+    return AclLine(skill.move, skill.params) { condition.evaluate().toBoolean() }
 }
+
+data class SkillData(val move: Move?, val params: Map<String, Any>)
+fun Acl.parseSkill(string: String): SkillData {
+    val move = parseSkillName(string.substringBefore("(").trim())
+    val params = parseSkillParams(string.substringAfter("(", " ").dropLast(1))
+    return SkillData(move, params)
+}
+
+fun Acl.parseSkillName(string: String) = when(string) {
+    "s1" -> adventurer.s1
+    "s2" -> adventurer.s2
+    "s3" -> adventurer.s3
+    "fsf" -> adventurer.fsf
+    "fs" -> adventurer.fs
+    "dodge" -> adventurer.dodge
+    "x" -> adventurer.x
+    else -> error("unknown skill")
+}
+
+fun Acl.parseSkillParams(string: String) = if (string.isNotEmpty()) string.split(",").map { param ->
+    val name = param.substringBefore("=").trim()
+    val value = parseExpression(param.substringAfter("=").trim()).evaluate().value
+    name to value
+}.fold(emptyMap<String, Any>()) { a, v -> a + v } else emptyMap()
 
 fun Char?.isSpecialChar() = this in specialCharacters
 fun CharSequence.isOperator() = this in operatorStrings

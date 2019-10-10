@@ -49,8 +49,8 @@ class Enemy(val stage: Stage) : Listenable {
 
     val afflictions = Afflictions()
 
-    fun damage(snapshot: Snapshot, variance: Boolean = true): Int {
-        val hitDamage = if (variance) floor((0.95 * snapshot.amount + 0.1 * Random.nextDouble() * snapshot.amount)) else snapshot.amount
+    fun damage(snapshot: Snapshot): Int {
+        val hitDamage = if (snapshot.variance) floor((0.95 * snapshot.amount + 0.1 * Random.nextDouble() * snapshot.amount)) else snapshot.amount
         val actual = hitDamage.toInt()
         totalDamage += actual
         damageSlices.get(snapshot.name) += hitDamage

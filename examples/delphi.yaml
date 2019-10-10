@@ -7,6 +7,6 @@ adventurers:
       wyrmprints: [TB, SS]
       acl: |
         s1
-        s2, default && !altfs
+        s2(reflect = 1000), default && !altfs
         s3
         fs, x2 && !(altfs && combo < 15)

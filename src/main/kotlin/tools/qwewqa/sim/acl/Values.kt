@@ -3,6 +3,7 @@ package tools.qwewqa.sim.acl
 import java.util.*
 
 interface AclValue : ExpressionComponent {
+    val value: Any
     fun toAclString(): AclString
     fun toAclBoolean(): AclBoolean
     fun toAclNumber(): AclNumber
@@ -10,7 +11,7 @@ interface AclValue : ExpressionComponent {
     fun toDouble(): Double
 }
 
-class AclString(val value: String) : AclValue {
+class AclString(override val value: String) : AclValue {
     override fun toAclString() = this
     override fun toAclBoolean() = value.isNotEmpty().aclValue
     override fun toAclNumber() = Double.NaN.aclValue
@@ -23,7 +24,7 @@ class AclString(val value: String) : AclValue {
     }
 }
 
-class AclBoolean(val value: Boolean) : AclValue {
+class AclBoolean(override val value: Boolean) : AclValue {
     override fun toAclString() = value.toString().aclValue
     override fun toAclBoolean() = this
     override fun toAclNumber() = (if (value) 1 else 0).aclValue
@@ -36,7 +37,7 @@ class AclBoolean(val value: Boolean) : AclValue {
     }
 }
 
-class AclNumber(val value: Double) : AclValue {
+class AclNumber(override val value: Double) : AclValue {
     override fun toAclString() = value.toString().aclValue
     override fun toAclBoolean() = (value != 0.0).aclValue
     override fun toAclNumber() = this

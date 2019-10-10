@@ -59,9 +59,12 @@ val delphi = AdventurerSetup {
         wait(1.85)
     }
 
-    s2(999999) {
+    s2(999999) { params ->
         combo = 0
         doSkill(499.percent, "s2", "hit")
+        (params["reflect"] as? Double)?.let {
+            damageRaw(it * 11, "s2", "reflect")
+        }
         poison(snapshotSkill(300.percent, "s2", "poison"), duration = 24.0, chance = 120.percent)
         wait(3.85)
     }
