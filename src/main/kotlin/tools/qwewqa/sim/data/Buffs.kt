@@ -26,6 +26,7 @@ object Buffs : DataMap<Buff<*, *>>()  {
     val critRate = statBuff("crit rate", Stat.CRIT_RATE)
     val critDamage = statBuff("crit damage", Stat.CRIT_DAMAGE)
     val skillHaste = statBuff("skill haste", Stat.SKILL_HASTE)
+    val atkSpeed = statBuff("attack speed", Stat.ATTACK_SPEED)
     val def = Buff<Double, Unit>(
         name = "def",
         initialValue = {},
@@ -96,6 +97,7 @@ object Buffs : DataMap<Buff<*, *>>()  {
         this["crit rate", "crit-rate", "cr"] = critRate
         this["crit damage", "crit-damage", "cd"] = critDamage
         this["skill haste", "haste", "sp"] = skillHaste
+        this["attack speed", "atkspd", "speed", "as"] = atkSpeed
         this["def", "defense"] = def
         this["dignified soul"] = dignifiedSoul
         this["inferno mode"] = infernoMode

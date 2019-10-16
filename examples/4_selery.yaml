@@ -1,0 +1,11 @@
+config:
+  duration: 180.0
+adventurers:
+  - selery:
+      wyrmprints: [VC, FRH]
+  - selery:
+      wyrmprints: [VC, FRH]
+  - selery:
+      wyrmprints: [VC, FRH]
+  - selery:
+      wyrmprints: [VC, FRH]

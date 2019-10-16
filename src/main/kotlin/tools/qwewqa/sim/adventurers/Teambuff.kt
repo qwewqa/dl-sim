@@ -5,31 +5,6 @@ import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.*
 
-val empiricalTeambuff = AdventurerSetup {
-    name = "Teambuff"
-    element = Element.Neutral
-    real = false
-
-    val freq = 2
-
-    str = 6000
-
-    prerun {
-        val mod = str / (5.0 / 3.0 * stats[Stat.STR].value / (enemy.stats[Stat.DEF].value) *
-                (1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value) *
-                stats[Stat.PUNISHER].value *
-                element.multiplier(enemy.element)) / freq
-        schedule {
-            while (true) {
-                val snapshot = snapshot(mod, "Teambuff")
-                val actual = enemy.damage(snapshot.copy(amount = snapshot.amount - str.toDouble() / freq))
-                log("damage", "hit for $actual (freq $freq, str $str)")
-                wait(1.0 / freq)
-            }
-        }
-    }
-}
-
 val teambuff = AdventurerSetup {
     name = "Teambuff"
     element = Element.Neutral
@@ -52,7 +27,8 @@ val teambuff = AdventurerSetup {
         val strMod = stats[Stat.STR].value / defaultStr
         val critMod = (1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value) / defaultCrit
         val defMod = defaultDef / enemy.stats[Stat.DEF].value
-        lastCount = (defMod * strMod * critMod) - 1.0
+        val spdMod = stats[Stat.ATTACK_SPEED].value
+        lastCount = (defMod * strMod * critMod * spdMod) - 1.0
         lastTime = time
         log(Logger.Level.VERBOSER, "buff", "now buffed $lastCount")
     }

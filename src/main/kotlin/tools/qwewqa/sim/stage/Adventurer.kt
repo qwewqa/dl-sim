@@ -102,6 +102,11 @@ class Adventurer(val stage: Stage) : Listenable {
     var prerun: Adventurer.() -> Unit = {}
 
     /**
+     * Like prerun but before initialization
+     */
+    var preinit: Adventurer.() -> Unit = {}
+
+    /**
      * Decides what moves to make
      * null is a noop
      */
@@ -162,6 +167,7 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun initialize() {
         listeners.listenTo(enemy.listeners)
+        preinit()
         weapon.init()
         weaponType.init()
         stats["str"].base += str.toDouble() * Facilities[this]
