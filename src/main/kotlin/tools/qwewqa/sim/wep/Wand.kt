@@ -10,20 +10,23 @@ val wand = WeaponType(
     name = "wand",
     x = weaponCombo { params ->
         val fsf = params["fsf"] as? Boolean ?: true
+        val latency = params["latency"] as? Double ?: 0.0
 
         doing = "x1"
         wait(18.frames)
-        doAuto(98.percent, 130, "x1")
+        hit("X1", latency) {
+            doAuto(98.percent, 130, "x1", "a")
+        }
         doing = "x2"
         wait(33.frames)
-        hit("x2") {
+        hit("x2", latency) {
             doAuto(53.percent, 200, "x2", "a")
             doAuto(53.percent, "x2", "b")
         }
 
         doing = "x3"
         wait(31.frames)
-        hit("x3") {
+        hit("x3", latency) {
             doAuto(36.percent, 240, "x3", "a")
             doAuto(36.percent, "x3", "b")
             doAuto(36.percent, "x3", "c")
@@ -31,14 +34,14 @@ val wand = WeaponType(
 
         doing = "x4"
         wait(53.frames)
-        hit("x4") {
+        hit("x4", latency) {
             doAuto(78.percent, 430, "x4", "a")
             doAuto(78.percent, "x4", "b")
         }
 
         doing = "x5"
         wait(64.frames)
-        hit("x5") {
+        hit("x5", latency) {
             doAuto(61.8.percent, 600, "x5", "a")
             doAuto(36.05.percent, "x5", "b")
             doAuto(36.05.percent, "x5", "c")
@@ -50,10 +53,12 @@ val wand = WeaponType(
         else
             wait(68.frames)
     },
-    fs = forcestrike {
+    fs = forcestrike { params ->
+        val latency = params["latency"] as? Double ?: 0.0
+
         doing = "fs"
         wait(42.frames)
-        hit("fs") {
+        hit("fs", latency) {
             doFs(90.percent, 0.0, 460, "fs", "a")
             doFs(90.percent, 0.0, "fs", "b")
         }

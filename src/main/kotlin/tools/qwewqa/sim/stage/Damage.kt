@@ -70,6 +70,7 @@ fun Adventurer.doSkill(
 data class Snapshot(
     val amount: Double,
     val sp: Int,
+    val fill: Double,
     val od: Double,
     val name: List<String>,
     val variance: Boolean = true
@@ -79,9 +80,10 @@ fun Adventurer.damageRaw(
     amount: Double,
     vararg name: String,
     sp: Int = 0,
+    fill: Double = 1.0,
     od: Double = 1.0,
     variance: Boolean = false
-) = Snapshot(amount = amount, sp = sp, od = od, name = listOf(this@damageRaw.name) + name.toList(), variance = variance).apply()
+) = Snapshot(amount = amount, sp = sp, fill = fill, od = od, name = listOf(this@damageRaw.name) + name.toList(), variance = variance).apply()
 
 class DamageSlice(
     val name: String

@@ -143,11 +143,37 @@ class Adventurer(val stage: Stage) : Listenable {
         if (sp != 0) this@Adventurer.sp(sp, name.toString())
     }
 
-    fun snapshot(mod: Double, vararg name: String, od: Double = 1.0, sp: Int = 0, fs: Boolean = false, skill: Boolean = false) =
-        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = od, name = listOf(this@Adventurer.name) + name.toList())
+    fun snapshot(
+        mod: Double,
+        vararg name: String,
+        od: Double = 1.0,
+        sp: Int = 0,
+        fs: Boolean = false,
+        skill: Boolean = false
+    ) =
+        Snapshot(
+            amount = damageFormula(mod, skill, fs),
+            sp = spFormula(sp, fs),
+            fill = 1.0 / (1.0 + stats[GAUGE_INHIBITOR].value),
+            od = od,
+            name = listOf(this@Adventurer.name) + name.toList()
+        )
 
-    fun damage(mod: Double, vararg name: String, od: Double = 1.0, sp: Int = 0, fs: Boolean = false, skill: Boolean = false) =
-        Snapshot(amount = damageFormula(mod, skill, fs), sp = spFormula(sp, fs), od = od, name = listOf(this@Adventurer.name) + name.toList()).apply()
+    fun damage(
+        mod: Double,
+        vararg name: String,
+        od: Double = 1.0,
+        sp: Int = 0,
+        fs: Boolean = false,
+        skill: Boolean = false
+    ) =
+        Snapshot(
+            amount = damageFormula(mod, skill, fs),
+            sp = spFormula(sp, fs),
+            fill = 1.0 / (1.0 + stats[GAUGE_INHIBITOR].value),
+            od = od * (1.0 + stats[GAUGE_ACCELERATOR].value),
+            name = listOf(this@Adventurer.name) + name.toList()
+        ).apply()
 
     fun damageFormula(mod: Double, skill: Boolean = false, fs: Boolean = false) =
         5.0 / 3.0 * mod * stats[STR].value / (enemy.stats[DEF].value) *
@@ -222,7 +248,11 @@ class Adventurer(val stage: Stage) : Listenable {
         log("buff", "selfbuff $name for duration $rdur [value: $value]")
     }
 
-    fun Buff<*, *>.BuffInstance.teamBuff(duration: Double, buffTime: Boolean = true, condition: AdventurerCondition = { true }) {
+    fun Buff<*, *>.BuffInstance.teamBuff(
+        duration: Double,
+        buffTime: Boolean = true,
+        condition: AdventurerCondition = { true }
+    ) {
         val rdur = if (buffTime) duration * stats[BUFF_TIME].value else duration
         stage.adventurers.forEach {
             if (it.condition()) this.apply(it, rdur)

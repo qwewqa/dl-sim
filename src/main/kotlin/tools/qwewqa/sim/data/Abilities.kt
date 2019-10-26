@@ -79,6 +79,10 @@ object Abilities : DataMap<Ability<*, *>>() {
     val fsDamage = statAbility("force strike", Stat.FORCESTRIKE_DAMAGE)
     val wpFsDamage = cappedStatAbility("force strike (wp)", Stat.FORCESTRIKE_DAMAGE, 50.percent)
 
+    val gaugeInhibitor = statAbility("gauge inhibitor", Stat.GAUGE_INHIBITOR)
+
+    val gaugeAccelerator = statAbility("gauge accelerator", Stat.GAUGE_ACCELERATOR)
+
     val debuffChance = statAbility("debuff chance", Stat.DEBUFF_CHANCE)
 
     val poisonChance = statAbility("poison chance", Stat.POISON_CHANCE)
@@ -300,6 +304,8 @@ object Abilities : DataMap<Ability<*, *>>() {
         this["crit damage (wp)", "crit-damage (wp)", "cd (wp)"] = wpCritDamage
         this["buff time", "buff-time", "bt"] = buffTime
         this["buff time (wp)", "buff-time (wp)", "bt (wp)"] = wpBuffTime
+        this["gauge inhibitor", "gauge inhibit", "gi"] = gaugeInhibitor
+        this["gauge accelerator", "gauge accel", "ga"] = gaugeAccelerator
         this["debuff chance", "debuff", "debilitator"] = debuffChance
         this["poison chance", "poison"] = poisonChance
         this["punisher", "k"] = punisher

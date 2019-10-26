@@ -41,6 +41,6 @@ val teambuff = AdventurerSetup {
 
     stage.onEnd {
         total += str * lastCount * (time - lastTime)
-        if (total > 0) enemy.damage(Snapshot(total, 0, 0.0, listOf("Teambuff"), false))
+        if (total > 0) enemy.damage(Snapshot(total, 0, 0.0, 0.0, listOf("Teambuff"), false))
     }
 }

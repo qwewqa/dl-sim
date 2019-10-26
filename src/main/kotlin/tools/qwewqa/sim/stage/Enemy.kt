@@ -65,7 +65,9 @@ class Enemy(val stage: Stage) : Listenable {
         }
         when (phase) {
             Phase.Normal -> toOd?.let {
-                gauge += actual
+                val fill = floor(actual * snapshot.fill).toInt()
+                gauge += fill
+                log(Logger.Level.VERBOSIEST, "gauge", "od gauge filled by $fill (mult ${snapshot.fill})")
                 if (gauge > it) {
                     gauge = 0
                     phase = Phase.Overdrive
@@ -77,7 +79,7 @@ class Enemy(val stage: Stage) : Listenable {
             Phase.Overdrive -> toBreak?.let {
                 val od = floor(actual * snapshot.od).toInt()
                 gauge += od
-                log(Logger.Level.VERBOSIEST, "gauge", "od gauge filled by $od (mult ${snapshot.od})")
+                log(Logger.Level.VERBOSIEST, "gauge", "od gauge reduced by $od (mult ${snapshot.od})")
                 if (gauge > it) {
                     phase = Phase.Break
                     debuffStacks.values.forEach { it.clear() }

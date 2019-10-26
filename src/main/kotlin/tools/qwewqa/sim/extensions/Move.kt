@@ -12,6 +12,19 @@ suspend inline fun Adventurer.hit(name: String, crossinline action: suspend Adve
     think(name)
 }
 
+suspend inline fun Adventurer.hit(name: String, latency: Double, crossinline action: suspend Adventurer.() -> Unit) {
+    if (latency == 0.0) {
+        hit(name, action)
+        return
+    }
+    think("pre-$name")
+    schedule(latency) {
+        action()
+        think("connect-$name")
+    }
+    think(name)
+}
+
 fun skill(name: String, cost: Int, energizable: Boolean = true, includeUILatency: Boolean = true, action: Action) = Move(
     name = name,
     condition = { !skillLock && sp.ready(name) && ui.available },
