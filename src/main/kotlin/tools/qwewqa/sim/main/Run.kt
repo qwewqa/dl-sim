@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.types.int
 import tools.qwewqa.sim.adventurers.teambuff
 import tools.qwewqa.sim.data.Coabilities
 import tools.qwewqa.sim.extensions.enemy
+import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.stage.*
 
@@ -61,16 +62,16 @@ class Run : CliktCommand(
             ).loadAdventurerPreset().apply {
                 prerun {
                     if (k) {
-                        Coabilities.blade.initialize(this)
+                        Coabilities.str(10.percent).init()
                     }
                     if (r) {
-                        Coabilities.wand.initialize(this)
+                        Coabilities.skillDamage(15.percent).init()
                     }
                     if (d) {
-                        Coabilities.dagger.initialize(this)
+                        Coabilities.critDamage(10.percent).init()
                     }
                     if (b) {
-                        Coabilities.bow.initialize(this)
+                        Coabilities.skillHaste(15.percent).init()
                     }
                 }
             }

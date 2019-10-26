@@ -26,7 +26,7 @@ class Adventurer(val stage: Stage) : Listenable {
     var s1: Move? = null
     var s2: Move? = null
     var s3: Move? = null
-    var ex: Coability? = null
+    var ex: Coability<*>.Instance? = null
     var a1: Ability<*, *>.AbilityInstance? = null
     var a2: Ability<*, *>.AbilityInstance? = null
     var a3: Ability<*, *>.AbilityInstance? = null
@@ -231,7 +231,7 @@ class Adventurer(val stage: Stage) : Listenable {
     fun BaseEquip?.init() = this?.initialize(this@Adventurer)
     fun Move?.init() = this?.prerun?.invoke(this@Adventurer)
     fun Ability<*, *>.AbilityInstance?.init() = this?.initialize(this@Adventurer)
-    fun Coability?.init() = this?.initialize(this@Adventurer)
+    fun Coability<*>.Instance?.init() = this?.initialize(this@Adventurer)
 
     fun WeaponType?.init() {
         this?.initialize(this@Adventurer)

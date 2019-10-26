@@ -13,7 +13,7 @@ val galaEuden = AdventurerSetup {
     name = "Gala Euden"
     element = Element.Light
     str = 502
-    // ex unimplemented
+    ex = Coabilities.shapeshiftingBoost(8)
     weapon = Weapons.lightSword5t3
     dragon = Dragons.cupid
     wyrmprints = Wyrmprints.tso + Wyrmprints.sdo

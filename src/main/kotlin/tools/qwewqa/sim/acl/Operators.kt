@@ -63,4 +63,4 @@ val operatorPrecedence = mapOf(
 val specialCharacters = (unaryOperators.keys + infixOperators.keys).reduce { a, b -> a + b }.toSet() + '(' + ')'
 val unaryOperatorStrings = unaryOperators.keys.toSet()
 val infixOperatorStrings = infixOperators.keys.toSet()
-val operatorStrings = unaryOperatorStrings + infixOperatorStrings
+val operatorStrings = unaryOperatorStrings + infixOperatorStrings + "//"

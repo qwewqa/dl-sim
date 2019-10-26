@@ -40,7 +40,7 @@ fun lex(string: String): List<Token> {
     var remaining = "$string "
     var current = ""
     val tokens = mutableListOf<Token>()
-    while (remaining.isNotEmpty()) {
+    loop@ while (remaining.isNotEmpty()) {
         val lastChar = current.lastOrNull()
         val nextChar = remaining[0]
         remaining = remaining.drop(1)
@@ -54,11 +54,12 @@ fun lex(string: String): List<Token> {
                 completeToken()
             }
             current.isOperator() -> {
+                if (current == "//") break@loop
                 val next = current + nextChar
                 if (next.isOperator()) {
                     current = next
                 } else {
-                    if (tokens.lastOrNull() is OperatorToken) {
+                    if (tokens.isEmpty() || tokens.last() is OperatorToken) {
                         tokens += UnaryOperatorToken(current)
                     } else {
                         tokens += InfixOperatorToken(current)

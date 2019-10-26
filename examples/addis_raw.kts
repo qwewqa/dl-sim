@@ -3,7 +3,7 @@ stage {
         name = "Addis"
         element = Wind
         str = 509
-        ex = Coabilities["Str"]
+        ex = Coabilities["Str"](10.percent)
         weapon = Weapons["Wind 5t3 Blade"]
         dragon = Dragons["Vayu"]
         wyrmprints = Wyrmprints["RR", "BN"]

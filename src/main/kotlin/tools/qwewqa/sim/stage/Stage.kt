@@ -1,13 +1,12 @@
 package tools.qwewqa.sim.stage
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import sun.rmi.runtime.Log
 import tools.qwewqa.sim.adventurers.AdventurerSetup
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.extensions.plus
+import tools.qwewqa.sim.status.Coability
 
 class Stage {
     private var started = false
@@ -20,6 +19,8 @@ class Stage {
     }
     var onEnd: Stage.() -> Unit = {}
 
+    val coabilities = mutableMapOf<Coability<*>, Coability<*>.Instance>()
+
     inline fun log(level: Logger.Level, name: String, category: String, message: () -> String) =
         logger.log(level, name, category, message)
 
@@ -28,6 +29,11 @@ class Stage {
         started = true
         adventurers.forEach {
             it.initialize()
+        }
+        coabilities.values.forEach { coab ->
+            adventurers.forEach {
+                coab.start(it)
+            }
         }
         timeline.onEnd = { onEnd() }
         timeline.start()

@@ -13,7 +13,7 @@ val summerCelliera = AdventurerSetup {
     name = "Summer Celliera"
     element = Element.Water
     str = 479
-    ex = Coabilities.sword
+    ex = Coabilities.dragonHaste(15.percent)
     weapon = Weapons.waterSword5t3
     wyrmprints = Wyrmprints.vc + Wyrmprints.jots
 

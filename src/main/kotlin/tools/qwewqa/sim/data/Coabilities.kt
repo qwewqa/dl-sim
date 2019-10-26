@@ -1,37 +1,36 @@
 package tools.qwewqa.sim.data
 
+import tools.qwewqa.sim.stage.Logger
 import tools.qwewqa.sim.status.Coability
-import tools.qwewqa.sim.status.coability
-import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Stat
 
-object Coabilities : DataMap<Coability>() {
-    fun def(value: Double) = coability(Stat.DEF, value)
-    fun str(value: Double) = coability(Stat.STR, value)
-    fun skillHaste(value: Double) = coability(Stat.SKILL_HASTE, value)
-    fun critRate(value: Double) = coability(Stat.CRIT_RATE, value)
-    fun hp(value: Double) = coability(Stat.HP, value)
-    fun healingPotency(value: Double) = coability(Stat.HEALING_POTENCY, value)
-    fun dragonHaste(value: Double) = coability(Stat.DRAGON_HASTE, value)
-    fun skillDamage(value: Double) = coability(Stat.SKILL_DAMAGE, value)
+object Coabilities : DataMap<Coability<*>>() {
+    fun statCoability(stat: Stat) = Coability<Double> { value ->
+        stats[stat].coability = value
+        log(Logger.Level.VERBOSE, "coability","${stat.name} coability with value $value on")
+    }
 
-    val axe = def(15.percent)
-    val blade = str(10.percent)
-    val bow = skillHaste(15.percent)
-    val dagger = critRate(10.percent)
-    val lance = hp(15.percent)
-    val staff = healingPotency(15.percent)
-    val sword = dragonHaste(10.percent)
-    val wand = skillDamage(15.percent)
+    val def = statCoability(Stat.DEF)
+    val str = statCoability(Stat.STR)
+    val skillHaste = statCoability(Stat.SKILL_HASTE)
+    val critRate = statCoability(Stat.CRIT_RATE)
+    val critDamage = statCoability(Stat.CRIT_DAMAGE)
+    val hp = statCoability(Stat.HP)
+    val healingPotency = statCoability(Stat.HEALING_POTENCY)
+    val dragonHaste = statCoability(Stat.DRAGON_HASTE)
+    val skillDamage = statCoability(Stat.SKILL_DAMAGE)
+
+    val shapeshiftingBoost = Coability<Int> { /* Dragon unimplemented */ }
 
     init {
-        this["axe", "def"] = axe
-        this["blade", "str"] = blade
-        this["bow", "haste"] = bow
-        this["dagger", "crit", "crit rate"] = dagger
-        this["lance", "hp"] = lance
-        this["staff", "potency"] = staff
-        this["sword", "dragon"] = sword
-        this["wand", "skill", "skill damage"] = wand
+        this["axe", "def"] = def
+        this["blade", "str"] = str
+        this["bow", "haste"] = skillHaste
+        this["dagger", "crit", "crit rate"] = critRate
+        this["crit damage", "cd"] = critDamage
+        this["lance", "hp"] = hp
+        this["staff", "potency"] = healingPotency
+        this["sword", "dragon"] = dragonHaste
+        this["wand", "skill", "skill damage"] = skillDamage
     }
 }
