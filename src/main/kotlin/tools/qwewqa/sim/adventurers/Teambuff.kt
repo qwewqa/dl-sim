@@ -4,6 +4,7 @@ import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.*
+import tools.qwewqa.sim.status.Coability
 
 val teambuff = AdventurerSetup {
     name = "Teambuff"
@@ -33,7 +34,7 @@ val teambuff = AdventurerSetup {
         log(Logger.Level.VERBOSER, "buff", "now buffed $lastCount")
     }
 
-    prerun {
+    schedule {
         defaultStr = stats[Stat.STR].value
         defaultCrit = 1.0 + stats[Stat.CRIT_RATE].value * stats[Stat.CRIT_DAMAGE].value
         defaultDef = enemy.stats[Stat.DEF].value

@@ -10,6 +10,17 @@ import tools.qwewqa.sim.stage.snapshotSkill
 import tools.qwewqa.sim.wep.*
 
 object Weapons : DataMap<Weapon>() {
+    val axe0 = Weapon("Axe", Element.Neutral, 0, noMove, axe, emptyList())
+    val axe5b1 = axe0.copy(
+        str = 567,
+        skill = skill("s3", 4711) {
+            wait(0.15)
+            Buffs.critDamage(50.percent).selfBuff(20.0)
+            wait(0.9)
+        }
+    )
+    val flameAxe5t3 = axe5b1.copy(name = "Axe of the Blazing King", element = Element.Flame)
+
     val blade0 = Weapon("Blade", Element.Neutral, 0, noMove, blade, emptyList())
     val blade5b1 = blade0.copy(
         str = 572,
@@ -134,6 +145,7 @@ object Weapons : DataMap<Weapon>() {
     val shadowWand5t3 = wand5b1.copy(name = "Underworld Despair", element = Element.Shadow)
 
     init {
+        this["flame 5t3 axe", "Axe of the Blazing King"] = flameAxe5t3
         this["flame 5t3 blade", "Heaven's Acuity"] = flameBlade5t3
         this["wind 5t3 blade", "Anemone"] = windBlade5t3
         this["light 5t3 blade", "Heavenwing"] = lightBlade5t3

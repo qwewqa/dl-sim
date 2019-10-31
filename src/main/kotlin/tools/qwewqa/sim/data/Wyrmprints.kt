@@ -163,6 +163,15 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         )
     )
 
+    val kfm = Wyrmprint(
+        name = "Kung Fu Masters",
+        str = 64,
+        abilities = listOf(
+            Abilities.wpCritRate(14.percent, Conditions.axe),
+            Abilities.wpSkillDamage(20.percent)
+        )
+    )
+
     val hdt = Wyrmprint(
         name = "HDT",
         str = 39,
@@ -193,6 +202,7 @@ object Wyrmprints : DataMap<Wyrmprint>() {
         this["SDO", "Sister's Day Out"] = sdo
         this["Choc", "The Chocolatiers"] = choc
         this["SS", "Stellar Show"] = ss
+        this["KFM", "Kung Fu Masters"] = kfm
         this["HDT"] = hdt
         this["GT", "Glorious Tempest"] = gt
         this["VQ", "Volcanic Queeen"] = vq
