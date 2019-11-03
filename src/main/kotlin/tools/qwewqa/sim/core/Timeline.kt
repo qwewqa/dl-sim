@@ -57,11 +57,7 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
             return
         }
         if (action.startTime >= time) time = action.startTime else throw IllegalStateException()
-        active++
-        action.job = launch {
-            action()
-            active--
-        }
+        action.run()
     }
 
     /**
@@ -71,7 +67,7 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
      */
     suspend fun wait(time: Double) {
         suspendCancellableCoroutine<Unit> { cont ->
-            schedule(time) {
+            scheduleNonSuspending(time) {
                 active++
                 cont.resume(Unit) { active-- }
             }
@@ -85,7 +81,11 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
      * Schedules an action to be ran on the timeline.
      * Returns an Event that can be canceled
      */
-    fun schedule(delay: Double = 0.0, action: suspend Timeline.() -> Unit) = Event(time + delay, action).also {
+    fun schedule(delay: Double = 0.0, action: suspend Timeline.() -> Unit) = SuspendingEvent(time + delay, action).also {
+        queue += it
+    }
+
+    fun scheduleNonSuspending(delay: Double = 0.0, action: Timeline.() -> Unit) = NonSuspendingEvent(time + delay, action).also {
         queue += it
     }
 
@@ -93,25 +93,50 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
         queue.remove(action)
     }
 
-    inner class Event(val startTime: Double, private val action: suspend Timeline.() -> Unit) : Comparable<Event> {
+    abstract inner class Event(val startTime: Double) : Comparable<Event> {
+        abstract fun run()
+        abstract fun cancel()
+        override fun compareTo(other: Event): Int = startTime.compareTo(other.startTime)
+    }
+
+    inner class SuspendingEvent(startTime: Double, private val action: suspend Timeline.() -> Unit) : Event(startTime) {
         var job: Job? = null
 
-        suspend operator fun invoke() {
-            action()
+        override fun run() {
+            active++
+            job = launch {
+                action()
+                active--
+            }
         }
 
-        suspend fun invokeNow() {
-            invoke()
+        suspend fun runNow() {
+            action()
             cancel()
         }
 
-        fun cancel() {
+        override fun cancel() {
             unschedule(this)
             job?.let {
                 if (it.isActive) it.cancel()
             }
         }
+    }
 
-        override fun compareTo(other: Event): Int = startTime.compareTo(other.startTime)
+    inner class NonSuspendingEvent(startTime: Double, private val action: Timeline.() -> Unit) : Event(startTime) {
+        override fun run() {
+            active++
+            action()
+            active--
+        }
+
+        fun runNow() {
+            run()
+            cancel()
+        }
+
+        override fun cancel() {
+            unschedule(this)
+        }
     }
 }

@@ -14,7 +14,7 @@ class Cooldown(
     var available: Boolean = startsAvailable
         private set
 
-    private var nextEvent: Timeline.Event? = null
+    private var nextEvent: Timeline.SuspendingEvent? = null
     val remaining get() = max(0.0, (nextEvent?.startTime ?: 0.0) - timeline.time)
 
     /**
@@ -38,7 +38,7 @@ class Cooldown(
 
     suspend fun makeAvailable() {
         if (available) return
-        nextEvent?.invokeNow()
+        nextEvent?.runNow()
     }
 }
 
