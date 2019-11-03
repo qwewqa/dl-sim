@@ -19,6 +19,15 @@ object Conditions : DataMap<Condition>() {
     val light = Condition("light") { element == Element.Light }
     val shadow = Condition("shadow") { element == Element.Shadow }
 
+    fun element(element: Element) = when(element) {
+        Element.Flame -> flame
+        Element.Water -> water
+        Element.Wind -> wind
+        Element.Light -> light
+        Element.Shadow -> shadow
+        else -> error("invalid element")
+    }
+
     val axe = Condition("axe") { weaponType == tools.qwewqa.sim.wep.axe }
     val blade = Condition("blade") { weaponType == tools.qwewqa.sim.wep.blade }
     val bow = Condition("bow") { weaponType == tools.qwewqa.sim.wep.bow }

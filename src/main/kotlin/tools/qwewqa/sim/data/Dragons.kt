@@ -5,6 +5,63 @@ import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Element
 
 object Dragons : DataMap<Dragon>() {
+    fun strDragon(name: String, element: Element, str: Int) =
+        Dragon(name, element, str, listOf(Abilities.strength(60.percent, Conditions.element(element))))
+
+    fun skillDragon(name: String, element: Element, str: Int) =
+        Dragon(
+            name,
+            element,
+            str,
+            listOf(
+                Abilities.strength(20.percent, Conditions.element(element)),
+                Abilities.skillDamage(90.percent, Conditions.element(element))
+            )
+        )
+
+    fun critDamageDragon(name: String, element: Element, str: Int) =
+        Dragon(
+            name,
+            element,
+            str,
+            listOf(
+                Abilities.strength(45.percent, Conditions.element(element)),
+                Abilities.critDamage(55.percent, Conditions.element(element))
+            )
+        )
+
+    fun critRateDragon(name: String, element: Element, str: Int) =
+        Dragon(
+            name,
+            element,
+            str,
+            listOf(
+                Abilities.strength(45.percent, Conditions.element(element)),
+                Abilities.critRate(20.percent, Conditions.element(element))
+            )
+        )
+
+    fun hpHasteDragon(name: String, element: Element, str: Int) =
+        Dragon(
+            name,
+            element,
+            str,
+            listOf(
+                Abilities.skillHaste(35.percent, Conditions.element(element))
+            )
+        )
+
+    fun primedStrDragon(name: String, element: Element, str: Int) =
+        Dragon(
+            name,
+            element,
+            str,
+            listOf(
+                Abilities.strength(45.percent, Conditions.element(element)),
+                Abilities.primedStr(15.percent, Conditions.element(element))
+            )
+        )
+
     val cerberus = Dragon(
         name = "Cerberus",
         element = Element.Flame,
@@ -14,133 +71,86 @@ object Dragons : DataMap<Dragon>() {
         )
     )
 
-    val sakuya = Dragon(
+    val sakuya = strDragon(
         name = "Sakuya",
         element = Element.Flame,
-        str = 121,
-        abilities = listOf(
-            Abilities.strength(20.percent, Conditions.flame),
-            Abilities.skillDamage(90.percent, Conditions.flame)
-        )
+        str = 121
     )
 
-    val arctos = Dragon(
+    val arctos = critDamageDragon(
         name = "Arctos",
         element = Element.Flame,
-        str = 121,
-        abilities = listOf(
-            Abilities.strength(45.percent, Conditions.flame),
-            Abilities.critDamage(55.percent, Conditions.flame)
-        )
+        str = 121
     )
 
 
-    val leviathan = Dragon(
+    val leviathan = strDragon(
         name = "Leviathan",
         element = Element.Water,
-        str = 125,
-        abilities = listOf(
-            Abilities.strength(60.percent, Conditions.water)
-        )
+        str = 125
     )
 
-    val siren = Dragon(
+    val siren = skillDragon(
         name = "Siren",
         element = Element.Water,
-        str = 125,
-        abilities = listOf(
-            Abilities.strength(20.percent, Conditions.water),
-            Abilities.skillDamage(90.percent, Conditions.water)
-        )
+        str = 125
     )
 
-    val dragonyuleJeanne = Dragon(
+    val dragonyuleJeanne = critRateDragon(
         name = "Dragonyule Jeanne",
         element = Element.Water,
-        str = 125,
-        abilities = listOf(
-            Abilities.strength(45.percent, Conditions.water),
-            Abilities.critRate(20.percent, Conditions.water)
-        )
+        str = 125
     )
 
 
-    val vayu = Dragon(
+    val vayu = skillDragon(
         name = "Vayu",
         element = Element.Wind,
-        str = 127,
-        abilities = listOf(
-            Abilities.strength(20.percent, Conditions.wind),
-            Abilities.skillDamage(90.percent, Conditions.wind)
-        )
+        str = 127
     )
 
-    val zephyr = Dragon(
+    val zephyr = strDragon(
         name = "Zephyr",
         element = Element.Wind,
-        str = 127,
-        abilities = listOf(
-            Abilities.strength(60.percent, Conditions.wind)
-        )
+        str = 127
     )
 
-    val longLong = Dragon(
+    val longLong = critDamageDragon(
         name = "Long Long",
         element = Element.Wind,
-        str = 127,
-        abilities = listOf(
-            Abilities.strength(45.percent, Conditions.wind),
-            Abilities.critDamage(55.percent, Conditions.wind)
-        )
+        str = 127
     )
 
-    val freyja = Dragon(
+    val freyja = hpHasteDragon(
         name = "Freja",
         element = Element.Wind,
-        str = 120,
-        abilities = listOf(
-            Abilities.skillHaste(35.percent, Conditions.wind)
-        )
+        str = 120
     )
 
-    val hastur = Dragon(
+    val hastur = primedStrDragon(
         name = "Hastur",
         element = Element.Wind,
-        str = 126,
-        abilities = listOf(
-            Abilities.strength(45.percent, Conditions.wind),
-            Abilities.primedStr(15.percent, Conditions.wind)
-        )
+        str = 126
     )
 
 
-    val cupid = Dragon(
+    val cupid = strDragon(
         name = "Cupid",
         element = Element.Light,
-        str = 119,
-        abilities = listOf(
-            Abilities.strength(60.percent, Conditions.light)
-        )
+        str = 119
     )
 
 
-    val shinobi = Dragon(
+    val shinobi = skillDragon(
         name = "Shinobi",
         element = Element.Shadow,
-        str = 128,
-        abilities = listOf(
-            Abilities.strength(20.percent, Conditions.shadow),
-            Abilities.skillDamage(90.percent, Conditions.shadow)
-        )
+        str = 128
     )
 
-    val marishiten = Dragon(
+    val marishiten = strDragon(
         name = "Marishiten",
         element = Element.Shadow,
-        str = 121,
-        abilities = listOf(
-            Abilities.strength(60.percent, Conditions.shadow)
-        )
+        str = 121
     )
 
     init {
