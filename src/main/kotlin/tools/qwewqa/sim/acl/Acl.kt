@@ -17,8 +17,9 @@ fun Adventurer.acl(implicitX: Boolean = true, init: Acl.() -> Unit) {
         acl.getMove()
     }
 }
+
 fun Adventurer.acl(string: String) {
-    logic =  {
+    logic = {
         val acl = Acl(this).apply {
             parseAcl(string).forEach {
                 lines += it
@@ -61,13 +62,13 @@ class Acl(val adventurer: Adventurer) {
     val variables = defaultVariables
 
     /** Condition for only canceling combo/fs endlag */
-    val cancel = adventurer.trigger in listOf("x1", "x2", "x3", "x4", "x5", "fs")
+    val cancel get() = adventurer.trigger in listOf("x1", "x2", "x3", "x4", "x5", "fs")
 
     /**
      * Default conditions which allow use after a combo connects, after a skill, when idle, or when ui unhides
      * Unlike no condition, this won't cancel before a combo connect or partway through
      * */
-    val default = +"ui" || +"idle" || cancel || +"s1" || +"s2" || +"s3"
+    val default get() = +"ui" || +"idle" || cancel || +"s1" || +"s2" || +"s3"
 
     /** Check if [this] matches the trigger */
     operator fun String.unaryPlus() = adventurer.trigger == this
@@ -86,12 +87,15 @@ class Acl(val adventurer: Adventurer) {
     operator fun Move?.invoke(condition: Acl.() -> Boolean) {
         lines += AclLine(this, emptyMap(), condition)
     }
+
     operator fun Move?.invoke(vararg params: Pair<String, Any>, condition: Acl.() -> Boolean) {
         lines += AclLine(this, params.toMap(), condition)
     }
+
     operator fun Move?.invoke(vararg params: Pair<String, Any>) {
         lines += AclLine(this, params.toMap()) { default }
     }
+
     operator fun Move?.invoke() {
         lines += AclLine(this, emptyMap()) { default }
     }
@@ -108,7 +112,10 @@ class Acl(val adventurer: Adventurer) {
 
     fun getMove(): MoveCall? {
         lines.forEach {
-            if (it.move?.condition?.invoke(adventurer) == true && it.condition(this)) return MoveCall(it.move, it.parameters)
+            if (it.move?.condition?.invoke(adventurer) == true && it.condition(this)) return MoveCall(
+                it.move,
+                it.parameters
+            )
         }
         return null
     }
