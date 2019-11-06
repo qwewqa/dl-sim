@@ -1,5 +1,6 @@
 package tools.qwewqa.sim.stage
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -70,7 +71,7 @@ inline fun stage(
 ) = runBlocking {
     val slices = DamageSliceAggregate("Damage")
     (1..mass).map { number ->
-        async {
+        async(Dispatchers.Default) {
             Stage().apply(init).also { stage ->
                 if (mass > 1) {
                     stage.logger.filterLevel = Logger.Level.NONE
