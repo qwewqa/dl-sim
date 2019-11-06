@@ -1,6 +1,5 @@
 package tools.qwewqa.sim.acl
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import tools.qwewqa.sim.data.Debuffs
 import tools.qwewqa.sim.extensions.prerun
 import tools.qwewqa.sim.stage.MoveCall

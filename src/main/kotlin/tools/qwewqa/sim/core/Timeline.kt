@@ -4,7 +4,7 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.properties.Delegates
 
-class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Default) {
+class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
     private val job = Job()
     private val queue = PriorityQueue<Event>()
 
