@@ -10,7 +10,7 @@ class SP(val adventurer: Adventurer) {
      * Increases the sp accounting for haste on all skills
      */
     operator fun invoke(amount: Int, source: String = adventurer.doing) {
-        adventurer.log(Logger.Level.BASIC, "sp", "charged $amount sp by $source")
+        adventurer.stage.log(Logger.Level.BASIC, adventurer.name, "sp") { "charged $amount sp by $source" }
         charge(amount, source)
         logCharges()
     }
@@ -23,7 +23,7 @@ class SP(val adventurer: Adventurer) {
         (charges[name] ?: throw IllegalArgumentException("Unknown skill [$name]")) >= costs[name]!!
 
     fun logCharges() =
-        adventurer.log(Logger.Level.VERBOSE, "sp", charges.keys.map { "$it: ${charges[it]}/${costs[it]}" }.toString())
+        adventurer.stage.log(Logger.Level.VERBOSE, adventurer.name, "sp") { charges.keys.map { "$it: ${charges[it]}/${costs[it]}" }.toString() }
 
     fun cost(name: String) = costs[name] ?: throw IllegalArgumentException("Unknown skill [$name]")
 
@@ -51,11 +51,12 @@ class SP(val adventurer: Adventurer) {
             charges[target] = costs[target]!!
             adventurer.listeners.raise("$target-charged")
         }
-        adventurer.log(
+        adventurer.stage.log(
             Logger.Level.VERBOSIEST,
-            "sp",
+            adventurer.name, "sp"
+        ) {
             "$target charged $amount sp by $source (${charges[target]}/${costs[target]})"
-        )
+        }
     }
 
     fun use(name: String) {

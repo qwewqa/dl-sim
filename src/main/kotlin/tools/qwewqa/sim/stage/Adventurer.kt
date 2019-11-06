@@ -67,9 +67,6 @@ class Adventurer(val stage: Stage) : Listenable {
     fun schedule(time: Double = 0.0, action: suspend () -> Unit) =
         timeline.schedule(time / stats[ATTACK_SPEED].value) { action() }
 
-    fun log(level: Logger.Level, category: String, message: String) = stage.log(level, name, category) { message }
-    fun log(category: String, message: String) = stage.log(Logger.Level.VERBOSE, name, category) { message }
-
     /**
      * Listeners are called with the trigger before [logic] and by observable properties
      */
@@ -139,7 +136,11 @@ class Adventurer(val stage: Stage) : Listenable {
     fun Snapshot.apply() {
         val actual = enemy.damage(this)
         combo++
-        log(Logger.Level.BASIC, "damage", "$actual damage by ${this.name} (combo: $combo)")
+        stage.log(
+            Logger.Level.BASIC,
+            this@Adventurer.name,
+            "damage"
+        ) { "$actual damage by ${this.name} (combo: $combo)" }
         if (sp != 0) this@Adventurer.sp(sp, name.toString())
     }
 
@@ -239,13 +240,16 @@ class Adventurer(val stage: Stage) : Listenable {
 
     fun Buff<*, *>.BuffInstance.selfBuff() {
         this.apply(this@Adventurer)
-        log("buff", "selfbuff $name [value: $value]")
+        stage.log(Logger.Level.VERBOSE, this@Adventurer.name, "buff") { "selfbuff $name [value: $value]" }
     }
 
     fun Buff<*, *>.BuffInstance.selfBuff(duration: Double, buffTime: Boolean = true) {
         val rdur = if (buffTime) duration * stats[BUFF_TIME].value else duration
         this.apply(this@Adventurer, rdur)
-        log("buff", "selfbuff $name for duration $rdur [value: $value]")
+        stage.log(Logger.Level.VERBOSE,
+            this@Adventurer.name,
+            "buff"
+        ) { "selfbuff $name for duration $rdur [value: $value]" }
     }
 
     fun Buff<*, *>.BuffInstance.teamBuff(
@@ -257,7 +261,7 @@ class Adventurer(val stage: Stage) : Listenable {
         stage.adventurers.forEach {
             if (it.condition()) this.apply(it, rdur)
         }
-        log("buff", "teambuff $name [value: $rdur]")
+        stage.log(Logger.Level.VERBOSE, this@Adventurer.name, "buff") { "teambuff $name [value: $rdur]" }
     }
 
     fun Buff<*, *>.pause() {

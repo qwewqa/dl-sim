@@ -12,12 +12,20 @@ object Buffs : DataMap<Buff<*, *>>()  {
         onStart = { duration, value, _ ->
             stats[stat].buff += value
             buffCount++
-            log(Logger.Level.VERBOSER, "buff", "started: $name buff value $value for ${duration ?: "indef"}")
+            stage.log(
+                Logger.Level.VERBOSER,
+                this.name,
+                "buff"
+            ) { "started: $name buff value $value for ${duration ?: "indef"}" }
         },
         onEnd = { duration, value, _ ->
             stats[stat].buff -= value
             buffCount--
-            log(Logger.Level.VERBOSER, "buff", "ended: $name buff value $value for ${duration ?: "indef"}")
+            stage.log(
+                Logger.Level.VERBOSER,
+                this.name,
+                "buff"
+            ) { "ended: $name buff value $value for ${duration ?: "indef"}" }
         },
         stackCap = cap
     )
@@ -34,12 +42,16 @@ object Buffs : DataMap<Buff<*, *>>()  {
             stats[Stat.DEF].buff += value
             buffCount++
             listeners.raise("doublebuff")
-            log(Logger.Level.VERBOSER, "buff", "started: def buff value $value for ${duration ?: "indef"}")
+            stage.log(
+                Logger.Level.VERBOSER,
+                name,
+                "buff"
+            ) { "started: def buff value $value for ${duration ?: "indef"}" }
         },
         onEnd = { duration, value, _ ->
             stats[Stat.DEF].buff -= value
             buffCount--
-            log(Logger.Level.VERBOSER, "buff", "ended: def buff value $value for ${duration ?: "indef"}")
+            stage.log(Logger.Level.VERBOSER, name, "buff") { "ended: def buff value $value for ${duration ?: "indef"}" }
         },
         stackCap = 10
     )
@@ -54,10 +66,10 @@ object Buffs : DataMap<Buff<*, *>>()  {
         onStart = { _, value, stack ->
             if (stack.value < 5) {
                 stack.value += value
-                log(Logger.Level.VERBOSE, "energy", "level: ${stack.value}")
+                stage.log(Logger.Level.VERBOSE, name, "energy") { "level: ${stack.value}" }
                 if (stack.value >= 5) {
                     listeners.raise("energized")
-                    log(Logger.Level.VERBOSE, "energy", "reached energized")
+                    stage.log(Logger.Level.VERBOSE, name, "energy") { "reached energized" }
                     stack.value = 5
                 }
             }
@@ -75,7 +87,7 @@ object Buffs : DataMap<Buff<*, *>>()  {
                     stack.value = 0
                     stack.stacks.clear()
                     energized(Unit).selfBuff()
-                    log(Logger.Level.VERBOSE, "energy", "skill energized")
+                    stage.log(Logger.Level.VERBOSE, name, "energy") { "skill energized" }
                 }
             }
         }

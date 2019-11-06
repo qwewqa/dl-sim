@@ -7,7 +7,7 @@ import tools.qwewqa.sim.stage.Stat
 object Coabilities : DataMap<Coability<*>>() {
     fun statCoability(stat: Stat) = Coability<Double> { value ->
         stats[stat].coability = value
-        log(Logger.Level.VERBOSE, "coability","${stat.name} coability with value $value on")
+        stage.log(Logger.Level.VERBOSE, name, "coability") { "${stat.name} coability with value $value on" }
     }
 
     val def = statCoability(Stat.DEF)

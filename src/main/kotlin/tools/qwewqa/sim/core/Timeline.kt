@@ -2,7 +2,6 @@ package tools.qwewqa.sim.core
 
 import kotlinx.coroutines.*
 import java.util.*
-import kotlin.properties.Delegates
 
 class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
     private val job = Job()
@@ -12,7 +11,7 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
     The reason this isn't a boolean and equivalent to running is so wait can work.
     Nothing should actually be running in parallel apart from that.
      */
-    private var active = 0
+    private var activeCount = 0
         set(value) {
             field = value
             if (value == 0 && running) {
@@ -28,7 +27,7 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
 
     fun start() {
         running = true
-        if (active == 0) run()
+        if (activeCount == 0) run()
     }
 
     var onEnd: () -> Unit = {}
@@ -68,10 +67,10 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
     suspend fun wait(time: Double) {
         suspendCancellableCoroutine<Unit> { cont ->
             scheduleNonSuspending(time) {
-                active++
-                cont.resume(Unit) { active-- }
+                activeCount++
+                cont.resume(Unit) { activeCount-- }
             }
-            active--
+            activeCount--
         }
     }
 
@@ -94,6 +93,9 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
     }
 
     abstract inner class Event(val startTime: Double) : Comparable<Event> {
+        var canceled = false
+            protected set
+
         abstract fun run()
         abstract fun cancel()
         override fun compareTo(other: Event): Int = startTime.compareTo(other.startTime)
@@ -103,20 +105,25 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
         var job: Job? = null
 
         override fun run() {
-            active++
+            activeCount++
+            if (canceled) {
+                activeCount--
+                return
+            }
             job = launch {
                 action()
-                active--
+                activeCount--
             }
         }
 
         suspend fun runNow() {
+            if (canceled) return
             action()
             cancel()
         }
 
         override fun cancel() {
-            unschedule(this)
+            canceled = true
             job?.let {
                 if (it.isActive) it.cancel()
             }
@@ -125,18 +132,19 @@ class Timeline : CoroutineScope by CoroutineScope(Dispatchers.Unconfined) {
 
     inner class NonSuspendingEvent(startTime: Double, private val action: Timeline.() -> Unit) : Event(startTime) {
         override fun run() {
-            active++
-            action()
-            active--
+            activeCount++
+            if (!canceled) action()
+            activeCount--
         }
 
         fun runNow() {
+            if (canceled) return
             run()
             cancel()
         }
 
         override fun cancel() {
-            unschedule(this)
+            canceled = true
         }
     }
 }

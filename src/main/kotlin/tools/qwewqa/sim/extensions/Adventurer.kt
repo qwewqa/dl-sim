@@ -3,9 +3,6 @@ package tools.qwewqa.sim.extensions
 import tools.qwewqa.sim.stage.AdventurerCondition
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.*
-import tools.qwewqa.sim.wep.blade
-import tools.qwewqa.sim.wep.lance
-import tools.qwewqa.sim.wep.wand
 
 fun Adventurer.prerun(prerun: Adventurer.() -> Unit) {
     this.prerun += prerun
@@ -25,7 +22,11 @@ fun Adventurer.autocharge(target: String, amount: Int, interval: Double = 1.0) {
         while (true) {
             wait(interval)
             sp.charge(amount, target, "autocharge")
-            log(Logger.Level.VERBOSER, "autocharge", "$target autocharge $amount [${sp[target]}/${sp.cost(target)}]")
+            stage.log(
+                Logger.Level.VERBOSER,
+                name,
+                "autocharge"
+            ) { "$target autocharge $amount [${sp[target]}/${sp.cost(target)}]" }
         }
     }
 }

@@ -2,9 +2,7 @@ package tools.qwewqa.sim.adventurers
 
 import tools.qwewqa.sim.core.listen
 import tools.qwewqa.sim.extensions.percent
-import tools.qwewqa.sim.extensions.*
 import tools.qwewqa.sim.stage.*
-import tools.qwewqa.sim.status.Coability
 
 val teambuff = AdventurerSetup {
     name = "Teambuff"
@@ -31,7 +29,7 @@ val teambuff = AdventurerSetup {
         val spdMod = stats[Stat.ATTACK_SPEED].value
         lastCount = (defMod * strMod * critMod * spdMod) - 1.0
         lastTime = time
-        log(Logger.Level.VERBOSER, "buff", "now buffed $lastCount")
+        stage.log(Logger.Level.VERBOSER, name, "buff") { "now buffed $lastCount" }
     }
 
     schedule {

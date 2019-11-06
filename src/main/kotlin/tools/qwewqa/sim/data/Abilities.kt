@@ -5,8 +5,6 @@ import tools.qwewqa.sim.core.getCooldown
 import tools.qwewqa.sim.status.Ability
 import tools.qwewqa.sim.status.Buff
 import tools.qwewqa.sim.core.listen
-import tools.qwewqa.sim.extensions.frames
-import tools.qwewqa.sim.extensions.noMove
 import tools.qwewqa.sim.extensions.percent
 import tools.qwewqa.sim.stage.Adventurer
 import tools.qwewqa.sim.stage.Logger
@@ -19,11 +17,11 @@ object Abilities : DataMap<Ability<*, *>>() {
         initialValue = {},
         onStart = { value, _ ->
             stats[stat].passive += value
-            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value on")
+            stage.log(Logger.Level.VERBOSER, this.name, "ability") { "$name ability with value $value on" }
         },
         onStop = { value, _ ->
             stats[stat].passive -= value
-            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value off")
+            stage.log(Logger.Level.VERBOSER, this.name, "ability") { "$name ability with value $value off" }
         }
     )
 
@@ -37,8 +35,8 @@ object Abilities : DataMap<Ability<*, *>>() {
             val vorig = min(orig, cap)
             val vnew = min(new, cap)
             stats[stat].passive += vnew - vorig
-            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) on")
-            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability capped at $vnew")
+            stage.log(Logger.Level.VERBOSER, this.name, "ability") { "$name ability with value $value (cap: $cap) on" }
+            if (vnew < new) stage.log(Logger.Level.VERBOSER, this.name, "ability") { "$name ability capped at $vnew" }
         },
         onStop = { value, stack ->
             val orig = stack.value
@@ -47,8 +45,8 @@ object Abilities : DataMap<Ability<*, *>>() {
             val vorig = min(orig, cap)
             val vnew = min(new, cap)
             stats[stat].passive += vnew - vorig
-            log(Logger.Level.VERBOSER, "ability", "$name ability with value $value (cap: $cap) off")
-            if (vnew < new) log(Logger.Level.VERBOSER, "ability", "$name ability capped at $vnew")
+            stage.log(Logger.Level.VERBOSER, this.name, "ability") { "$name ability with value $value (cap: $cap) off" }
+            if (vnew < new) stage.log(Logger.Level.VERBOSER, this.name, "ability") { "$name ability capped at $vnew" }
         }
     )
 
@@ -96,7 +94,11 @@ object Abilities : DataMap<Ability<*, *>>() {
                 if (charges == 0) return@listen
                 if (combo > 0 && combo % interval == 0) {
                     charges--
-                    log(Logger.Level.VERBOSER, "ability", "$name ability proc at combo $combo (charges left: $charges)")
+                    stage.log(
+                        Logger.Level.VERBOSER,
+                        this.name,
+                        "ability"
+                    ) { "$name ability proc at combo $combo (charges left: $charges)" }
                     buff(stack.value).selfBuff()
                 }
             }
@@ -120,7 +122,7 @@ object Abilities : DataMap<Ability<*, *>>() {
             val cd = timeline.getCooldown(15.0) { listeners.raise("primed") }
             listen("s1-charged") {
                 cd.ifAvailable {
-                    log(Logger.Level.VERBOSER, "ability", "$name ability proc)")
+                    stage.log(Logger.Level.VERBOSER, this.name, "ability") { "$name ability proc)" }
                     buff(stack.value).selfBuff(duration)
                 }
             }
@@ -182,7 +184,7 @@ object Abilities : DataMap<Ability<*, *>>() {
         stackStart = { stack ->
             listen("doublebuff") {
                 action(stack.value)
-                log(Logger.Level.VERBOSE, "doublebuff", "$name (value: ${stack.value}) triggered")
+                stage.log(Logger.Level.VERBOSE, this.name, "doublebuff") { "$name (value: ${stack.value}) triggered" }
             }
         }
     )
@@ -198,7 +200,11 @@ object Abilities : DataMap<Ability<*, *>>() {
         stackStart = { stack ->
             listen("doublebuff") {
                 action(min(stack.value, cap))
-                log(Logger.Level.VERBOSE, "doublebuff", "$name (value: ${min(stack.value, cap)}) triggered")
+                stage.log(
+                    Logger.Level.VERBOSE,
+                    this.name,
+                    "doublebuff"
+                ) { "$name (value: ${min(stack.value, cap)}) triggered" }
             }
         }
     )
@@ -252,7 +258,11 @@ object Abilities : DataMap<Ability<*, *>>() {
                 if (stack.value > 0) {
                     stack.value--
                     sp.charge(25.percent)
-                    log(Logger.Level.VERBOSER, "force charge", "force charge (25%) proc, remaining charges: ${stack.value}")
+                    stage.log(
+                        Logger.Level.VERBOSER,
+                        name,
+                        "force charge"
+                    ) { "force charge (25%) proc, remaining charges: ${stack.value}" }
                 }
             }
         }
