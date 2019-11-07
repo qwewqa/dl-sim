@@ -1,9 +1,6 @@
 package tools.qwewqa.sim.stage
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import tools.qwewqa.sim.adventurers.AdventurerSetup
 import tools.qwewqa.sim.core.Timeline
 import tools.qwewqa.sim.extensions.plus
@@ -68,32 +65,29 @@ inline fun stage(
     yaml: Boolean = false,
 
     crossinline init: Stage.() -> Unit
-) = runBlocking {
+) {
     val slices = DamageSliceAggregate("Damage")
-    (1..mass).map { number ->
-        async(Dispatchers.Default) {
-            Stage().apply(init).also { stage ->
-                if (mass > 1) {
-                    stage.logger.filterLevel = Logger.Level.NONE
-                    if (number == mass && disp && !list) {
+    runBlocking {
+        repeat(mass) { number ->
+            launch(Dispatchers.Default) {
+                Stage().apply(init).also { stage ->
+                    if (number == 0 && disp && !list) {
+                        Stage().apply(init).disp()
+                    }
+                    if (mass > 1) {
+                        stage.logger.filterLevel = Logger.Level.NONE
+                    } else {
+                        stage.logger.filterLevel = logLevel
                         stage.onEnd {
-                            disp()
+                            if (logLevel > Logger.Level.NONE) println()
                         }
                     }
-                } else {
-                    stage.logger.filterLevel = logLevel
-                    stage.onEnd {
-                        if (logLevel > Logger.Level.NONE) println()
-                        if (disp && !list) {
-                            disp()
-                        }
-                    }
+                }.awaitResults().apply {
+                    slices.add(slice, duration)
                 }
-            }.awaitResults().apply {
-                slices.add(slice, duration)
             }
         }
-    }.awaitAll()
+    }
     when {
         list -> slices.displayList()
         else -> if (yaml) slices.displayYAML() else slices.display()

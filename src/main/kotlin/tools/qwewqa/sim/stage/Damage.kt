@@ -1,5 +1,7 @@
 package tools.qwewqa.sim.stage
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import tools.qwewqa.sim.extensions.std
 import kotlin.math.roundToInt
 
@@ -126,6 +128,7 @@ data class DamageSliceData(val damage: Double, val duration: Double, val count: 
 class DamageSliceAggregate(
     val name: String
 ) {
+    val mutex = Mutex()
     var parent: DamageSliceAggregate? = null
     val subslices: MutableMap<String, DamageSliceAggregate> = mutableMapOf()
     val damage = mutableListOf<DamageSliceData>()
@@ -134,10 +137,12 @@ class DamageSliceAggregate(
         damage += data
     }
 
-    fun add(slice: DamageSlice, duration: Double) {
-        this += DamageSliceData(slice.damage, duration, slice.count)
-        slice.subslices.forEach { (name, slice) ->
-            this[name].add(slice, duration)
+    suspend fun add(slice: DamageSlice, duration: Double) {
+        mutex.withLock {
+            this += DamageSliceData(slice.damage, duration, slice.count)
+            slice.subslices.forEach { (name, slice) ->
+                this[name].add(slice, duration)
+            }
         }
     }
 
